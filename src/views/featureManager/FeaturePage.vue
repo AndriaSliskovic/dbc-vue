@@ -114,12 +114,10 @@ export default {
     NotificationContainer
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    NProgress.start()
     store
-      .dispatch('feature/fetchCompanies')
-      .then(store.dispatch('feature/fetchInitialModules'))
+      .dispatch('feature/loadPortals')
+      .then(store.dispatch('feature/LoadAllModules'))
       .then(response => {
-        NProgress.done() // When the action is done complete progress bar
         next() // Only once this is called does the navigation continue
       })
   },
@@ -147,6 +145,8 @@ export default {
   },
   methods: {
     onUserGroupSelect() {
+      this.clearPreviousUserGroupSelection()
+
       store.dispatch('feature/getCompanyGroups', this.selectedCompany.CompanyId)
       if (this.selectedGroupGuid) {
         store.dispatch('feature/cleanModules')
@@ -222,6 +222,9 @@ export default {
     },
     reloadPage() {
       window.location.reload()
+    },
+    clearPreviousUserGroupSelection() {
+      this.selectedGroupGuid=null
     }
   }
 }

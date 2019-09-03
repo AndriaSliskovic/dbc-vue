@@ -1,5 +1,5 @@
-import EventService from '../../services/EventService'
-import dbcServer from '../../services/dbcServer'
+import portalService from '../../services/portalService'
+import featureManagerService from './../../services/featureManagerService'
 
 
 export const namespaced = true
@@ -14,10 +14,10 @@ export const state = {
 
 }
 export const mutations = {
-  FETCH_COMPANIES(state, payload) {
+  LOAD_COMPANIES(state, payload) {
     state.companies = payload
   },
-  FETCH_INITIAL_MODULES(state, payload){
+  LOAD_ALL_MODULES(state, payload){
     state.initialModules=payload
   },
   SELECTED_COMPANY_GUID(state,payload){
@@ -37,10 +37,10 @@ export const mutations = {
   }
 }
 export const actions = {
-  fetchCompanies({ commit,dispatch }) {
-    return dbcServer.getCompanies()
+  loadPortals({ commit,dispatch }) {
+    return portalService.getAllActivePortals()
       .then(response => {
-        commit('FETCH_COMPANIES', response.data)
+        commit('LOAD_COMPANIES', response.data)
       })
       .catch(error => {
         const notification={
@@ -51,10 +51,10 @@ export const actions = {
       })
   },
 
-  fetchInitialModules({ commit,dispatch }){
-    return dbcServer.getFeatures()
+  LoadAllModules({ commit,dispatch }){
+    return featureManagerService.getAllFeatures()
     .then(response=>{
-      commit('FETCH_INITIAL_MODULES',response.data)
+      commit('LOAD_ALL_MODULES',response.data)
     })
     .catch(error => {
       const notification={
@@ -66,7 +66,7 @@ export const actions = {
   },
 
   getSelectedModules({commit,dispatch}, compGuid){
-     return dbcServer.getSelectedFeatures(compGuid)
+     return featureManagerService.getSubscribedFeatures(compGuid)
     .then(response=>{
       commit('SELECTED_MODULES',response.data)
     })
@@ -79,7 +79,7 @@ export const actions = {
     })
   },
   getCompanyGroups({commit},companyId){
-    return dbcServer.getCompanyGroups(companyId)
+    return portalService.getPortalUserGroups(companyId)
    .then(response=>{
      var items = response.data.d.map(ug =>  {
         return {
@@ -116,7 +116,7 @@ export const actions = {
   },
   submitForm({commit,dispatch},object){
     commit('SEND_DATA',object)
-    return dbcServer.editFeatures(object)
+    return featureManagerService.updateFeatures(object)
     .then(
       ()=>{
         const notification={
