@@ -21,7 +21,7 @@ export default function(url) {
         baseURL: url,
         withCredentials: false,
         headers: {
-          Accept: 'application/json',
+          'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
         timeout: 5000})

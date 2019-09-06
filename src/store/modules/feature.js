@@ -14,7 +14,7 @@ export const state = {
 
 }
 export const mutations = {
-  LOAD_COMPANIES(state, payload) {
+  LOAD_PORTALS(state, payload) {
     state.companies = payload
   },
   LOAD_ALL_MODULES(state, payload){
@@ -40,7 +40,7 @@ export const actions = {
   loadPortals({ commit,dispatch }) {
     return portalService.getAllActivePortals()
       .then(response => {
-        commit('LOAD_COMPANIES', response.data)
+        commit('LOAD_PORTALS', response.data)
       })
       .catch(error => {
         const notification={

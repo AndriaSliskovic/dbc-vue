@@ -5,6 +5,7 @@ import NProgress from 'nprogress'
 import NotFound from './views/errorPages/NotFound.vue'
 import NetworkIssue from './views/errorPages/NetworkIssue.vue'
 import FeaturePage from "./views/featureManager/FeaturePage.vue"
+import PersonaPage from "./views/Persona/PersonaPage.vue"
 
 Vue.use(Router)
 
@@ -19,6 +20,11 @@ const router= new Router({
       path: '/feature',
       name: 'feature',
       component: FeaturePage,
+    },
+    {
+      path: '/persona',
+      name: 'persona',
+      component: PersonaPage,
     },
     {
       path: '/404',

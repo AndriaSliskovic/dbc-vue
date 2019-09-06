@@ -81,7 +81,6 @@
 
 <script>
 import NProgress from 'nprogress'
-import EventService from '../../services/EventService'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import FeatureDetail from './FeatureDetail'
