@@ -21,12 +21,6 @@
         </form>
       </v-col>
       <v-col>
-        <!-- <h3>Result</h3>
-      <ul v-for="pers in this.items">
-        <li>{{pers.name}}</li>
-        </ul>-->
-        <!-- Tabela -->
-
         <v-card>
           <v-card-title>
             Personae
