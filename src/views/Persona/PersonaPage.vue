@@ -32,6 +32,17 @@
               single-line
               hide-details
             ></v-text-field>
+            <v-select
+              :items="personaStatus"
+              name="status"
+              item-text="text"
+              filled
+              return-object
+              label="Select status"
+              persistent-hint
+              v-model="selectedStatus"
+              @change="setSelectStatus"
+            ></v-select>
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
             <template v-slot:item.status="{ item }">
@@ -41,6 +52,9 @@
                 dark
                 @click="itemClickHandler(item.id)"
               >{{item.status}}</v-btn>
+            </template>
+            <template v-slot:item.edit="{item}">
+              <v-icon large color="blue darken-2" @click="editClickHandler(item.id)">mdi-table-edit</v-icon>
             </template>
           </v-data-table>
         </v-card>
@@ -60,6 +74,7 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
+import { filter } from 'minimatch';
 
 export default {
   data() {
@@ -69,8 +84,8 @@ export default {
       search: '',
       headers: [
         {
-          text: 'check',
-          value: 'active'
+          text: 'Edit',
+          value: 'edit'
         },
         {
           text: 'Persona',
@@ -79,12 +94,20 @@ export default {
         {
           text: 'Status',
           value: 'status'
+        }
+      ],
+      personaStatus:[
+        {
+          active:true,
+          text:"Active",
+          color:"primary"
         },
         {
-        text:"edit"
-        }
-
-      ]
+          active:false,
+          text:"Inactive",
+          color:'error'
+        }],
+        selectedStatus:null  
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
@@ -99,26 +122,33 @@ export default {
         this.companyId.stringId
       )
     },
+    setSelectStatus(){
+      const status=this.selectedStatus.active
+      console.log(this.selectedStatus,status)
+      const selectedItems=this.items.filter(i=>{
+        return i.active===status
+      })
+      console.log(selectedItems)
+      store.dispatch('persona/getPersonasByCompanyGuid',this.companyId.stringId)
+      store.dispatch('persona/selectedPersonasStatus',selectedItems)
+    },
+
     getStatusColor(status) {
-      console.log('usao')
       if (status) {
-        return 'primary'
+        return this.personaStatus[0].color
       }
-      return 'error'
+      return this.personaStatus[1].color
     },
     itemClickHandler(key) {
-      console.log('imam klik',key)
-      const element=this.items.find(x=>x.id===key)
-      console.log(element.active)
-      element.active=!element.active
-      // element.status= () => p.active ? 'Active' : 'Inactive',
-      element.active? element.status='Active': element.status='Inactive'
-      // if(element.active){
-      //   console.log("imam if")
-      //   return element.status='Active'
-      // }
-      // console.log("neaktivan")
-      // return element.status='Inactive'
+      console.log('imam klik', key)
+      const element = this.items.find(x => x.id === key)
+      element.active = !element.active
+      element.active
+        ? (element.status = this.personaStatus[0].text)
+        : (element.status = this.personaStatus[1].text)
+    },
+    editClickHandler(key) {
+      console.log('imam edit button', key)
     }
   },
 
@@ -136,7 +166,7 @@ export default {
             id: p.id,
             name: p.name,
             active: p.active,
-            status: p.active ? 'Active' : 'Inactive',
+            status: p.active ? this.personaStatus[0].text : this.personaStatus[1].text,
             companyId: p.companyId
           }
         })

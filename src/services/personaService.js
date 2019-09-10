@@ -14,5 +14,8 @@ export default {
     },
     updateFeatures(personaGuid) {
         return apiGatewayClient.put('/persona/persona/', personaGuid)
+    },
+    getPersonaById(personaGuid){
+        return apiGatewayClient.get('/persona/persona/', personaGuid)
     }
 }

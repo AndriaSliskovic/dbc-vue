@@ -12,7 +12,13 @@ const companiesHardCoded={
         CompanyName: 'Academy of Learning',
         IsDirectCompany: 1
       },
-      {"CompanyGuid":"c75b90a4-cfa1-423e-8d3b-65a3cf7be720","CompanyId":1346,"CompanyName":"adsads","IsDirectCompany":1},{"CompanyGuid":"beb815e8-5495-46ed-9882-78bad353af53","CompanyId":1341,"CompanyName":"asdasd","IsDirectCompany":1},{"CompanyGuid":"5935f4ab-069e-4774-8af8-1a2eb9400ca4","CompanyId":1347,"CompanyName":"asdasddas","IsDirectCompany":1},{"CompanyGuid":"ba5f6bcf-ed8b-4900-b3c0-ab7fff64180b","CompanyId":1340,"CompanyName":"asdsad","IsDirectCompany":1},{"CompanyGuid":"0ceb29f3-4dc5-48c3-9f57-1090bc12ecbf","CompanyId":727,"CompanyName":"Big Smoke Burger","IsDirectCompany":1}
+      {"CompanyGuid":"9ccadb7b-9ea2-4934-ac0b-decb508609c7","CompanyId":238,"CompanyName":"Standard demo","IsDirectCompany":1},
+      {"CompanyGuid":"c75b90a4-cfa1-423e-8d3b-65a3cf7be720","CompanyId":1346,"CompanyName":"adsads","IsDirectCompany":1},
+      {"CompanyGuid":"beb815e8-5495-46ed-9882-78bad353af53","CompanyId":1341,"CompanyName":"asdasd","IsDirectCompany":1},
+      {"CompanyGuid":"5935f4ab-069e-4774-8af8-1a2eb9400ca4","CompanyId":1347,"CompanyName":"asdasddas","IsDirectCompany":1},
+      {"CompanyGuid":"ba5f6bcf-ed8b-4900-b3c0-ab7fff64180b","CompanyId":1340,"CompanyName":"asdsad","IsDirectCompany":1},
+      {"CompanyGuid":"0ceb29f3-4dc5-48c3-9f57-1090bc12ecbf","CompanyId":727,"CompanyName":"Big Smoke Burger","IsDirectCompany":1},
+
     ]
   }
 
@@ -30,6 +36,10 @@ export const mutations = {
   },
   CLEAR_PERSONA(state){
     state.personas=null
+  },
+  SELECTED_PERSONAS(state,payload){
+    console.log(payload)
+    state.personas=payload
   }
 }
 export const actions = {
@@ -51,13 +61,18 @@ export const actions = {
         commit('LOAD_PORTALS',companiesHardCoded)
     },
     getPersonaData(companyGuidString){
+      console.log("imam persone")
       return  personaService.getPersonas(companyGuidString)
     },    
-    getPersonasByCompanyGuid({ commit, dispatch }, companyGuidString) {
+    getPersonasByCompanyGuid({ commit}, companyGuidString) {
         personaService.getPersonas(companyGuidString).then((response) => { 
           commit('GET_PERSONAS_BY_COMPANY', response)     
         });
     },
+    selectedPersonasStatus({commit},personas){
+      console.log(personas)
+      commit('SELECTED_PERSONAS',personas)
+    }
 }
 
 

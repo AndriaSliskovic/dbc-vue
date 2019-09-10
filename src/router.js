@@ -6,6 +6,7 @@ import NotFound from './views/errorPages/NotFound.vue'
 import NetworkIssue from './views/errorPages/NetworkIssue.vue'
 import FeaturePage from "./views/featureManager/FeaturePage.vue"
 import PersonaPage from "./views/Persona/PersonaPage.vue"
+import PersonaDetail from "./views/Persona/PersonaDetail.vue"
 
 Vue.use(Router)
 
@@ -22,9 +23,14 @@ const router= new Router({
       component: FeaturePage,
     },
     {
-      path: '/persona',
-      name: 'persona',
+      path: '/personas',
+      name: 'personas',
       component: PersonaPage,
+    },
+    {
+      path:'/persona/:personaId',
+      name:'persona',
+      component:PersonaDetail
     },
     {
       path: '/404',
