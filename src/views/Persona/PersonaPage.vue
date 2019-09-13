@@ -32,6 +32,7 @@
               single-line
               hide-details
             ></v-text-field>
+            <!-- Select personas status -->
             <v-select
               :items="personaStatus"
               name="status"
@@ -43,6 +44,10 @@
               v-model="selectedStatus"
               @change="setSelectStatus"
             ></v-select>
+            <!-- / Select personas status -->
+            <!-- All status -->
+            <v-btn @click="setSelectedCompany">All status</v-btn>
+            <!-- / All status -->
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
             <template v-slot:item.status="{ item }">
@@ -50,7 +55,7 @@
                 small
                 :color="getStatusColor(item.active)"
                 dark
-                @click="itemClickHandler(item.id)"
+                @click="setPersonaStatus(item.id)"
               >{{item.status}}</v-btn>
             </template>
             <template v-slot:item.edit="{item}">
@@ -74,8 +79,9 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
-import { filter } from 'minimatch';
+//import router from 'vue-router'
 
+const defaultStatus = 'All'
 export default {
   data() {
     return {
@@ -96,18 +102,20 @@ export default {
           value: 'status'
         }
       ],
-      personaStatus:[
+      personaStatus: [
         {
-          active:true,
-          text:"Active",
-          color:"primary"
+          active: true,
+          text: 'Active',
+          color: 'primary'
         },
         {
-          active:false,
-          text:"Inactive",
-          color:'error'
-        }],
-        selectedStatus:null  
+          active: false,
+          text: 'Inactive',
+          color: 'error'
+        }
+      ],
+      selectedStatus: defaultStatus,
+      selectedPersonaStatus: null
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
@@ -117,20 +125,21 @@ export default {
   },
   methods: {
     setSelectedCompany() {
+      this.selectedStatus = defaultStatus
+      //Dohvatanje persona
       store.dispatch(
         'persona/getPersonasByCompanyGuid',
         this.companyId.stringId
       )
+      //Setovanje Company guida u centralni store
+      store.dispatch('persona/setCompanyGuid', this.selectedCompany.CompanyGuid)
     },
-    setSelectStatus(){
-      const status=this.selectedStatus.active
-      console.log(this.selectedStatus,status)
-      const selectedItems=this.items.filter(i=>{
-        return i.active===status
+    setSelectStatus() {
+      const status = this.selectedStatus.active
+      console.log(this.selectedStatus, status)
+      const selectedItems = this.items.filter(i => {
+        return i.active === status
       })
-      console.log(selectedItems)
-      store.dispatch('persona/getPersonasByCompanyGuid',this.companyId.stringId)
-      store.dispatch('persona/selectedPersonasStatus',selectedItems)
     },
 
     getStatusColor(status) {
@@ -139,16 +148,37 @@ export default {
       }
       return this.personaStatus[1].color
     },
-    itemClickHandler(key) {
+    setPersonaStatus(key) {
       console.log('imam klik', key)
+      this.selectedPersonaStatus = key
+
       const element = this.items.find(x => x.id === key)
       element.active = !element.active
+      element.stringId = this.personaIdString.stringId
+      console.log(element)
+      //Slanje na server i setovanje centralnog statea
+      store.dispatch('persona/setPersonasStatusOnServer', element)
       element.active
         ? (element.status = this.personaStatus[0].text)
         : (element.status = this.personaStatus[1].text)
     },
     editClickHandler(key) {
       console.log('imam edit button', key)
+      store.dispatch('persona/setPersonaGuid', key)
+      this.$router.push({ name: 'persona', params: { personaId: key } })
+    },
+    mapPersonas() {
+      return this.persona.personas.map(p => {
+        return {
+          id: p.id,
+          name: p.name,
+          active: p.active,
+          status: p.active
+            ? this.personaStatus[0].text
+            : this.personaStatus[1].text,
+          companyId: p.companyId
+        }
+      })
     }
   },
 
@@ -161,18 +191,31 @@ export default {
     },
     items: function() {
       if (this.persona.personas.length) {
-        return this.persona.personas.map(p => {
-          return {
-            id: p.id,
-            name: p.name,
-            active: p.active,
-            status: p.active ? this.personaStatus[0].text : this.personaStatus[1].text,
-            companyId: p.companyId
+        if (this.selectedStatus) {
+          switch (this.selectedStatus.text) {
+            case 'Active':
+              return this.mapPersonas().filter(e => e.active)
+              break
+            case 'Inactive':
+              return this.mapPersonas().filter(e => !e.active)
+              break
+            case 'All':
+              console.log('all')
+              return this.setSelectedCompany()
+              break
+            default:
+              return this.mapPersonas()
+              break
           }
-        })
+        }
+        return this.mapPersonas()
       }
-
       return []
+    },
+    personaIdString: function() {
+      return {
+        stringId: `ids=${this.selectedPersonaStatus}`
+      }
     }
   },
   created() {

@@ -22,6 +22,7 @@ export const namespaced = true
     
     export const actions = {
         add({ commit }, notification) {
+          console.log(notification)
           commit('PUSH', notification)
         },
         remove({ commit }, notificationToRemove) {
