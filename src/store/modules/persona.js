@@ -25,7 +25,9 @@ const companiesHardCoded={
 export const state = {
   companies: [],
   selectedCompanyGuid: null,
-  personas: []
+  personas: [],
+  personaObject:null,
+  customFields:[]
 }
 export const mutations = {
   LOAD_PORTALS(state, payload) {
@@ -37,9 +39,15 @@ export const mutations = {
   CLEAR_PERSONA(state){
     state.personas=null
   },
-  SELECTED_PERSONAS(state,payload){
+  SELECTED_PERSONAS_STATUS(state,payload){
     console.log(payload)
     state.personas=payload
+  },
+  GET_PERSONA_OBJECT(state,payload){
+    state.personaObject=payload
+  },
+  GET_CUSTOM_CUSTOM_FIELDS(state,payload){
+    state.customFields=payload
   }
 }
 export const actions = {
@@ -59,11 +67,7 @@ export const actions = {
   },
     loadHardCodedCompanies({commit}){
         commit('LOAD_PORTALS',companiesHardCoded)
-    },
-    getPersonaData(companyGuidString){
-      console.log("imam persone")
-      return  personaService.getPersonas(companyGuidString)
-    },    
+    }, 
     getPersonasByCompanyGuid({ commit}, companyGuidString) {
         personaService.getPersonas(companyGuidString).then((response) => { 
           commit('GET_PERSONAS_BY_COMPANY', response)     
@@ -71,7 +75,21 @@ export const actions = {
     },
     selectedPersonasStatus({commit},personas){
       console.log(personas)
-      commit('SELECTED_PERSONAS',personas)
+      commit('SELECTED_PERSONAS_STATUS',personas)
+    },
+    getCustomFieldsByPersonaID({commit},personaId){
+      return personaService.getCustomFieldsByPersonaID(personaId)
+              .then(response=>commit('GET_CUSTOM_CUSTOM_FIELDS',response.data))
+    },
+    getSelectedPersonaByPersonaId({commit},personaId){
+      console.log(`action persona objekta ${personaId}`)
+      return personaService.getSelectedPersonaByPersonaId(personaId)
+              .then(response=>commit('GET_PERSONA_OBJECT',response.data))
+    },
+    getCustomFieldsByPersonaID({commit},personaId){
+      console.log(`action CustomFields ${personaId}`)
+      return personaService.getCustomFieldsByPersonaID(personaId)
+              .then(response=>commit('GET_CUSTOM_CUSTOM_FIELDS',response.data))
     }
 }
 

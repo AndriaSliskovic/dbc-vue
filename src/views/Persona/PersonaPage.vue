@@ -74,7 +74,7 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
-import { filter } from 'minimatch';
+import router from 'vue-router'
 
 export default {
   data() {
@@ -107,13 +107,17 @@ export default {
           text:"Inactive",
           color:'error'
         }],
-        selectedStatus:null  
+        selectedStatus:null,
+        personaId:null 
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
     store.dispatch('persona/loadHardCodedCompanies').then(response => {
       next()
     })
+  },
+    created() {
+    this.companies = this.persona.companies
   },
   methods: {
     setSelectedCompany() {
@@ -148,7 +152,8 @@ export default {
         : (element.status = this.personaStatus[1].text)
     },
     editClickHandler(key) {
-      console.log('imam edit button', key)
+      this.personaId=key
+      this.$router.push({ name: 'persona', params: { personaId: this.personaId,companyId:this.selectedCompany.CompanyGuid } })
     }
   },
 
@@ -175,9 +180,7 @@ export default {
       return []
     }
   },
-  created() {
-    this.companies = this.persona.companies
-  }
+
 }
 </script>
 <style scoped>
