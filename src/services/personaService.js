@@ -1,10 +1,11 @@
 import client from "./service-clients/base-client"
 
 if (apiGatewayUrl == null) {
-    var apiGatewayUrl = 'http://localhost:5200/persona/persona'
+    var apiGatewayUrl = 'http://10.99.0.100:5200'
+    //var apiGatewayUrl = 'http://localhost:5200'
   }
 
-const apiGatewayClient = client(apiGatewayUrl)
+const apiGatewayClient = client(apiGatewayUrl + "/persona/persona")
 
 export default {
     getPersonas(companyGuid) {

@@ -8,7 +8,7 @@
         <form>
           <v-row>
             <v-col cols="6" sm="4" md="3">
-              <v-text-field :label="initialPersonaName" solo v-model="personaName"></v-text-field>
+              <v-text-field solo v-model="personaObject.name"></v-text-field>
             </v-col>
             <v-col>
               <v-select
@@ -32,11 +32,11 @@
       </v-card>
       <v-col>
         <v-card>
-          <!-- <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
+          <v-data-table :headers="headers" :items="this.persona.customFields" :search="search"  >
             <template v-slot:item.edit="{item}">
               <v-icon large color="blue darken-2" @click="editClickHandler(item.id)" @click.stop="openDialog = true" >mdi-table-edit</v-icon>
             </template>
-          </v-data-table>-->
+          </v-data-table>
         </v-card>
       </v-col>
       <v-col>
@@ -72,59 +72,31 @@ export default {
         { text: 'Type', value: 'id' }
       ],
       search: '',
-      customFields: null,
-      openDialog: false
-    }
-  },
-  created() {
-    //AKO JE PROSLEDJENO PREKO PersonaPage
-    //console.log(this.$route.params.personaId)
-    if (this.persona.personaGuid) {
-      //Dobijanje kompletnog objekta za odabranu personu
-      store.dispatch('persona/getPersonaObjectByPersonaId', this.personaGuid)
-      //Dobijanje inicijalnog imena persone
-      console.log('setovanje preko storea - app', this.persona.personaObject)
-      //Ucitavanje CustomFieldsa za izabranu personu
-      store.dispatch('persona/getCustomFieldsByPersonaId', this.personaGuid)
-      this.customFields = this.persona.customFields
-      console.log(` created metod ${this.customFields}`)
-    }
-    //AKO JE RELOUDOVANA STRANA
-    else {
-      //Ako reloduje stranicu ili ako nema podataka treba da procita iz url-a se obrati serveru
-      store.dispatch('persona/getCompanyIdByPersonaId', this.personaGuid)
-      //Ucitavanje svih kompanija koje su potrebne za select
-      store.dispatch('persona/loadHardCodedCompanies')
-      //Dobijanje kompletnog objekta za odabranu personu
-      store.dispatch('persona/getPersonaObjectByPersonaId', this.personaGuid)
-      //Dobijanje inicijalnog imena persone
-      this.personaName = this.initialPersonaName
-      //Ucitavanje CustomFieldsa za izabranu personu
-      store.dispatch('persona/getCustomFieldsByPersonaId', this.personaGuid)
-      this.customFields = this.persona.customFields
-      console.log(` created metod ${this.customFields}`)
+      customFields: [],
+      openDialog: false,
+
     }
   },
   mounted() {},
   beforeMount() {
-    //this.customFields = this.persona.customFields
-    console.log(` before mount ${this.customFields}`)
-    //Pokusaj hvatanja hedera tabele
-    //console.log(Object.keys(this.persona.customFields[0]) )
+    //console.log(`beforeEnter ${this.$route.params.personaId}`, `guid : ${this.personaGuid}`)
+    store.dispatch('persona/getCustomFieldsByPersonaId', this.personaGuid)
+    store.dispatch('persona/getCompanyIdByPersonaId', this.personaGuid)
+    store.dispatch('persona/loadHardCodedCompanies')
   },
   beforeUpdate() {
-    //this.customFields = this.persona.customFields
-    //this.personaName=this.persona.personaObject.name
+ 
   },
   updated() {
-    //this.personaName=this.persona.personaObject.name
-  },
 
+  },
+  created() {
+  },
   methods: {
     setSelectedCompany() {
       //Ukoliko se prvi put selektuje nova kompanija a nije promenjen name uzima inicijalnu vrednost za name
       if (!this.personaName.value) {
-        console.log('prvi put setuje')
+        //console.log('prvi put setuje')
       }
       this.selectedStatus = defaultStatus
       //Dohvatanje persona
@@ -136,11 +108,11 @@ export default {
       store.dispatch('persona/setCompanyGuid', this.selectedCompany.CompanyGuid)
     },
     cancelHandler() {
-      console.log('imam cancel')
+      //console.log('imam cancel')
       this.$router.go(-1)
     },
     editClickHandler(id) {
-      console.log(`kliknuto ${id}`)
+      //console.log(`kliknuto ${id}`)
     }
   },
   computed: {
@@ -149,6 +121,13 @@ export default {
       return this.persona.companyGuid
     },
     personaObject: function() {
+      if(!this.persona.personaObject) {
+        return {
+          name : "",
+          id : "id",
+          companyId : "asd"
+        }
+      }
       return this.persona.personaObject
     },
     initialPersonaName: function() {
