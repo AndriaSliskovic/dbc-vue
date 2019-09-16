@@ -15,7 +15,8 @@
               :items="this.persona.companies.SiteCustomersList"
               return-object
               item-text="CompanyName"
-              label="Companies"
+              item-value="companyId"
+              label="Select Company"
               outlined
             ></v-select>
           </v-col>
@@ -156,7 +157,8 @@ export default {
     },
     customFields: {
       get: function() {
-        return this.persona.customFields ? this.persona.customFields : null
+        //return this.persona.customFields ? this.persona.customFields : null
+        return this.persona.customFields
       }
     },
     items:function(){
@@ -168,7 +170,6 @@ export default {
             name:cf.name,
             category:cf.category,
             type:cf.type
-
           }
         })
       }

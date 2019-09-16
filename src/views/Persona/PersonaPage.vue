@@ -9,12 +9,13 @@
               :items="persona.companies.SiteCustomersList"
               name="company"
               item-text="CompanyName"
+              item-value="CompanyGuid"
               filled
-              return-object
+
               label="Company"
               hint="Select company"
               persistent-hint
-              v-model="selectedCompany"
+              v-model="companyId"
               @change="setSelectedCompany"
             ></v-select>
           </v-flex>
@@ -37,6 +38,7 @@
               :items="personaStatus"
               name="status"
               item-text="text"
+
               filled
               return-object
               label="Select status"
@@ -87,6 +89,7 @@ export default {
     return {
       companies: null,
       selectedCompany: null,
+      companyId:null,
       search: '',
       headers: [
         {
@@ -131,10 +134,10 @@ export default {
       //Dohvatanje persona
       store.dispatch(
         'persona/getPersonasByCompanyGuid',
-        this.companyId.stringId
+        this.companyIdString
       )
       //Setovanje Company guida u centralni store
-      store.dispatch('persona/setCompanyGuid', this.selectedCompany.CompanyGuid)
+      //store.dispatch('persona/setCompanyGuid', this.selectedCompany.CompanyGuid)
     },
     setSelectStatus() {
       const status = this.selectedStatus.active
@@ -167,17 +170,29 @@ export default {
     editClickHandler(key) {
       this.personaId=key
       console.log(`klik key ${this.personaId}`)
-      this.$router.push({ name: 'persona', params: { personaId: this.personaId,companyId:this.selectedCompany.CompanyGuid } })
-    }
+      this.$router.push({ name: 'persona', params: { personaId: this.personaId,companyId:this.companyId } })
+    },
+    mapPersonas() {
+      return this.persona.personas.map(p => {
+        return {
+          id: p.id,
+          name: p.name,
+          active: p.active,
+          status: p.active
+            ? this.personaStatus[0].text
+            : this.personaStatus[1].text,
+          companyId: p.companyId
+        }
+      })
+    },
   },
 
   computed: {
     ...mapState({ persona: 'persona' }),
-    companyId: function() {
-      return {
-        stringId: `companyId=${this.selectedCompany.CompanyGuid}`
-      }
+    companyIdString: function() {
+      return  `companyId=${this.companyId}`
     },
+        
     items: function() {
       if (this.persona.personas.length) {
         if (this.selectedStatus) {

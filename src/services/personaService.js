@@ -1,8 +1,9 @@
 import client from './service-clients/base-client'
 
+
 if (apiGatewayUrl == null) {
-  var apiGatewayUrl = 'http://10.99.0.100:5200/persona/persona'
-  //var apiGatewayUrl = 'http://localhost:5200/persona/persona'
+  var apiGatewayUrl = 'http://10.99.0.100:5200'
+  //var apiGatewayUrl = 'http://localhost:5200'
 }
 
 const apiGatewayClient = client(apiGatewayUrl + "/persona/persona")
@@ -22,9 +23,9 @@ export default {
     console.log(`servis CustomFields objekta ${personaId}`)
     return await apiGatewayClient.get(`/${personaId}/fields`)
   },
-  getSelectedPersonaByPersonaId(personaId){
+  async getSelectedPersonaByPersonaId(personaId){
     console.log(`servis persona objekta ${personaId}`)
-    return apiGatewayClient.get(`/${personaId}` )
+    return await apiGatewayClient.get(`/${personaId}` )
   },
   editPersonaData(object){
     console.log(`servis edit persona objekta ${object.personaId}`)
