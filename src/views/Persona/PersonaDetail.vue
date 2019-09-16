@@ -1,145 +1,181 @@
 <template>
   <v-app id="inspire">
     <v-container>
-      <h3>Persona detail</h3>
-      <p>persona id : {{this.personaGuid}}</p>
-      <p>company id : {{this.companyGuid}}</p>
+      <!-- <p>persona id : {{personaId}}</p>
+      <p>companyId : {{companyId}}</p>-->
+      <!-- PREKO CENTRALNOG STOREA -->
       <v-card>
-        <form>
-          <v-row>
-            <v-col cols="6" sm="4" md="3">
-              <v-text-field solo v-model="personaObject.name"></v-text-field>
-            </v-col>
-            <v-col>
-              <v-select
-                :items="persona.companies.SiteCustomersList"
-                name="company"
-                item-text="CompanyName"
-                filled
-                return-object
-                label="Company"
-                :hint="hintSelectCompany"
-                persistent-hint
-                v-model="selectedCompany"
-                @change="setSelectedCompany"
-              ></v-select>
-            </v-col>
-            <v-col>
-              <v-btn small color="error">Save changes</v-btn>
-            </v-col>
-          </v-row>
-        </form>
+        <v-row>
+          <v-col cols="4" md="4">
+            <v-text-field v-model="personaName" label="Persona name"></v-text-field>
+          </v-col>
+          <v-col cols="4" md="4">
+            <v-select
+              v-model="editedCompany"
+              :items="this.persona.companies.SiteCustomersList"
+              return-object
+              item-text="CompanyName"
+              label="Companies"
+              outlined
+            ></v-select>
+          </v-col>
+          <v-col cols="4" md="4">
+            <v-btn color="primary" dark @click="editPersonaHandler()">Edit changes</v-btn>
+          </v-col>
+        </v-row>
       </v-card>
+
       <v-col>
+        <!-- Tabela -->
         <v-card>
-          <v-data-table :headers="headers" :items="this.persona.customFields" :search="search"  >
+          <v-card-title>
+            Custom Fields
+            <div class="flex-grow-1"></div>
+            <v-text-field
+              v-model="search"
+              append-icon="search"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field>
+            <!-- <v-select
+              :items="personaStatus"
+              name="status"
+              item-text="text"
+              filled
+              return-object
+              label="Select status"
+              persistent-hint
+              v-model="selectedStatus"
+              @change="setSelectStatus"
+            ></v-select> -->
+          </v-card-title>
+          <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
             <template v-slot:item.edit="{item}">
-              <v-icon large color="blue darken-2" @click="editClickHandler(item.id)" @click.stop="openDialog = true" >mdi-table-edit</v-icon>
+              <v-icon large color="blue darken-2" @click="editCustomFieldHandler(item.id)">mdi-table-edit</v-icon>
             </template>
           </v-data-table>
         </v-card>
+        <!-- /Tabela -->
+      </v-col>
+      <v-row>
+      <v-col>
+        <v-btn @click="()=>this.$router.go(-1) ">Go back</v-btn>
       </v-col>
       <v-col>
-        <v-card>
-          <v-btn @click="cancelHandler">Cancel</v-btn>
-        </v-card>
+        <v-btn @click="saveHandler" color="primary">Save</v-btn>
       </v-col>
-      <!-- DIALOG -->
+      </v-row>
 
-      <!-- / DIALOG -->
     </v-container>
   </v-app>
 </template>
 <script>
+import NProgress from 'nprogress'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
-import PersonaDeatilDialog from './PersonaDetailDialog'
-
+import NotificationContainer from '../../components/NotificationContainer'
+import CompaniesHardCode from '../../../GetSiteCustomers.json'
 export default {
-  components: {
-    PersonaDeatilDialog
-  },
   data() {
     return {
-      personaGuid: this.$route.params.personaId,
-      selectedCompany: null,
-      personaName: null,
-      headers: [
-        { text: 'Edit', value: 'edit' },
-        { text: 'Rank', value: 'rank' },
-        { text: 'Name', value: 'name' },
-        { text: 'Category', value: 'category' },
-        { text: 'Type', value: 'id' }
-      ],
+      personaId: this.$route.params.personaId,
+      companyId: this.$route.params.companyId,
+      companies: [],
+      editedCompany:null,
       search: '',
-      customFields: [],
-      openDialog: false,
-
+      headers: [
+        {text: 'Edit',
+         value: 'edit'},
+        {text: 'Rank',
+         value: 'rank'},
+        {text: 'Name',
+         value: 'name'},
+        {text: 'Category',
+         value: 'category'},
+        {text: 'Type',
+         value: 'type'},
+      ]
     }
   },
-  mounted() {},
-  beforeMount() {
-    //console.log(`beforeEnter ${this.$route.params.personaId}`, `guid : ${this.personaGuid}`)
-    store.dispatch('persona/getCustomFieldsByPersonaId', this.personaGuid)
-    store.dispatch('persona/getCompanyIdByPersonaId', this.personaGuid)
-    store.dispatch('persona/loadHardCodedCompanies')
-  },
-  beforeUpdate() {
- 
-  },
-  updated() {
-
+  beforeRouteEnter(routeTo, routeFrom, next) {
+    store.dispatch('persona/loadHardCodedCompanies').then(response => {
+      next()
+    })
   },
   created() {
+    this.companies = this.persona.companies.SiteCustomersList
+    //Dobijanje persona objekta
+    store.dispatch('persona/getSelectedPersonaByPersonaId', this.personaId)
+    //Dobijanje CustomFieldsa
+    store.dispatch('persona/getCustomFieldsByPersonaID', this.personaId)
+    console.log(this.customFields)
   },
+
   methods: {
-    setSelectedCompany() {
-      //Ukoliko se prvi put selektuje nova kompanija a nije promenjen name uzima inicijalnu vrednost za name
-      if (!this.personaName.value) {
-        //console.log('prvi put setuje')
+    goBack: function() {
+      return this.$router.go(-1)
+    },
+    editedPersona:function(){
+      if (!this.editedCompany) {
+      return{
+        personaId:this.personaId,
+        name:this.persona.personaObject.name,
+        companyId:this.companyId
       }
-      this.selectedStatus = defaultStatus
-      //Dohvatanje persona
-      store.dispatch(
-        'persona/getPersonasByCompanyGuid',
-        this.companyId.stringId
-      )
-      //Setovanje Company guida u centralni store
-      store.dispatch('persona/setCompanyGuid', this.selectedCompany.CompanyGuid)
+      }else{
+      return{
+        personaId:this.personaId,
+        name:this.personaName,
+        companyId:this.editedCompany.CompanyGuid
+      }
+      }
     },
-    cancelHandler() {
-      //console.log('imam cancel')
-      this.$router.go(-1)
+    editPersonaHandler:function(){
+      const editedPersona=this.editedPersona()
+      console.log(`imam edit ${editedPersona.personaId}`)
+      store.dispatch('persona/editPersonaData',editedPersona)
     },
-    editClickHandler(id) {
-      //console.log(`kliknuto ${id}`)
+    saveHandler(){
+      console.log(`klik na save `)
+    },
+    editCustomFieldHandler(key){
+      console.log(`edit Custom Field ${key}`)
     }
   },
   computed: {
     ...mapState({ persona: 'persona' }),
-    companyGuid: function() {
-      return this.persona.companyGuid
-    },
-    personaObject: function() {
-      if(!this.persona.personaObject) {
-        return {
-          name : "",
-          id : "id",
-          companyId : "asd"
-        }
+    personaName: {
+      get: function() {
+        return this.persona.personaObject ? this.persona.personaObject.name : ''
+        //return this.persona.personaObject.name
+      },
+      set: function(newValue) {
+        newValue ? (this.persona.personaObject.name = newValue) : null
       }
-      return this.persona.personaObject
     },
-    initialPersonaName: function() {
-      return this.personaObject ? this.personaObject.name : null
+    customFields: {
+      get: function() {
+        return this.persona.customFields ? this.persona.customFields : null
+      }
     },
-    hintSelectCompany: function() {
-      return `Change company for ${this.personaName} persona`
-    },
-    items: function() {
-      return this.customFields
+    items:function(){
+      if (this.customFields) {
+        return this.customFields.map(cf=>{
+          return{
+            id:cf.id,
+            rank:cf.rank,
+            name:cf.name,
+            category:cf.category,
+            type:cf.type
+
+          }
+        })
+      }
+      return []
     }
-  }
+    }
+  
 }
 </script>
 <style lang="less" scoped>

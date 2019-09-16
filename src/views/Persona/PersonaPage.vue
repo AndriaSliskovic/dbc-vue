@@ -79,7 +79,7 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
-//import router from 'vue-router'
+import router from 'vue-router'
 
 const defaultStatus = 'All'
 export default {
@@ -109,19 +109,21 @@ export default {
           color: 'primary'
         },
         {
-          active: false,
-          text: 'Inactive',
-          color: 'error'
-        }
-      ],
-      selectedStatus: defaultStatus,
-      selectedPersonaStatus: null
+          active:false,
+          text:"Inactive",
+          color:'error'
+        }],
+        selectedStatus:null,
+        personaId:null 
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
     store.dispatch('persona/loadHardCodedCompanies').then(response => {
       next()
     })
+  },
+    created() {
+    this.companies = this.persona.companies
   },
   methods: {
     setSelectedCompany() {
@@ -163,22 +165,9 @@ export default {
         : (element.status = this.personaStatus[1].text)
     },
     editClickHandler(key) {
-      console.log('imam edit button', key)
-      store.dispatch('persona/setPersonaGuid', key)
-      this.$router.push({ name: 'persona', params: { personaId: key } })
-    },
-    mapPersonas() {
-      return this.persona.personas.map(p => {
-        return {
-          id: p.id,
-          name: p.name,
-          active: p.active,
-          status: p.active
-            ? this.personaStatus[0].text
-            : this.personaStatus[1].text,
-          companyId: p.companyId
-        }
-      })
+      this.personaId=key
+      console.log(`klik key ${this.personaId}`)
+      this.$router.push({ name: 'persona', params: { personaId: this.personaId,companyId:this.selectedCompany.CompanyGuid } })
     }
   },
 
@@ -218,9 +207,7 @@ export default {
       }
     }
   },
-  created() {
-    this.companies = this.persona.companies
-  }
+
 }
 </script>
 <style scoped>

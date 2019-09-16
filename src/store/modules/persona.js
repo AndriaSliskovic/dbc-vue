@@ -24,11 +24,10 @@ const companiesHardCoded={
 
 export const state = {
   companies: [],
-  companyGuid: null,
-  personaGuid:null,
+  selectedCompanyGuid: null,
   personas: [],
   personaObject:null,
-  customFields:null
+  customFields:[]
 }
 export const mutations = {
   LOAD_PORTALS(state, payload) {
@@ -52,17 +51,15 @@ export const mutations = {
   CLEAR_PERSONA(state){
     state.personas=null
   },
-  SET_PERSONAS_STATUS(state,payload){
-    console.log(payload.id)
-    state.personas.filter(el=>{
-      return el.id===payload.id
-    }).map(e=>e.active=payload.active)
-  },
-  SELECTED_PERSONAS(state,payload){
+  SELECTED_PERSONAS_STATUS(state,payload){
     console.log(payload)
     state.personas=payload
   },
-  GET_CUSTOM_FIELDS_BY_PERSONA(state,payload){
+  GET_PERSONA_OBJECT(state,payload){
+    //console.log(`mutator setuje ${payload}`)
+    state.personaObject=payload
+  },
+  GET_CUSTOM_CUSTOM_FIELDS(state,payload){
     state.customFields=payload
   }
 }
@@ -82,77 +79,10 @@ export const actions = {
       })
   },
     loadHardCodedCompanies({commit}){
-      commit('LOAD_PORTALS',companiesHardCoded)
-    },
-    //Setuje guid za odabranu kompaniju u centralni state
-    setCompanyGuid({commit},guid){
-      commit("COMPANY_GUID",guid) 
-    },
-    //Setuje guid za odabranu personu u centralni state
-    setPersonaGuid({commit},guid){
-      commit("PERSONA_GUID",guid)
-    },
-    setPersonasStatusOnServer({commit,dispatch},element){
-      console.log(element.stringId,element.active)
-      const status=element.active
-      const personaUrlString=element.stringId
-      //Aktivacija statusa
-      if (status) {
-        console.log("aktivira",personaUrlString,status)
-        personaService.activateStatusById(personaUrlString)
-        .then(
-          ()=>{
-            const notification={
-              type:'success',
-              message:`Data successfully changed !`
-            }
-            //Dobijanje poruke
-            dispatch('notification/add',notification,{root:true})
-            //Setovanje statea
-            dispatch('setPersonasStatus', element)
-          }).catch(error=>{
-            const notification={
-              type:'error',
-              message:` Can't activate this persona - Server error !`
-            }
-            dispatch('notification/add',notification,{root:true})
-            throw error
-          })
-      }else{
-        console.log('deaktivira',personaUrlString)
-        personaService.deactivateStatusById(personaUrlString)
-        .then(
-          ()=>{
-            const notification={
-              type:'success',
-              message:`Data successfully changed !`
-            }
-            dispatch('notification/add',notification,{root:true})
-            //Setuje status
-            dispatch('setPersonasStatus', element)
-          }).catch(error=>{
-            const notification={
-              type:'error',
-              message:`Can't deactivate Persona. It is in use by CustomFields, PersonaInstances !`
-            }
-            dispatch('notification/add',notification,{root:true})
-            throw error
-          })
-      }
-    },
-    getPersonaData(companyGuidString){
-      return  personaService.getPersonas(companyGuidString)
-    },
-    getPersonaObjectByPersonaId({commit},personaGuid){
-
-      personaService.getPersonaObjectByPersonaId(personaGuid)
-      .then(response=>
-        //console.log("action objekat by personaId",response.data)
-        commit('GET_PERSONA_OBJECT',response.data)
-        )
-    },    
+        commit('LOAD_PORTALS',companiesHardCoded)
+    }, 
     getPersonasByCompanyGuid({ commit}, companyGuidString) {
-        console.log("ide persona")
+        console.log(`action za kompanijine persone ${companyGuidString}`)
         personaService.getPersonas(companyGuidString).then((response) => { 
           commit('GET_PERSONAS_BY_COMPANY', response)     
         });
@@ -173,15 +103,26 @@ export const actions = {
     },
     onSelectedPersonasStatus({commit},personas){
       console.log(personas)
-      commit('SELECTED_PERSONAS',personas)
+      commit('SELECTED_PERSONAS_STATUS',personas)
     },
-    getCustomFieldsByPersonaId({commit},persGuid){
-      //console.log(persGuid)
-      personaService.getCustomFieldsByPersonaId(persGuid)
-      .then(response=>
-        //console.log(response.data)
-        commit("GET_CUSTOM_FIELDS_BY_PERSONA",response.data)
-        )
+    getCustomFieldsByPersonaID({commit},personaId){
+      return personaService.getCustomFieldsByPersonaID(personaId)
+              .then(response=>commit('GET_CUSTOM_CUSTOM_FIELDS',response.data))
+    },
+    getSelectedPersonaByPersonaId({commit},personaId){
+      console.log(`action persona objekta ${personaId}`)
+      return personaService.getSelectedPersonaByPersonaId(personaId)
+              .then(response=>commit('GET_PERSONA_OBJECT',response.data))
+    },
+    getCustomFieldsByPersonaID({commit},personaId){
+      console.log(`action CustomFields ${personaId}`)
+      return personaService.getCustomFieldsByPersonaID(personaId)
+              .then(response=>commit('GET_CUSTOM_CUSTOM_FIELDS',response.data))
+    },
+    editPersonaData({commit},editedObject){
+      console.log(`action edit persone ${editedObject.personaId}`)
+      return personaService.editPersonaData(editedObject)
+
     }
 }
 
