@@ -1,46 +1,72 @@
 <template>
   <v-app id="inspire">
     <v-container>
-      <p>persona id : {{personaId}}</p>
-      <p>companyId : {{companyId}}</p>
+      <!-- <p>persona id : {{personaId}}</p>
+      <p>companyId : {{companyId}}</p>-->
       <!-- PREKO CENTRALNOG STOREA -->
-      <div>
-        Companies :
-        <ul v-for="c in this.persona.companies.SiteCustomersList">
-          <li>{{c.CompanyName}}</li>
-        </ul>
-      </div>
+      <v-card>
+        <v-row>
+          <v-col cols="4" md="4">
+            <v-text-field v-model="personaName" label="Persona name"></v-text-field>
+          </v-col>
+          <v-col cols="4" md="4">
+            <v-select
+              v-model="editedCompany"
+              :items="this.persona.companies.SiteCustomersList"
+              return-object
+              item-text="CompanyName"
+              label="Companies"
+              outlined
+            ></v-select>
+          </v-col>
+          <v-col cols="4" md="4">
+            <v-btn color="primary" dark @click="editPersonaHandler()">Edit changes</v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
 
-      <!-- PREKO CENTRALNOG STOREA -->
-      <div>Persona name - STORE: {{this.persona.personaObject.name}}</div>
-      <!-- PREKO COPUTED PROPERTIJA -->
-      <div>Persona name - COMPUTED : {{personaName}}</div>
-      <!-- PREKO SETOVANOG LOKALA -->
-      <div>Persona name - LOKAL : {{perName}}</div>
-      <!-- PREKO CENTRALNOG STOREA -->
-      <div>
-        Custom Fields - STORE :
-        <ul v-for="cf in this.persona.customFields">
-          <li>{{cf.name}}</li>
-        </ul>
-      </div>
-      <!-- PREKO COPUTED PROPERTIJA -->
-      <div>
-        Custom Fields - COMPUTED :
-        <ul v-for="cf in customFields">
-          <li>{{cf.name}}</li>
-        </ul>
-      </div>
-      <!-- PREKO SETOVANOG LOKALA -->
-      <div>
-        Custom Fields - LOKAL :
-        <ul v-for="cf in custFields">
-          <li>{{cf.name}}</li>
-        </ul>
-      </div>
-      <div>
+      <v-col>
+        <!-- Tabela -->
+        <v-card>
+          <v-card-title>
+            Custom Fields
+            <div class="flex-grow-1"></div>
+            <v-text-field
+              v-model="search"
+              append-icon="search"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field>
+            <!-- <v-select
+              :items="personaStatus"
+              name="status"
+              item-text="text"
+              filled
+              return-object
+              label="Select status"
+              persistent-hint
+              v-model="selectedStatus"
+              @change="setSelectStatus"
+            ></v-select> -->
+          </v-card-title>
+          <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
+            <template v-slot:item.edit="{item}">
+              <v-icon large color="blue darken-2" @click="editCustomFieldHandler(item.id)">mdi-table-edit</v-icon>
+            </template>
+          </v-data-table>
+        </v-card>
+        <!-- /Tabela -->
+      </v-col>
+      <v-row>
+      <v-col>
         <v-btn @click="()=>this.$router.go(-1) ">Go back</v-btn>
-      </div>
+      </v-col>
+      <v-col>
+        <v-btn @click="saveHandler" color="primary">Save</v-btn>
+      </v-col>
+      </v-row>
+
     </v-container>
   </v-app>
 </template>
@@ -53,13 +79,23 @@ import CompaniesHardCode from '../../../GetSiteCustomers.json'
 export default {
   data() {
     return {
-      personaId: null,
-      companyId: null,
+      personaId: this.$route.params.personaId,
+      companyId: this.$route.params.companyId,
       companies: [],
-      perName:'',
-      custFields:[],
-
-
+      editedCompany:null,
+      search: '',
+      headers: [
+        {text: 'Edit',
+         value: 'edit'},
+        {text: 'Rank',
+         value: 'rank'},
+        {text: 'Name',
+         value: 'name'},
+        {text: 'Category',
+         value: 'category'},
+        {text: 'Type',
+         value: 'type'},
+      ]
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
@@ -68,48 +104,78 @@ export default {
     })
   },
   created() {
-    //Kreiranje pocetnih parametara
-    this.personaId = this.$route.params.personaId
-    this.companyId = this.$route.params.companyId
-    //Ucitavanje kompanija
-    //console.log(this.persona.companies.SiteCustomersList)
     this.companies = this.persona.companies.SiteCustomersList
     //Dobijanje persona objekta
-    console.log(this.personaId)
     store.dispatch('persona/getSelectedPersonaByPersonaId', this.personaId)
-    //.then(console.log(this.persona.personaObject))
+    //Dobijanje CustomFieldsa
     store.dispatch('persona/getCustomFieldsByPersonaID', this.personaId)
-      .then((this.customFields = this.persona.customFields))
-  },
-  beforeMount() {
-    //Pokusavam da setujem lokalne vrednosti iz centralnog storea koje su ubacene u create i da ih renderuje
-    this.perName=this.persona.personaObject.name
-    this.custFields=this.persona.customFields
+    console.log(this.customFields)
   },
 
   methods: {
     goBack: function() {
       return this.$router.go(-1)
+    },
+    editedPersona:function(){
+      if (!this.editedCompany) {
+      return{
+        personaId:this.personaId,
+        name:this.persona.personaObject.name,
+        companyId:this.companyId
+      }
+      }else{
+      return{
+        personaId:this.personaId,
+        name:this.personaName,
+        companyId:this.editedCompany.CompanyGuid
+      }
+      }
+    },
+    editPersonaHandler:function(){
+      const editedPersona=this.editedPersona()
+      console.log(`imam edit ${editedPersona.personaId}`)
+      store.dispatch('persona/editPersonaData',editedPersona)
+    },
+    saveHandler(){
+      console.log(`klik na save `)
+    },
+    editCustomFieldHandler(key){
+      console.log(`edit Custom Field ${key}`)
     }
   },
   computed: {
     ...mapState({ persona: 'persona' }),
-    personaName: function() {
-      return this.persona.personaObject.name
+    personaName: {
+      get: function() {
+        return this.persona.personaObject ? this.persona.personaObject.name : ''
+        //return this.persona.personaObject.name
+      },
+      set: function(newValue) {
+        newValue ? (this.persona.personaObject.name = newValue) : null
+      }
     },
-    // customFields: function() {
-    //   return this.persona.customFields
-    // },
-        customFields: 
-        {
-          get:function(){
-            return this.persona.customFields
-          },
-          set:function(newValue){
+    customFields: {
+      get: function() {
+        return this.persona.customFields ? this.persona.customFields : null
+      }
+    },
+    items:function(){
+      if (this.customFields) {
+        return this.customFields.map(cf=>{
+          return{
+            id:cf.id,
+            rank:cf.rank,
+            name:cf.name,
+            category:cf.category,
+            type:cf.type
 
           }
-        }
-  }
+        })
+      }
+      return []
+    }
+    }
+  
 }
 </script>
 <style lang="less" scoped>

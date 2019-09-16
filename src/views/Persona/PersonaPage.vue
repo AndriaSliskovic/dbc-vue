@@ -153,6 +153,7 @@ export default {
     },
     editClickHandler(key) {
       this.personaId=key
+      console.log(`klik key ${this.personaId}`)
       this.$router.push({ name: 'persona', params: { personaId: this.personaId,companyId:this.selectedCompany.CompanyGuid } })
     }
   },

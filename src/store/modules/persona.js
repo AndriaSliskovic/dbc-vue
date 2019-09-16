@@ -44,6 +44,7 @@ export const mutations = {
     state.personas=payload
   },
   GET_PERSONA_OBJECT(state,payload){
+    //console.log(`mutator setuje ${payload}`)
     state.personaObject=payload
   },
   GET_CUSTOM_CUSTOM_FIELDS(state,payload){
@@ -69,6 +70,7 @@ export const actions = {
         commit('LOAD_PORTALS',companiesHardCoded)
     }, 
     getPersonasByCompanyGuid({ commit}, companyGuidString) {
+        console.log(`action za kompanijine persone ${companyGuidString}`)
         personaService.getPersonas(companyGuidString).then((response) => { 
           commit('GET_PERSONAS_BY_COMPANY', response)     
         });
@@ -90,6 +92,11 @@ export const actions = {
       console.log(`action CustomFields ${personaId}`)
       return personaService.getCustomFieldsByPersonaID(personaId)
               .then(response=>commit('GET_CUSTOM_CUSTOM_FIELDS',response.data))
+    },
+    editPersonaData({commit},editedObject){
+      console.log(`action edit persone ${editedObject.personaId}`)
+      return personaService.editPersonaData(editedObject)
+
     }
 }
 

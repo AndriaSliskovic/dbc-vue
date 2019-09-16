@@ -2,6 +2,7 @@ import client from './service-clients/base-client'
 
 if (apiGatewayUrl == null) {
   var apiGatewayUrl = 'http://10.99.0.100:5200/persona/persona'
+  //var apiGatewayUrl = 'http://localhost:5200/persona/persona'
 }
 
 const apiGatewayClient = client(apiGatewayUrl)
@@ -17,12 +18,20 @@ export default {
   updateFeatures(personaGuid) {
     return apiGatewayClient.put('/', personaGuid)
   },
-  getCustomFieldsByPersonaID(personaId){
+  async getCustomFieldsByPersonaID(personaId){
     console.log(`servis CustomFields objekta ${personaId}`)
-    return apiGatewayClient.get(`/${personaId}/fields`)
+    return await apiGatewayClient.get(`/${personaId}/fields`)
   },
   getSelectedPersonaByPersonaId(personaId){
-    console.log(`servis pesona objekta ${personaId}`)
+    console.log(`servis persona objekta ${personaId}`)
     return apiGatewayClient.get(`/${personaId}` )
+  },
+  editPersonaData(object){
+    console.log(`servis edit persona objekta ${object.personaId}`)
+    const data={
+      companyId:object.companyId,
+      name:object.name
+    }    
+    return apiGatewayClient.put(`/${object.personaId}`,data)
   }
 }
