@@ -1,87 +1,56 @@
 <template>
-    <!-- <v-dialog v-model="dialog" max-width="290"> -->
-      <v-card>
-        <v-card-title>
-          <span class="headline"> {{cField.name}}</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field label="Legal first name*" required></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field label="Legal middle name" hint="example of helper text only on focus"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  label="Legal last name*"
-                  hint="example of persistent helper text"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field label="Email*" required></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field label="Password*" type="password" required></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-select
-                  :items="['0-17', '18-29', '30-54', '54+']"
-                  label="Age*"
-                  required
-                ></v-select>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-autocomplete
-                  :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                  label="Interests"
-                  multiple
-                ></v-autocomplete>
-              </v-col>
-            </v-row>
-          </v-container>
-          <small>*indicates required field</small>
-        </v-card-text>
-        <v-card-actions>
-          <div class="flex-grow-1"></div>
+  <v-card>
+  <v-form v-model="valid">
+    <v-container>
+      <v-col cols="12" md="4">
+        <v-text-field v-model="cField.name" label="Custom field name" required></v-text-field>
+      </v-col>
+            <v-col cols="12" md="4">
+        <v-text-field v-model="cField.rank" label="Custom field rank" required></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field v-model="cField.category" label="Custom field category" required></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field v-model="cField.type" label="Custom field type" required></v-text-field>
+      </v-col>
 
-            <v-btn color="green darken-1" text @click="onCloseDialogHandler">Cancel</v-btn>
-
-            <v-btn color="green darken-1" text @click="onSubmitHandler">Submit</v-btn>
-          </v-card-actions>
-        </v-card>
-      <!-- </v-dialog> -->
+      <v-btn color="green darken-1" text @click="onCloseDialogHandler">Cancel</v-btn>
+      <v-btn color="green darken-1" text @click="onSubmitHandler">Submit</v-btn>
+    </v-container>
+  </v-form>
+  </v-card>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex'
+import store from '@/store/store'
 export default {
-    data(){
-        return{
-          dialog:null
-          } 
-    },
-    props:[
-        'cField',
-        'text'
-    ],
-    mounted(){
-      console.log(this.cField)
-    },
-    methods:{
-      onCloseDialogHandler:function(){
-        console.log("cancel button")
-        this.dialog=false
-        this.$emit('closeDialog',this.dialog)
-      },
-      onSubmitHandler:function(){
-        //Logika za submitovanje forme
-        console.log("submitovanje forme")
-        this.dialog=false
-        this.$emit('closeDialog',this.dialog)
-      }
+  data() {
+    return {
+      dialog: null,
+      valid: false
     }
-    
+  },
+  props: ['cField', 'text'],
+  mounted() {},
+  beforeMount() {
+
+  },
+  methods: {
+    onCloseDialogHandler: function() {
+      console.log('cancel button')
+      this.dialog = false
+      this.$emit('closeDialog', this.dialog)
+    },
+    onSubmitHandler: function() {
+      //Logika za submitovanje forme
+      console.log('submitovanje forme')
+      this.dialog = false
+      this.$emit('closeDialog', this.dialog)
+    }
+  },
+  computed: {
+    ...mapState({ persona: 'persona' })
+  }
 }
 </script>

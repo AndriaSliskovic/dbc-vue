@@ -53,21 +53,41 @@
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
             <template v-slot:item.edit="{item}">
-              <v-icon
-                large
-                color="blue darken-2"
-                @click="editCustomFieldHandler(item.id)"
-                @click.stop="dialog = true"
-              >mdi-table-edit</v-icon>
+              <v-dialog v-model="dialogDetail" persistent max-width="600px">
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      large
+                      color="blue darken-2"
+                      @click="editCustomFieldHandler(item.id)"
+                      v-on="on"
+                    >mdi-table-edit</v-icon>
+                  </template>
+                  <PersonaDetailDialog
+                    @closeDialog="onCloseDialog"
+                    :cField="selectedCustomField"
+                    text="lalalaaaa">
+                  </PersonaDetailDialog>
+              </v-dialog>
             </template>
-            <template v-slot:item.activator="{item}">
-              <v-btn 
-              color="error" 
-              dark 
-              @click.stop="dialogConfirmation = true">
-              Delete
-              </v-btn>
-            </template>
+            <!-- DIALOG BEZ AKTIVATORA -->
+            <!-- <template v-slot:item.activator="{item}">
+              <v-btn color="error" dark @click.stop="dialogConfirmation = true">Delete</v-btn>
+            </template>-->
+            <!-- DIALOG SA AKTIVATOROM -->
+          <!-- selektuje stavku -->
+          <template v-slot:item.delete="{item}">
+            <!-- Definise dialog -->
+            <v-dialog v-model="dialogConfirmation" persistent >
+              <!-- Aktivator dialoga -->
+              <template v-slot:activator="{ on }">
+                <!-- Definise dogadjaj za aktivator -->
+                <v-btn color="red lighten-2" dark v-on="on">Delete</v-btn>
+                <!-- <v-btn color="error" dark @click.stop="dialogConfirmation = true">Delete</v-btn> -->
+              </template>
+              <!-- Komponenta koja ce se prikazati kada se aktivira -->
+              <PersonaConfirmationDialog @closeDialog="onCloseConfirmationDialog"></PersonaConfirmationDialog>>
+            </v-dialog>
+          </template>
           </v-data-table>
         </v-card>
         <!-- /Tabela -->
@@ -80,17 +100,6 @@
           <v-btn @click="saveHandler" color="primary">Save</v-btn>
         </v-col>
       </v-row>
-      <!-- DIALOG za editovanje CustomFieldsa-->
-      <v-dialog v-model="dialog" persistent max-width="600px">
-      <PersonaDetailDialog @closeDialog='onCloseDialog' :cField=selectedCustomField text="lalalaaaa"></PersonaDetailDialog>
-      </v-dialog>
-            <v-dialog v-model="dialogConfirmation" persistent max-width="600px">
-      <PersonaConfirmationDialog @closeDialog='onCloseConfirmationDialog' ></PersonaConfirmationDialog>
-      </v-dialog>
-      <!-- /DIALOG -->
-      <!-- DIALOG za potvrdu -->
-
-      <!-- /DIALOG za potvrdu -->
     </v-container>
   </v-app>
 </template>
@@ -104,7 +113,7 @@ import PersonaDetailDialog from './PersonaDetailDialog'
 import PersonaConfirmationDialog from './PersonaConfirmationDialog'
 
 export default {
-    components:{
+  components: {
     PersonaDetailDialog,
     PersonaConfirmationDialog
   },
@@ -122,11 +131,11 @@ export default {
         { text: 'Name', value: 'name' },
         { text: 'Category', value: 'category' },
         { text: 'Type', value: 'type' },
-        { text: 'Activator', value: 'activator' }
+        { text: 'Delete', value: 'delete' }
       ],
-      dialog: false,
+      dialogDetail: false,
       dialogConfirmation: false,
-      selectedCustomField:null
+      selectedCustomField: null
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
@@ -172,19 +181,18 @@ export default {
     },
     editCustomFieldHandler(key) {
       console.log(`edit Custom Field ${key}`)
-      const cField=this.customFields.filter(function(el){
-        return el.id===key
+      const cField = this.customFields.filter(function(el) {
+        return el.id === key
       })
-      this.selectedCustomField=cField[0]
+      this.selectedCustomField = cField[0]
       //Pozivanje servisa za selektovanu personu
-
     },
-    onCloseDialog(value){
-      this.dialog=value
+    onCloseDialog(value) {
+      this.dialogDetail = value
     },
-    onCloseConfirmationDialog(value){
-      this.dialogConfirmation=value
-    },
+    onCloseConfirmationDialog(value) {
+      this.dialogConfirmation = value
+    }
   },
   computed: {
     ...mapState({ persona: 'persona' }),
