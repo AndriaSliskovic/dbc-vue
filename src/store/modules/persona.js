@@ -122,7 +122,9 @@ export const actions = {
     editPersonaData({commit},editedObject){
       console.log(`action edit persone ${editedObject.personaId}`)
       return personaService.editPersonaData(editedObject)
-
+    },
+    getSelectedCustomField({commit},cFieldId){
+      console.log(`action customFielda ${cFieldId}`)
     }
 }
 

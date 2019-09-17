@@ -11,17 +11,17 @@
           </v-col>
           <v-col cols="4" md="4">
             <v-select
-              v-model="editedCompany"
+              v-model="companyId"
               :items="this.persona.companies.SiteCustomersList"
-              return-object
               item-text="CompanyName"
-              item-value="companyId"
+              item-value="CompanyGuid"
               label="Select Company"
               outlined
+              :value="companyId"
             ></v-select>
           </v-col>
           <v-col cols="4" md="4">
-            <v-btn color="primary" dark @click="editPersonaHandler()">Edit changes</v-btn>
+            <v-btn color="primary" @click="editPersonaHandler()">Edit changes</v-btn>
           </v-col>
         </v-row>
       </v-card>
@@ -49,25 +49,48 @@
               persistent-hint
               v-model="selectedStatus"
               @change="setSelectStatus"
-            ></v-select> -->
+            ></v-select>-->
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
             <template v-slot:item.edit="{item}">
-              <v-icon large color="blue darken-2" @click="editCustomFieldHandler(item.id)">mdi-table-edit</v-icon>
+              <v-icon
+                large
+                color="blue darken-2"
+                @click="editCustomFieldHandler(item.id)"
+                @click.stop="dialog = true"
+              >mdi-table-edit</v-icon>
+            </template>
+            <template v-slot:item.activator="{item}">
+              <v-btn 
+              color="error" 
+              dark 
+              @click.stop="dialogConfirmation = true">
+              Delete
+              </v-btn>
             </template>
           </v-data-table>
         </v-card>
         <!-- /Tabela -->
       </v-col>
       <v-row>
-      <v-col>
-        <v-btn @click="()=>this.$router.go(-1) ">Go back</v-btn>
-      </v-col>
-      <v-col>
-        <v-btn @click="saveHandler" color="primary">Save</v-btn>
-      </v-col>
+        <v-col>
+          <v-btn @click="()=>this.$router.go(-1) ">Go back</v-btn>
+        </v-col>
+        <v-col>
+          <v-btn @click="saveHandler" color="primary">Save</v-btn>
+        </v-col>
       </v-row>
+      <!-- DIALOG za editovanje CustomFieldsa-->
+      <v-dialog v-model="dialog" persistent max-width="600px">
+      <PersonaDetailDialog @closeDialog='onCloseDialog' :cField=selectedCustomField text="lalalaaaa"></PersonaDetailDialog>
+      </v-dialog>
+            <v-dialog v-model="dialogConfirmation" persistent max-width="600px">
+      <PersonaConfirmationDialog @closeDialog='onCloseConfirmationDialog' ></PersonaConfirmationDialog>
+      </v-dialog>
+      <!-- /DIALOG -->
+      <!-- DIALOG za potvrdu -->
 
+      <!-- /DIALOG za potvrdu -->
     </v-container>
   </v-app>
 </template>
@@ -77,26 +100,33 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
+import PersonaDetailDialog from './PersonaDetailDialog'
+import PersonaConfirmationDialog from './PersonaConfirmationDialog'
+
 export default {
+    components:{
+    PersonaDetailDialog,
+    PersonaConfirmationDialog
+  },
   data() {
     return {
       personaId: this.$route.params.personaId,
       companyId: this.$route.params.companyId,
+      selectedCompany: null,
       companies: [],
-      editedCompany:null,
+      editedCompany: null,
       search: '',
       headers: [
-        {text: 'Edit',
-         value: 'edit'},
-        {text: 'Rank',
-         value: 'rank'},
-        {text: 'Name',
-         value: 'name'},
-        {text: 'Category',
-         value: 'category'},
-        {text: 'Type',
-         value: 'type'},
-      ]
+        { text: 'Edit', value: 'edit' },
+        { text: 'Rank', value: 'rank' },
+        { text: 'Name', value: 'name' },
+        { text: 'Category', value: 'category' },
+        { text: 'Type', value: 'type' },
+        { text: 'Activator', value: 'activator' }
+      ],
+      dialog: false,
+      dialogConfirmation: false,
+      selectedCustomField:null
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
@@ -117,32 +147,44 @@ export default {
     goBack: function() {
       return this.$router.go(-1)
     },
-    editedPersona:function(){
+    editedPersona: function() {
       if (!this.editedCompany) {
-      return{
-        personaId:this.personaId,
-        name:this.persona.personaObject.name,
-        companyId:this.companyId
-      }
-      }else{
-      return{
-        personaId:this.personaId,
-        name:this.personaName,
-        companyId:this.editedCompany.CompanyGuid
-      }
+        return {
+          personaId: this.personaId,
+          name: this.persona.personaObject.name,
+          companyId: this.companyId
+        }
+      } else {
+        return {
+          personaId: this.personaId,
+          name: this.personaName,
+          companyId: this.editedCompany.CompanyGuid
+        }
       }
     },
-    editPersonaHandler:function(){
-      const editedPersona=this.editedPersona()
+    editPersonaHandler: function() {
+      const editedPersona = this.editedPersona()
       console.log(`imam edit ${editedPersona.personaId}`)
-      store.dispatch('persona/editPersonaData',editedPersona)
+      store.dispatch('persona/editPersonaData', editedPersona)
     },
-    saveHandler(){
+    saveHandler() {
       console.log(`klik na save `)
     },
-    editCustomFieldHandler(key){
+    editCustomFieldHandler(key) {
       console.log(`edit Custom Field ${key}`)
-    }
+      const cField=this.customFields.filter(function(el){
+        return el.id===key
+      })
+      this.selectedCustomField=cField[0]
+      //Pozivanje servisa za selektovanu personu
+
+    },
+    onCloseDialog(value){
+      this.dialog=value
+    },
+    onCloseConfirmationDialog(value){
+      this.dialogConfirmation=value
+    },
   },
   computed: {
     ...mapState({ persona: 'persona' }),
@@ -161,22 +203,21 @@ export default {
         return this.persona.customFields
       }
     },
-    items:function(){
+    items: function() {
       if (this.customFields) {
-        return this.customFields.map(cf=>{
-          return{
-            id:cf.id,
-            rank:cf.rank,
-            name:cf.name,
-            category:cf.category,
-            type:cf.type
+        return this.customFields.map(cf => {
+          return {
+            id: cf.id,
+            rank: cf.rank,
+            name: cf.name,
+            category: cf.category,
+            type: cf.type
           }
         })
       }
       return []
     }
-    }
-  
+  }
 }
 </script>
 <style lang="less" scoped>

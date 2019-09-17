@@ -85,6 +85,7 @@ import router from 'vue-router'
 
 const defaultStatus = 'All'
 export default {
+
   data() {
     return {
       companies: null,

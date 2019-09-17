@@ -1,9 +1,8 @@
 <template>
-    <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <!-- <v-dialog v-model="dialog" max-width="290"> -->
       <v-card>
         <v-card-title>
-          <span class="headline">User Profile</span>
+          <span class="headline"> {{cField.name}}</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -48,17 +47,41 @@
         </v-card-text>
         <v-card-actions>
           <div class="flex-grow-1"></div>
-          <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-          <v-btn color="blue darken-1" text @click="dialog = false">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-row>
+
+            <v-btn color="green darken-1" text @click="onCloseDialogHandler">Cancel</v-btn>
+
+            <v-btn color="green darken-1" text @click="onSubmitHandler">Submit</v-btn>
+          </v-card-actions>
+        </v-card>
+      <!-- </v-dialog> -->
 </template>
 <script>
 export default {
     data(){
-        return{dialog:false} 
+        return{
+          dialog:null
+          } 
+    },
+    props:[
+        'cField',
+        'text'
+    ],
+    mounted(){
+      console.log(this.cField)
+    },
+    methods:{
+      onCloseDialogHandler:function(){
+        console.log("cancel button")
+        this.dialog=false
+        this.$emit('closeDialog',this.dialog)
+      },
+      onSubmitHandler:function(){
+        //Logika za submitovanje forme
+        console.log("submitovanje forme")
+        this.dialog=false
+        this.$emit('closeDialog',this.dialog)
+      }
     }
+    
 }
 </script>
