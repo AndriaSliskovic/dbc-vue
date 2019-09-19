@@ -44,6 +44,9 @@ export const mutations = {
   GET_PERSONAS_BY_COMPANY(state,payload){
     state.personas = payload
   },
+  SET_PERSONAS_STATUS(state,payload){
+    state.personaObject=payload
+  },
   GET_PERSONA_OBJECT(state,payload){
     //console.log('mutator persona object',payload)
     state.personaObject=payload
@@ -98,6 +101,54 @@ export const actions = {
 
     },
 
+    setPersonasStatusOnServer({commit,dispatch},element){
+      console.log(element.stringId,element.active)
+      const status=element.active
+      const personaUrlString=element.stringId
+      //Aktivacija statusa
+      if (status) {
+        console.log("aktivira",personaUrlString,status)
+        personaService.activateStatusById(personaUrlString)
+        .then(
+          ()=>{
+            const notification={
+              type:'success',
+              message:`Data successfully changed !`
+            }
+            //Dobijanje poruke
+            dispatch('notification/add',notification,{root:true})
+            //Setovanje statea
+            dispatch('setPersonasStatus', element)
+          }).catch(error=>{
+            const notification={
+              type:'error',
+              message:` Can't activate this persona - Server error !`
+            }
+            dispatch('notification/add',notification,{root:true})
+            throw error
+          })
+      }else{
+        console.log('deaktivira',personaUrlString)
+        personaService.deactivateStatusById(personaUrlString)
+        .then(
+          ()=>{
+            const notification={
+              type:'success',
+              message:`Data successfully changed !`
+            }
+            dispatch('notification/add',notification,{root:true})
+            //Setuje status
+            dispatch('setPersonasStatus', element)
+          }).catch(error=>{
+            const notification={
+              type:'error',
+              message:`Can't deactivate Persona. It is in use by CustomFields, PersonaInstances !`
+            }
+            dispatch('notification/add',notification,{root:true})
+            throw error
+          })
+      }
+    },
     setPersonasStatus({commit},element){
       console.log('action set status',element)
       commit('SET_PERSONAS_STATUS',element)
@@ -134,11 +185,12 @@ export const actions = {
     },
     editPersonaData({commit},editedObject){
       console.log(`action edit persone ${editedObject.personaId}`)
-      return personaService.editPersonaData(editedObject)
+      return personaService.editPersonaData(editedObject.personaId)
     },
     getSelectedCustomField({commit},cFieldId){
       console.log(`action customFielda ${cFieldId}`)
-    }
+    },
+
 }
 
 

@@ -184,11 +184,10 @@ export default {
         return el.id === key
       })
       this.selectedCustomField = cField[0]
-      console.log(this.selectedCustomField)
+      //console.log(this.selectedCustomField)
       //Pozivanje servisa za selektovanu personu
     },
     onCloseDialog(value) {
-      this.selectedCustomField=null
       this.dialogDetail = value
     },
     onCloseConfirmationDialog(value) {

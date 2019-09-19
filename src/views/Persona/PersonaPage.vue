@@ -121,6 +121,7 @@ export default {
           color:'error'
         }],
         selectedStatus:null,
+        selectedPersonaStatus: null,
         personaId:null 
     }
   },

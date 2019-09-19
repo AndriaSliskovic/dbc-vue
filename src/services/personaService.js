@@ -34,5 +34,20 @@ export default {
       name:object.name
     }    
     return apiGatewayClient.put(`/${object.personaId}`,data)
-  }
+  },
+  setPersonaStaus(element){
+    console.log(`servis edit statusa persona objekta ${element}`)
+    const data={
+      companyId:element.companyId,
+      name:element.name
+    } 
+    return apiGatewayClient.put(`/${element.id}`,data)
+
+  },
+  deactivateStatusById(personaUrlString){
+    return apiGatewayClient.patch(`/deactivate?${personaUrlString}`)
+},
+activateStatusById(personaUrlString){
+    return apiGatewayClient.patch(`/activate?${personaUrlString}`)
+},
 }

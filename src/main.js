@@ -8,11 +8,15 @@ import store from './store/store'
 import vuetify from '@/plugins/vuetify'
 // import nprogerss from 'nprogress'
 import 'nprogress/nprogress.css'
+import Vuelidate from 'vuelidate'
 
 //Globalno ucitani osnovni Layer posto on nije komponenta
 Vue.component('BaseLayer', BaseLayer)
 
 Vue.config.productionTip = false
+
+//Nacin ubacivanja 3rd party packagea
+Vue.use(Vuelidate)
 
 //Babelova scripta za automatsko globalno ucitavanje Base komponenti
 const requireComponent = require.context(

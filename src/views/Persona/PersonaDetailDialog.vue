@@ -5,11 +5,13 @@
       <v-col cols="12" md="6">
         <v-text-field 
         v-model="cField.name"
-
-      :counter="12"
-      label="Name"
+        :error-messages="nameErrors"
+        :counter="12"
+        label="Name"
+        @input="$v.cField.name.$touch()"
 
         ></v-text-field>
+        <!-- <div>{{$v}}</div> -->
       </v-col>
             <v-col cols="12" md="6">
         <v-text-field v-model="cField.rank" label="Rank" required></v-text-field>
@@ -37,17 +39,21 @@ import { required, maxLength, email } from 'vuelidate/lib/validators'
 
 export default {
   mixins: [validationMixin],
-  // validations: {
-  //     name: { required, maxLength: maxLength(10) },
-  //   },
+  validations: {
+      cField: {
+        name:{ required, maxLength: maxLength(10) }
+      }
+        
+      
+    },
   data() {
     return {
       dialog: null,
       valid: false,
-        name:"",
-       rank:"",
-       category:"",
-       type:"",
+      //   name:"",
+      //  rank:"",
+      //  category:"",
+      //  type:"",
 
       // rank:this.cField.rank,
       // category:this.cField.category,
@@ -109,6 +115,13 @@ export default {
   },
   computed: {
     ...mapState({ persona: 'persona' }),
+    nameErrors () {
+        const errors = []
+        if (!this.$v.cField.name.$dirty) return errors
+        !this.$v.cField.name.maxLength && errors.push('Name must be at most 10 characters long')
+        !this.$v.cField.name.required && errors.push('Name is required.')
+        return errors
+      },
   }
 }
 </script>
