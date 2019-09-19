@@ -1,6 +1,7 @@
 <template>
   <v-app id="inspire">
     <v-container>
+      <NotificationContainer />
       <h3>Personae page</h3>
       <v-col>
         <form>
@@ -85,7 +86,9 @@ import router from 'vue-router'
 
 const defaultStatus = 'All'
 export default {
-
+  components:{
+        NotificationContainer
+  },
   data() {
     return {
       companies: null,

@@ -1,9 +1,7 @@
 <template>
   <v-app id="inspire">
     <v-container>
-      <!-- <p>persona id : {{personaId}}</p>
-      <p>companyId : {{companyId}}</p>-->
-      <!-- PREKO CENTRALNOG STOREA -->
+      <NotificationContainer />
       <v-card>
         <v-row>
           <v-col cols="4" md="4">
@@ -65,7 +63,7 @@
                   <PersonaDetailDialog
                     @closeDialog="onCloseDialog"
                     :cField="selectedCustomField"
-                    text="lalalaaaa">
+                    >
                   </PersonaDetailDialog>
               </v-dialog>
             </template>
@@ -115,7 +113,8 @@ import PersonaConfirmationDialog from './PersonaConfirmationDialog'
 export default {
   components: {
     PersonaDetailDialog,
-    PersonaConfirmationDialog
+    PersonaConfirmationDialog,
+    NotificationContainer
   },
   data() {
     return {
@@ -185,9 +184,11 @@ export default {
         return el.id === key
       })
       this.selectedCustomField = cField[0]
+      console.log(this.selectedCustomField)
       //Pozivanje servisa za selektovanu personu
     },
     onCloseDialog(value) {
+      this.selectedCustomField=null
       this.dialogDetail = value
     },
     onCloseConfirmationDialog(value) {

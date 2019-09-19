@@ -81,22 +81,23 @@ export const actions = {
     loadHardCodedCompanies({commit}){
         commit('LOAD_PORTALS',companiesHardCoded)
     }, 
-    getPersonasByCompanyGuid({ commit}, companyGuidString) {
+    getPersonasByCompanyGuid({ commit,dispatch}, companyGuidString) {
         console.log(`action za kompanijine persone ${companyGuidString}`)
-        personaService.getPersonas(companyGuidString).then((response) => { 
-          commit('GET_PERSONAS_BY_COMPANY', response)     
-        });
-    },
-    getCompanyIdByPersonaId({commit},personaId){
+        return personaService.getPersonas(companyGuidString)
+        .then((response) => { 
+          commit('GET_PERSONAS_BY_COMPANY', response)          
+        })
+        .catch(error => {
+          const notification={
+            type:'error',
+            message:`Error loading personas by selected company, please contact administrator.`
+          }
+          //console.log(notification,error)
+          dispatch('notification/add',notification,{root:true})
+        })
 
-        personaService.getCompanyIdByPersonaId(personaId)
-        .then((response)=>
-          commit('COMPANY_GUID',response.data.companyId)       
-        )
-        .then(
-          commit('PERSONA_GUID',personaId) 
-        )
     },
+
     setPersonasStatus({commit},element){
       console.log('action set status',element)
       commit('SET_PERSONAS_STATUS',element)
@@ -105,19 +106,31 @@ export const actions = {
       console.log(personas)
       commit('SELECTED_PERSONAS_STATUS',personas)
     },
-    getCustomFieldsByPersonaID({commit},personaId){
-      return personaService.getCustomFieldsByPersonaID(personaId)
-              .then(response=>commit('GET_CUSTOM_CUSTOM_FIELDS',response.data))
-    },
-    getSelectedPersonaByPersonaId({commit},personaId){
+    getSelectedPersonaByPersonaId({commit,dispatch},personaId){
       console.log(`action persona objekta ${personaId}`)
       return personaService.getSelectedPersonaByPersonaId(personaId)
               .then(response=>commit('GET_PERSONA_OBJECT',response.data))
+              .catch(error=>{
+                const notification={
+                  type:'error',
+                  message:`Error loading persona object by selected persona, please contact administrator.`
+                }
+                console.log(notification,error)
+                dispatch('notification/add',notification,{root:true})
+              })
     },
-    getCustomFieldsByPersonaID({commit},personaId){
+    getCustomFieldsByPersonaID({commit,dispatch},personaId){
       console.log(`action CustomFields ${personaId}`)
       return personaService.getCustomFieldsByPersonaID(personaId)
               .then(response=>commit('GET_CUSTOM_CUSTOM_FIELDS',response.data))
+              .catch(error=>{
+                const notification={
+                  type:'error',
+                  message:`Error loading custom fields by selected persona, please contact administrator.`
+                }
+                console.log(notification,error)
+                dispatch('notification/add',notification,{root:true})
+              })
     },
     editPersonaData({commit},editedObject){
       console.log(`action edit persone ${editedObject.personaId}`)

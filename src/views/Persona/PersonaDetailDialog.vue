@@ -2,16 +2,22 @@
   <v-card>
   <v-form v-model="valid">
     <v-container>
-      <v-col cols="12" md="4">
-        <v-text-field v-model="cField.name" label="Custom field name" required></v-text-field>
+      <v-col cols="12" md="6">
+        <v-text-field 
+        v-model="cField.name"
+
+      :counter="12"
+      label="Name"
+
+        ></v-text-field>
       </v-col>
-            <v-col cols="12" md="4">
-        <v-text-field v-model="cField.rank" label="Custom field rank" required></v-text-field>
+            <v-col cols="12" md="6">
+        <v-text-field v-model="cField.rank" label="Rank" required></v-text-field>
       </v-col>
-      <v-col cols="12" md="4">
-        <v-text-field v-model="cField.category" label="Custom field category" required></v-text-field>
+      <v-col cols="12" md="6">
+        <v-text-field v-model="cField.category" label="Category" required></v-text-field>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-text-field v-model="cField.type" label="Custom field type" required></v-text-field>
       </v-col>
 
@@ -24,23 +30,75 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
+import { validationMixin } from 'vuelidate'
+import { required, maxLength, email } from 'vuelidate/lib/validators'
+
+
+
 export default {
+  mixins: [validationMixin],
+  // validations: {
+  //     name: { required, maxLength: maxLength(10) },
+  //   },
   data() {
     return {
       dialog: null,
-      valid: false
+      valid: false,
+        name:"",
+       rank:"",
+       category:"",
+       type:"",
+
+      // rank:this.cField.rank,
+      // category:this.cField.category,
+      // type:this.cField.type
     }
   },
-  props: ['cField', 'text'],
-  mounted() {},
-  beforeMount() {
+   props: 
+   ['cField'],
+   //{
+    // cField:{
+    //     name:{
+    //     type:String,
+    //     required:true,
+    //     maxLength: maxLength(12)
+    //     },
+    //     rank:{
+    //       type:Number,
+    //       required:true
+    //     },
+    //     category:{
+    //       type:String,
+    //       required:true
+    //     },
+
+    // }
+  //},
+  created(){
+    //this.name=this.cField.name
+  },
+    beforeMount() {
 
   },
+  mounted() {
+
+  },
+  beforeUpdate(){
+    //     this.name=this.cField.name,
+    // this.rank=this.cField.rank,
+    // this.category=this.cField.category,
+    // this.type=this.cField.type
+  },
+
   methods: {
     onCloseDialogHandler: function() {
       console.log('cancel button')
       this.dialog = false
       this.$emit('closeDialog', this.dialog)
+    //           this.name=""
+    // this.rank=""
+    // this.category=""
+    // this.type=""
     },
     onSubmitHandler: function() {
       //Logika za submitovanje forme
@@ -50,7 +108,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({ persona: 'persona' })
+    ...mapState({ persona: 'persona' }),
   }
 }
 </script>

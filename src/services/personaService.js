@@ -19,13 +19,13 @@ export default {
   updateFeatures(personaGuid) {
     return apiGatewayClient.put('/', personaGuid)
   },
-  async getCustomFieldsByPersonaID(personaId){
+  getCustomFieldsByPersonaID(personaId){
     console.log(`servis CustomFields objekta ${personaId}`)
-    return await apiGatewayClient.get(`/${personaId}/fields`)
+    return apiGatewayClient.get(`/${personaId}/fields`)
   },
-  async getSelectedPersonaByPersonaId(personaId){
+  getSelectedPersonaByPersonaId(personaId){
     console.log(`servis persona objekta ${personaId}`)
-    return await apiGatewayClient.get(`/${personaId}` )
+    return apiGatewayClient.get(`/${personaId}` )
   },
   editPersonaData(object){
     console.log(`servis edit persona objekta ${object.personaId}`)
