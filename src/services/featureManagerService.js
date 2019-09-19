@@ -1,6 +1,6 @@
 import client from "./service-clients/base-client"
 
-if (apiGatewayUrl == null) {
+if (!apiGatewayUrl) {
     var apiGatewayUrl = 'http://localhost:5200/'
   }
 

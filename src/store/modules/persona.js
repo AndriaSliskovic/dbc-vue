@@ -45,11 +45,16 @@ export const mutations = {
     state.personas = payload
   },
   SET_PERSONAS_STATUS(state,payload){
+    console.log(payload.active)
     state.personaObject=payload
   },
   GET_PERSONA_OBJECT(state,payload){
     //console.log('mutator persona object',payload)
     state.personaObject=payload
+  },
+  EDIT_PERSONA_DATA(state,editedObject){
+    state.personaObject.name=editedObject.name
+    state.personaObject.companyId=editedObject.companyId
   },
   CLEAR_PERSONA(state){
     state.personas=null
@@ -153,9 +158,9 @@ export const actions = {
       console.log('action set status',element)
       commit('SET_PERSONAS_STATUS',element)
     },
-    onSelectedPersonasStatus({commit},personas){
-      console.log(personas)
-      commit('SELECTED_PERSONAS_STATUS',personas)
+    onSelectedPersonasStatus({commit},persona){
+      console.log(persona)
+      commit('SELECTED_PERSONAS_STATUS',persona)
     },
     getSelectedPersonaByPersonaId({commit,dispatch},personaId){
       console.log(`action persona objekta ${personaId}`)
@@ -184,8 +189,18 @@ export const actions = {
               })
     },
     editPersonaData({commit},editedObject){
-      console.log(`action edit persone ${editedObject.personaId}`)
-      return personaService.editPersonaData(editedObject.personaId)
+      console.log(`action edit persone ${editedObject}`)
+      return personaService.editPersonaData(editedObject)
+              .then(response=>console.log(response))
+              //treba setovati u centralni store
+              .catch(error=>{
+                const notification={
+                  type:'error',
+                  message:`Error loading custom fields by selected persona, please contact administrator.`
+                }
+                console.log(notification,error)
+                dispatch('notification/add',notification,{root:true})
+              })
     },
     getSelectedCustomField({commit},cFieldId){
       console.log(`action customFielda ${cFieldId}`)

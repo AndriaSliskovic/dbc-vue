@@ -172,7 +172,7 @@ export default {
     },
     editPersonaHandler: function() {
       const editedPersona = this.editedPersona()
-      console.log(`imam edit ${editedPersona.personaId}`)
+      console.log(`imam edit ${editedPersona}`)
       store.dispatch('persona/editPersonaData', editedPersona)
     },
     saveHandler() {
@@ -180,10 +180,18 @@ export default {
     },
     editCustomFieldHandler(key) {
       console.log(`edit Custom Field ${key}`)
-      const cField = this.customFields.filter(function(el) {
+      const cField = this.customFields.find(function(el) {
         return el.id === key
       })
-      this.selectedCustomField = cField[0]
+      this.selectedCustomField = {
+        id : cField.id,
+        name:cField.name,
+        rank:cField.rank,
+        category:cField.category,
+        type:cField.type
+
+      }
+      //this.selectedCustomField = cField[0]
       //console.log(this.selectedCustomField)
       //Pozivanje servisa za selektovanu personu
     },
