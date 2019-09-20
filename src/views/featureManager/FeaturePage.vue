@@ -217,6 +217,7 @@ export default {
     submitted() {
       this.isSubmited = true
       store.dispatch('feature/selectedModules', this.featuresIds)
+      console.log(this.makeRequestObject())
       store.dispatch('feature/submitForm', this.makeRequestObject())
     },
     reloadPage() {

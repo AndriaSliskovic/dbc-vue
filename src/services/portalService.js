@@ -9,9 +9,8 @@ const client = axiosClient(appUrl)
 
 export default {
   getAllActivePortals() {
-    return client.post('Services/WarehouseService.svc/GetSiteCustomers', {
-      siteId: 57
-    })
+    return client.post('Services/WarehouseService.svc/GetSiteCustomers',
+    {siteId:57})
   },
   getPortalUserGroups(portalId) {
     let searchCriteria = {

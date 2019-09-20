@@ -41,6 +41,9 @@ export const mutations = {
 
     state.personaGuid=payload
   },
+  SET_COMPANY_ID(state,payload){
+    state.selectedCompanyGuid=payload
+  },
   GET_PERSONAS_BY_COMPANY(state,payload){
     state.personas = payload
   },
@@ -88,7 +91,10 @@ export const actions = {
   },
     loadHardCodedCompanies({commit}){
         commit('LOAD_PORTALS',companiesHardCoded)
-    }, 
+    },
+    setCompanyId({commit},companyId){
+      commit('SET_COMPANY_ID',companyId)
+    } ,
     getPersonasByCompanyGuid({ commit,dispatch}, companyGuidString) {
         console.log(`action za kompanijine persone ${companyGuidString}`)
         return personaService.getPersonas(companyGuidString)
@@ -147,7 +153,7 @@ export const actions = {
           }).catch(error=>{
             const notification={
               type:'error',
-              message:`Can't deactivate Persona. It is in use by CustomFields, PersonaInstances !`
+              message:`Can't deactivate Persona. It is in use by CustomFields or PersonaInstances !`
             }
             dispatch('notification/add',notification,{root:true})
             throw error

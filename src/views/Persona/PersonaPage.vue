@@ -4,14 +4,14 @@
       <NotificationContainer />
       <h3>Personae page</h3>
       <v-col>
+        <template v-if="!companyIsSelected">
         <form>
-          <v-flex xs12 sm6 d-flex data-app>
+          <v-flex xs12 sm6 d-flex data-app >
             <v-select
-              :items="persona.companies.SiteCustomersList"
+              :items="this.persona.companies.SiteCustomersList"
               name="company"
               item-text="CompanyName"
               item-value="CompanyGuid"
-              filled
 
               label="Company"
               hint="Select company"
@@ -21,8 +21,25 @@
             ></v-select>
           </v-flex>
         </form>
+        </template>
+        <template v-else>
+                    <v-flex xs12 sm6 d-flex data-app >
+            <v-select
+              :items="this.persona.companies.SiteCustomersList"
+              item-text="CompanyName"
+              item-value="CompanyGuid"
+          outlined
+              label="Company"
+              hint="Select company"
+              persistent-hint
+              v-model="companyId"
+              @change="setSelectedCompany"
+            ></v-select>
+          </v-flex>
+        </template>
+
       </v-col>
-      <v-col>
+      <v-col v-show="companyIsSelected">
         <v-card>
           <v-card-title>
             Personae
@@ -135,7 +152,10 @@ export default {
   },
   methods: {
     setSelectedCompany() {
+      //Omogucava prikazivanje persona sa svim statusima
       this.selectedStatus = defaultStatus
+      //Setovanje companyId u centralni store zbog goBack varijante
+      store.dispatch('persona/setCompanyId',this.companyId)
       //Dohvatanje persona
       store.dispatch(
         'persona/getPersonasByCompanyGuid',
@@ -225,6 +245,9 @@ export default {
       return {
         stringId: `ids=${this.selectedPersonaStatus}`
       }
+    },
+    companyIsSelected:function(){
+      return this.companyId || this.persona.selectedCompanyGuid?true:false
     }
   },
 
