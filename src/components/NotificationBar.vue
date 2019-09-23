@@ -1,5 +1,9 @@
  <template>
-    <v-alert :type="messageType" >
+    <v-alert 
+    :type="messageType"
+    height="60"
+    dense
+     >
     <p>{{ notification.message }}</p>
     </v-alert>
 </template>
@@ -14,10 +18,15 @@ export default {
     }
   },
   mounted() {
-    this.timeout = setTimeout(() => this.remove(this.notification), 5000)
+    this.timeout = setTimeout(() => this.remove(this.notification), 3000)
   },
   beforeDestroy() {
     clearTimeout(this.timeout)
+    //Hendlovanje redirekcije samo na error type
+    if (this.notification.type==="error") {
+          this.$router.go(0)
+    }
+
   },
 
   props: {
@@ -38,6 +47,7 @@ export default {
     
     <style scoped>
 .notification-bar {
-  margin: 1em 0 1em;
+
+  margin: 2em 0 1em;
 }
 </style>

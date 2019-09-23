@@ -109,6 +109,7 @@ export const actions = {
           //console.log(notification,error)
           dispatch('notification/add',notification,{root:true})
         })
+        
 
     },
 
@@ -164,6 +165,9 @@ export const actions = {
       console.log('action set status',element)
       commit('SET_PERSONAS_STATUS',element)
     },
+    addNewPersona(){
+      console.log(`action dodavanja persone`)
+    },
     onSelectedPersonasStatus({commit},persona){
       console.log(persona)
       commit('SELECTED_PERSONAS_STATUS',persona)
@@ -194,7 +198,7 @@ export const actions = {
                 dispatch('notification/add',notification,{root:true})
               })
     },
-    editPersonaData({commit},editedObject){
+    editPersonaData({commit,dispatch},editedObject){
       console.log(`action edit persone ${editedObject}`)
       return personaService.editPersonaData(editedObject)
               .then(response=>console.log(response))
@@ -211,6 +215,19 @@ export const actions = {
     getSelectedCustomField({commit},cFieldId){
       console.log(`action customFielda ${cFieldId}`)
     },
+    createNewPersona({commit,dispatch},dataObject){
+      //console.log(`kreirana persona ${dataObject}`,dataObject)
+      return personaService.createNewPersona(dataObject)
+      .then(response=>console.log(`kreirana persona ${dataObject}`,dataObject))
+      .catch(error=>{
+        const notification={
+          type:'error',
+          message:`Can not create new persona - server error, please contact administrator.`
+        }
+        console.log(notification,error)
+        dispatch('notification/add',notification,{root:true})
+      })
+    }
 
 }
 

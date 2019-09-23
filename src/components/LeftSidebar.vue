@@ -7,7 +7,7 @@
     </v-list-item-content>
     <v-divider />
     <v-list dense nav>
-      <v-list-item v-for="item in items" :key="item.id" link @click="clickHandler">
+      <v-list-item v-for="item in items" :key="item.id" link @click="()=>this.$router.push({name:item.route}) ">
         <v-list-item-icon>
           <v-icon>{{ item.icon }}</v-icon>
         </v-list-item-icon>
@@ -27,7 +27,7 @@ import { leviMenuSettinngs } from '../settings.js'
 export default {
   methods: {
     clickHandler(id) {
-      console.log(`imam klik na ${id}`)
+
     }
   },
   data() {

@@ -47,7 +47,13 @@ export default {
   deactivateStatusById(personaUrlString){
     return apiGatewayClient.patch(`/deactivate?${personaUrlString}`)
 },
-activateStatusById(personaUrlString){
+  activateStatusById(personaUrlString){
     return apiGatewayClient.patch(`/activate?${personaUrlString}`)
 },
+  createNewPersona(dataObject){
+    return apiGatewayClient.post('/',dataObject)
+  },
+  deleteSelectedPersona(personaId){
+    return apiGatewayClient.patch('/delete',personaId)
+  }
 }

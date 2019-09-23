@@ -113,6 +113,7 @@ export default {
     NotificationContainer
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
+    console.log("before enter Feature")
     store
       .dispatch('feature/loadPortals')
       .then(store.dispatch('feature/LoadAllModules'))

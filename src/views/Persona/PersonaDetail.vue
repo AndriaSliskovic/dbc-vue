@@ -19,7 +19,7 @@
             ></v-select>
           </v-col>
           <v-col cols="4" md="4">
-            <v-btn color="primary" @click="editPersonaHandler()">Edit changes</v-btn>
+            <v-btn color="primary" @click="editPersonaHandler()">Edit curent persona</v-btn>
           </v-col>
         </v-row>
       </v-card>
@@ -38,7 +38,7 @@
               hide-details
             ></v-text-field>
             <div class="flex-grow-1"></div>
-            <v-btn @click="createHandler" color="primary">Create new persona</v-btn>
+            <v-btn @click="createCustomFieldHandler" color="primary">Create new Custom field</v-btn>
             <!-- <v-select
               :items="personaStatus"
               name="status"
@@ -82,7 +82,13 @@
               <!-- Aktivator dialoga -->
               <template v-slot:activator="{ on }">
                 <!-- Definise dogadjaj za aktivator -->
-                <v-btn color="red lighten-2" dark v-on="on">Delete</v-btn>
+                                    <v-icon
+                      large
+                      color="error"
+                      @click="onDeleteCustomFieldHandler(item.id)"
+                      v-on="on"
+                    >mdi-delete-circle</v-icon>
+                <!-- <v-btn color="red lighten-2" dark v-on="on">Delete</v-btn> -->
                 <!-- <v-btn color="error" dark @click.stop="onDialogConfirmation = true">Delete</v-btn> -->
               </template>
               <!-- Komponenta koja ce se prikazati kada se aktivira -->
@@ -95,7 +101,8 @@
       </v-col>
       <v-row>
         <v-col>
-          <v-btn small @click="()=>this.$router.push({name:'personas',params:this.companyId}) ">Go back</v-btn>
+          <!-- <v-btn small @click="()=>this.$router.push({name:'personas',params:this.companyId}) ">Go back</v-btn> -->
+          <v-btn small @click="()=>this.$router.go(-1) ">Go back</v-btn>
         </v-col>
         <v-col>
           <v-btn small color="primary" @click="saveHandler" >Save</v-btn>
@@ -110,8 +117,8 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
-import PersonaDetailDialog from './PersonaDetailDialog'
-import PersonaConfirmationDialog from './PersonaConfirmationDialog'
+import PersonaDetailDialog from './Dialogs/PersonaDetailDialog'
+import PersonaConfirmationDialog from './Dialogs/PersonaConfirmationDialog'
 
 export default {
   components: {
@@ -181,15 +188,15 @@ export default {
     saveHandler() {
       console.log(`klik na save `)
     },
-    createHandler(){
-      console.log("create button")
+    createCustomFieldHandler(){
+      console.log("create Custom field button")
     },
     editCustomFieldHandler(key) {
       console.log(`edit Custom Field ${key}`)
       const cField = this.customFields.find(function(el) {
         return el.id === key
       })
-      console.log(cField)
+       console.log(cField)
       this.selectedCustomField = {
         id : cField.id,
         name:cField.name,
@@ -199,12 +206,13 @@ export default {
         required:cField.required,
         visible:cField.visible,
         editable:cField.editable
-
-
       }
-      //this.selectedCustomField = cField[0]
-      //console.log(this.selectedCustomField)
+      this.selectedCustomField = cField
+      console.log(this.selectedCustomField)
       //Pozivanje servisa za selektovanu personu
+    },
+    onDeleteCustomFieldHandler(){
+      console.log("delete custom field")
     },
     onCloseDialog(value) {
       this.onDialogDetail = value

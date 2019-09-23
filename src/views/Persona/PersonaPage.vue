@@ -1,29 +1,29 @@
 <template>
   <v-app id="inspire">
-    <v-container>
+    <v-container fluid>
       <NotificationContainer />
       <h3>Personae page</h3>
       <v-col>
-        <template v-if="!companyIsSelected">
-        <form>
-          <v-flex xs12 sm6 d-flex data-app >
-            <v-select
-              :items="this.persona.companies.SiteCustomersList"
-              name="company"
-              item-text="CompanyName"
-              item-value="CompanyGuid"
-
-              label="Company"
-              hint="Select company"
-              persistent-hint
-              v-model="companyId"
-              @change="setSelectedCompany"
-            ></v-select>
-          </v-flex>
-        </form>
+        <template>
+          <form>
+            <v-flex xs12 sm6 d-flex data-app>
+              <v-select
+                :items="this.persona.companies.SiteCustomersList"
+                name="company"
+                item-text="CompanyName"
+                item-value="CompanyGuid"
+                outlined
+                label="Company"
+                hint="Select company"
+                persistent-hint
+                v-model="companyId"
+                @change="setSelectedCompany"
+              ></v-select>
+            </v-flex>
+          </form>
         </template>
-        <template v-else>
-                    <v-flex xs12 sm6 d-flex data-app >
+        <!-- <template v-else>
+          <v-flex xs12 sm6 d-flex data-app >
             <v-select
               :items="this.persona.companies.SiteCustomersList"
               item-text="CompanyName"
@@ -36,14 +36,11 @@
               @change="setSelectedCompany"
             ></v-select>
           </v-flex>
-        </template>
-
+        </template>-->
       </v-col>
-      <v-col v-show="companyIsSelected">
+      <v-col v-show="companyIsSelected" cols="8">
         <v-card>
           <v-card-title>
-            Personae
-            <div class="flex-grow-1"></div>
             <v-text-field
               v-model="search"
               append-icon="search"
@@ -56,7 +53,6 @@
               :items="personaStatus"
               name="status"
               item-text="text"
-
               filled
               return-object
               label="Select status"
@@ -68,6 +64,14 @@
             <!-- All status -->
             <v-btn @click="setSelectedCompany">All status</v-btn>
             <!-- / All status -->
+            <!-- ADD NEW PERSONA -->
+            <v-dialog v-model="onDialogAddNewPersona" persistent max-width="600px">
+              <template v-slot:activator="{ on }">
+                <v-btn color="primary" @click="onAddNewPersona" v-on="on">Add new persona</v-btn>
+              </template>
+              <PersonaDialogAddNewPersona @closeDialog="onCloseDialog" :companyId="this.companyId"></PersonaDialogAddNewPersona>
+            </v-dialog>
+            <!-- / ADD NEW PERSONA -->
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
             <template v-slot:item.status="{ item }">
@@ -79,7 +83,26 @@
               >{{item.status}}</v-btn>
             </template>
             <template v-slot:item.edit="{item}">
-              <v-icon large color="blue darken-2" @click="editClickHandler(item.id)">mdi-table-edit</v-icon>
+              <v-icon large color="blue darken-2" @click="onEditPersona(item.id)">mdi-table-edit</v-icon>
+            </template>
+            <!-- DELETE ICON -->
+            <template v-slot:item.delete="{item}">
+              <v-dialog v-model="onDialogConfirmation" persistent >
+              <!-- Aktivator dialoga -->
+              <template v-slot:activator="{ on }">
+                <!-- Definise dogadjaj za aktivator -->
+                                    <v-icon
+                      large
+                      color="error"
+                      @click="onDeleteCustomFieldHandler(item.id)"
+                      v-on="on"
+                    >mdi-delete-circle</v-icon>
+                <!-- <v-btn color="red lighten-2" dark v-on="on">Delete</v-btn> -->
+                <!-- <v-btn color="error" dark @click.stop="onDialogConfirmation = true">Delete</v-btn> -->
+              </template>
+              <!-- Komponenta koja ce se prikazati kada se aktivira -->
+              <PersonaConfirmationDialog @closeDialog="onCloseConfirmationDialog"></PersonaConfirmationDialog>>
+            </v-dialog>
             </template>
           </v-data-table>
         </v-card>
@@ -88,10 +111,7 @@
     </v-container>
   </v-app>
 </template>
-      </v-col>
-    </v-container>
-  </v-app>
-</template>
+
 
 <script>
 import NProgress from 'nprogress'
@@ -100,17 +120,21 @@ import store from '@/store/store'
 import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
 import router from 'vue-router'
+import PersonaDialogAddNewPersona from './Dialogs/PersonaDialogAddNewPersona'
+import PersonaConfirmationDialog from './Dialogs/PersonaConfirmationDialog'
 
 const defaultStatus = 'All'
 export default {
-  components:{
-        NotificationContainer
+  components: {
+    NotificationContainer,
+    PersonaDialogAddNewPersona,
+    PersonaConfirmationDialog
   },
   data() {
     return {
       companies: null,
       selectedCompany: null,
-      companyId:null,
+      companyId: null,
       search: '',
       headers: [
         {
@@ -124,6 +148,10 @@ export default {
         {
           text: 'Status',
           value: 'status'
+        },
+        {
+          text: 'Delete',
+          value: 'delete'
         }
       ],
       personaStatus: [
@@ -133,21 +161,32 @@ export default {
           color: 'primary'
         },
         {
-          active:false,
-          text:"Inactive",
-          color:'error'
-        }],
-        selectedStatus:null,
-        selectedPersonaStatus: null,
-        personaId:null 
+          active: false,
+          text: 'Inactive',
+          color: 'error'
+        }
+      ],
+      selectedStatus: null,
+      selectedPersonaStatus: null,
+      onDialogAddNewPersona: false,
+      onDialogConfirmation: false
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
     store.dispatch('persona/loadHardCodedCompanies').then(response => {
-      next()
+      next(
+        //Dobijanje companyId pri povratku sa PersonaDetail
+        function(vm) {
+          if (!vm.companyId) {
+            vm.companyId = vm.$store.state.persona.selectedCompanyGuid
+          }
+        }
+      )
     })
+    console.log('beforeEnter')
   },
-    created() {
+  beforeRouteUpdate() {},
+  created() {
     this.companies = this.persona.companies
   },
   methods: {
@@ -155,12 +194,9 @@ export default {
       //Omogucava prikazivanje persona sa svim statusima
       this.selectedStatus = defaultStatus
       //Setovanje companyId u centralni store zbog goBack varijante
-      store.dispatch('persona/setCompanyId',this.companyId)
+      store.dispatch('persona/setCompanyId', this.companyId)
       //Dohvatanje persona
-      store.dispatch(
-        'persona/getPersonasByCompanyGuid',
-        this.companyIdString
-      )
+      store.dispatch('persona/getPersonasByCompanyGuid', this.companyIdString)
       //Setovanje Company guida u centralni store
       //store.dispatch('persona/setCompanyGuid', this.selectedCompany.CompanyGuid)
     },
@@ -192,10 +228,25 @@ export default {
         ? (element.status = this.personaStatus[0].text)
         : (element.status = this.personaStatus[1].text)
     },
-    editClickHandler(key) {
-      this.personaId=key
+    onEditPersona(key) {
+      this.personaId = key
       console.log(`klik key ${this.personaId}`)
-      this.$router.push({ name: 'persona', params: { personaId: this.personaId,companyId:this.companyId } })
+      this.$router.push({
+        name: 'persona',
+        params: { personaId: this.personaId, companyId: this.companyId }
+      })
+    },
+    onDeleteCustomFieldHandler(){
+      console.log("delete custom field")
+    },
+    onCloseConfirmationDialog(value) {
+      this.onDialogConfirmation = value
+    },
+    onAddNewPersona() {
+      console.log('Dodavanje persone')
+    },
+    onCloseDialog(value) {
+      this.onDialogAddNewPersona = value
     },
     mapPersonas() {
       return this.persona.personas.map(p => {
@@ -209,15 +260,15 @@ export default {
           companyId: p.companyId
         }
       })
-    },
+    }
   },
 
   computed: {
     ...mapState({ persona: 'persona' }),
     companyIdString: function() {
-      return  `companyId=${this.companyId}`
+      return `companyId=${this.companyId}`
     },
-        
+
     items: function() {
       if (this.persona.personas.length) {
         if (this.selectedStatus) {
@@ -246,11 +297,10 @@ export default {
         stringId: `ids=${this.selectedPersonaStatus}`
       }
     },
-    companyIsSelected:function(){
-      return this.companyId || this.persona.selectedCompanyGuid?true:false
+    companyIsSelected: function() {
+      return this.companyId || this.persona.selectedCompanyGuid ? true : false
     }
-  },
-
+  }
 }
 </script>
 <style scoped>

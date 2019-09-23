@@ -17,9 +17,9 @@
             <v-col>
               <v-text-field v-model="cField.rank" label="Rank" required></v-text-field>
             </v-col>
-            <v-col>
-              <v-text-field v-model="cField.category" label="Category" required></v-text-field>
-            </v-col>
+            <!-- <v-col>
+              <v-text-field v-model="cField.category.name" label="Category" required></v-text-field>
+            </v-col> -->
             <v-col>
               <v-text-field v-model="cField.type" label="Custom field type" required></v-text-field>
               <v-select
@@ -69,7 +69,7 @@ export default {
   mixins: [validationMixin],
   validations: {
     cField: {
-      name: { required, maxLength: maxLength(25) }
+      name: { required }
     }
   },
   data() {
@@ -82,7 +82,9 @@ export default {
   },
   props: ['cField'],
 
-  created() {},
+  created() {
+
+  },
   beforeMount() {},
   mounted() {},
   beforeUpdate() {},
