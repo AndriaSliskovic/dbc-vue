@@ -1,9 +1,9 @@
 <template>
   <v-app id="inspire">
     <v-container fluid>
-      <NotificationContainer />
-      <h3>Personae page</h3>
+      <h3 class="pl-4 pt-4 indigo--text" >Personae page</h3>
       <v-col>
+        <NotificationContainer />
         <template>
           <form>
             <v-flex xs12 sm6 d-flex data-app>
@@ -22,87 +22,87 @@
             </v-flex>
           </form>
         </template>
-        <!-- <template v-else>
-          <v-flex xs12 sm6 d-flex data-app >
-            <v-select
-              :items="this.persona.companies.SiteCustomersList"
-              item-text="CompanyName"
-              item-value="CompanyGuid"
-          outlined
-              label="Company"
-              hint="Select company"
-              persistent-hint
-              v-model="companyId"
-              @change="setSelectedCompany"
-            ></v-select>
-          </v-flex>
-        </template>-->
       </v-col>
-      <v-col v-show="companyIsSelected" cols="8">
-        <v-card>
-          <v-card-title>
-            <v-text-field
-              v-model="search"
-              append-icon="search"
-              label="Search"
-              single-line
-              hide-details
-            ></v-text-field>
-            <!-- Select personas status -->
-            <v-select
-              :items="personaStatus"
-              name="status"
-              item-text="text"
-              filled
-              return-object
-              label="Select status"
-              persistent-hint
-              v-model="selectedStatus"
-              @change="setSelectStatus"
-            ></v-select>
-            <!-- / Select personas status -->
-            <!-- All status -->
-            <v-btn @click="setSelectedCompany">All status</v-btn>
-            <!-- / All status -->
-            <!-- ADD NEW PERSONA -->
-            <v-dialog v-model="onDialogAddNewPersona" persistent max-width="600px">
-              <template v-slot:activator="{ on }">
-                <v-btn color="primary" @click="onAddNewPersona" v-on="on">Add new persona</v-btn>
-              </template>
-              <PersonaDialogAddNewPersona @closeDialog="onCloseDialog" :companyId="this.companyId"></PersonaDialogAddNewPersona>
-            </v-dialog>
+      <v-col v-show="companyIsSelected">
+        <v-card class="grey lighten-4">
+          <v-card-title >
+            <v-row align='baseline' justify="space-between">
+              <v-col class="pl-6">
+              <v-text-field
+                v-model="search"
+                append-icon="search"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+              </v-col>
+
+
+              <!-- Select personas status -->
+              <v-col>
+              <v-select
+                :items="personaStatus"
+                name="status"
+                item-text="text"
+                filled
+                return-object
+                label="Select status"
+                persistent-hint
+                v-model="selectedStatus"
+                @change="setSelectStatus"
+              ></v-select>
+              </v-col>
+
+              <!-- / Select personas status -->
+              <!-- ADD NEW PERSONA -->
+              <v-col>
+              <v-dialog v-model="onDialogAddNewPersona" persistent max-width="600px">
+                <template v-slot:activator="{ on }">
+                  <v-btn color="primary" @click="onAddNewPersona" v-on="on">Add new persona</v-btn>
+                </template>
+                <PersonaDialogAddNewPersona
+                  @closeDialog="onCloseDialog"
+                  :companyId="this.companyId"
+                ></PersonaDialogAddNewPersona>
+              </v-dialog>
+              </v-col>
+
+            </v-row>
+
             <!-- / ADD NEW PERSONA -->
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
             <template v-slot:item.status="{ item }">
-              <v-btn
-                small
-                :color="getStatusColor(item.active)"
-                dark
+              <v-chip
+                pill
                 @click="setPersonaStatus(item.id)"
-              >{{item.status}}</v-btn>
+                :text-color="getStatusColor(item.active)"
+              >
+                <v-avatar left :color="getStatusColor(item.active)">{{item.color}}</v-avatar>
+                {{item.status}}
+              </v-chip>
             </template>
             <template v-slot:item.edit="{item}">
               <v-icon large color="blue darken-2" @click="onEditPersona(item.id)">mdi-table-edit</v-icon>
             </template>
             <!-- DELETE ICON -->
             <template v-slot:item.delete="{item}">
-              <v-dialog v-model="onDialogConfirmation" persistent >
-              <!-- Aktivator dialoga -->
-              <template v-slot:activator="{ on }">
-                <!-- Definise dogadjaj za aktivator -->
-                                    <v-icon
-                      large
-                      color="error"
-                      @click="onDeleteCustomFieldHandler(item.id)"
-                      v-on="on"
-                    >mdi-delete-circle</v-icon>
-                <!-- <v-btn color="red lighten-2" dark v-on="on">Delete</v-btn> -->
-                <!-- <v-btn color="error" dark @click.stop="onDialogConfirmation = true">Delete</v-btn> -->
-              </template>
-              <!-- Komponenta koja ce se prikazati kada se aktivira -->
-              <PersonaConfirmationDialog @closeDialog="onCloseConfirmationDialog"></PersonaConfirmationDialog>>
-            </v-dialog>
+              <v-dialog v-model="onDialogConfirmation" persistent>
+                <!-- Aktivator dialoga -->
+                <template v-slot:activator="{ on }">
+                  <!-- Definise dogadjaj za aktivator -->
+                  <v-icon
+                    large
+                    color="error"
+                    @click="onDeleteCustomFieldHandler(item.id)"
+                    v-on="on"
+                  >mdi-delete-circle</v-icon>
+                  <!-- <v-btn color="red lighten-2" dark v-on="on">Delete</v-btn> -->
+                  <!-- <v-btn color="error" dark @click.stop="onDialogConfirmation = true">Delete</v-btn> -->
+                </template>
+                <!-- Komponenta koja ce se prikazati kada se aktivira -->
+                <PersonaConfirmationDialog @closeDialog="onCloseConfirmationDialog"></PersonaConfirmationDialog>>
+              </v-dialog>
             </template>
           </v-data-table>
         </v-card>
@@ -123,7 +123,14 @@ import router from 'vue-router'
 import PersonaDialogAddNewPersona from './Dialogs/PersonaDialogAddNewPersona'
 import PersonaConfirmationDialog from './Dialogs/PersonaConfirmationDialog'
 
-const defaultStatus = 'All'
+const defaultStatus = function() {
+  return {
+    active: null,
+    text: 'All',
+    color: 'blue',
+    letter: ''
+  }
+}
 export default {
   components: {
     NotificationContainer,
@@ -158,12 +165,20 @@ export default {
         {
           active: true,
           text: 'Active',
-          color: 'primary'
+          color: 'green',
+          letter: 'A'
         },
         {
           active: false,
           text: 'Inactive',
-          color: 'error'
+          color: 'error',
+          letter: 'I'
+        },
+        {
+          active: null,
+          text: 'All',
+          color: 'blue',
+          letter: ''
         }
       ],
       selectedStatus: null,
@@ -191,24 +206,26 @@ export default {
   },
   methods: {
     setSelectedCompany() {
+      console.log(defaultStatus)
       //Omogucava prikazivanje persona sa svim statusima
       this.selectedStatus = defaultStatus
       //Setovanje companyId u centralni store zbog goBack varijante
       store.dispatch('persona/setCompanyId', this.companyId)
       //Dohvatanje persona
       store.dispatch('persona/getPersonasByCompanyGuid', this.companyIdString)
-      //Setovanje Company guida u centralni store
-      //store.dispatch('persona/setCompanyGuid', this.selectedCompany.CompanyGuid)
     },
     setSelectStatus() {
-      const status = this.selectedStatus.active
-      console.log(this.selectedStatus, status)
-      const selectedItems = this.items.filter(i => {
-        return i.active === status
-      })
+      if (!this.selectedStatus.text === 'All') {
+        const status = this.selectedStatus.active
+        console.log(this.selectedStatus, status)
+        const selectedItems = this.items.filter(i => {
+          return i.active === status
+        })
+      }
     },
 
     getStatusColor(status) {
+      const perStatus = this.personaStatus
       if (status) {
         return this.personaStatus[0].color
       }
@@ -236,8 +253,8 @@ export default {
         params: { personaId: this.personaId, companyId: this.companyId }
       })
     },
-    onDeleteCustomFieldHandler(){
-      console.log("delete custom field")
+    onDeleteCustomFieldHandler() {
+      console.log('delete custom field')
     },
     onCloseConfirmationDialog(value) {
       this.onDialogConfirmation = value
@@ -249,6 +266,7 @@ export default {
       this.onDialogAddNewPersona = value
     },
     mapPersonas() {
+      console.log('mapira persone')
       return this.persona.personas.map(p => {
         return {
           id: p.id,
@@ -280,10 +298,11 @@ export default {
               return this.mapPersonas().filter(e => !e.active)
               break
             case 'All':
-              console.log('all')
+              console.log('all case')
               return this.setSelectedCompany()
               break
             default:
+              console.log('default case')
               return this.mapPersonas()
               break
           }

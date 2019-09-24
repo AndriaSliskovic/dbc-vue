@@ -3,8 +3,8 @@
     <v-container>
       <NotificationContainer />
       <v-card>
-        <v-row>
-          <v-col cols="4" md="4">
+        <v-row align='baseline' justify="space-between">
+          <v-col cols="4" md="4" class="pl-6">
             <v-text-field v-model="personaName" label="Persona name"></v-text-field>
           </v-col>
           <v-col cols="4" md="4">
@@ -28,7 +28,11 @@
         <!-- Tabela -->
         <v-card>
           <v-card-title>
+          <v-row align='baseline' justify="space-between">
+            <v-col class="pl-4">
             Custom Fields
+            </v-col>
+
             <div class="flex-grow-1"></div>
             <v-text-field
               v-model="search"
@@ -38,7 +42,10 @@
               hide-details
             ></v-text-field>
             <div class="flex-grow-1"></div>
-            <v-btn @click="createCustomFieldHandler" color="primary">Create new Custom field</v-btn>
+            <v-col class="pr-6">
+<v-btn @click="createCustomFieldHandler" color="primary">Create new Custom field</v-btn>
+            </v-col>
+            
             <!-- <v-select
               :items="personaStatus"
               name="status"
@@ -50,6 +57,7 @@
               v-model="selectedStatus"
               @change="setSelectStatus"
             ></v-select>-->
+                        </v-row>
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
             <template v-slot:item.edit="{item}">

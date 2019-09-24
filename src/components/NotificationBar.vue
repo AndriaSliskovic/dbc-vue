@@ -24,7 +24,7 @@ export default {
     clearTimeout(this.timeout)
     //Hendlovanje redirekcije samo na error type
     if (this.notification.type==="error") {
-          this.$router.go(0)
+          this.$router.go()
     }
 
   },

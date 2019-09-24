@@ -53,7 +53,9 @@
               </v-row>
             </v-col>
           </v-col>
-          <v-col cols="6"></v-col>
+          <v-col cols="6">
+            <PersonaDetailDialogRight></PersonaDetailDialogRight>
+          </v-col>
         </v-row>
       </v-form>
     </v-card>
@@ -64,8 +66,12 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, email } from 'vuelidate/lib/validators'
+import PersonaDetailDialogRight from './PersonaDetailDialogRight'
 
 export default {
+  components:{
+    PersonaDetailDialogRight
+  },
   mixins: [validationMixin],
   validations: {
     cField: {
