@@ -25,7 +25,6 @@
               <v-select
                 v-model="cField.type"
                 :items="fieldtype"
-                
                 menu-props="auto"
                 label="Select type"
                 hide-details
@@ -53,9 +52,11 @@
               </v-row>
             </v-col>
           </v-col>
+          <!-- RIGHT DIALOG -->
           <v-col cols="6">
-            <PersonaDetailDialogRight></PersonaDetailDialogRight>
+            <PersonaDetailDialogRight :selectedType='cField.type'></PersonaDetailDialogRight>
           </v-col>
+          <!-- / RIGHT DIALOG -->
         </v-row>
       </v-form>
     </v-card>
@@ -82,7 +83,7 @@ export default {
     return {
       dialog: null,
       valid: false,
-      fieldtype: ['DROPDOWN LIST', 'IMAGE BANK', 'TEXT AREA', 'TEXT BOX'],
+      fieldtype: ['DROPDOWNLIST', 'IMAGEBANK', 'TEXTAREA', 'TEXTBOX'],
       selectedType:null
     }
   },
@@ -114,10 +115,12 @@ export default {
       const errors = []
       if (!this.$v.cField.name.$dirty) return errors
       !this.$v.cField.name.maxLength &&
-        errors.push('Name must be at most 10 characters long')
+        errors.push('Name must be at most 25 characters long')
       !this.$v.cField.name.required && errors.push('Name is required.')
       return errors
-    }
+    },
+
+
   }
 }
 </script>

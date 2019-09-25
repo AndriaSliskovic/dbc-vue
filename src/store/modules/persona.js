@@ -27,7 +27,8 @@ export const state = {
   selectedCompanyGuid: null,
   personas: [],
   personaObject:null,
-  customFields:[]
+  customFields:[],
+  selectedCustomField:null
 }
 export const mutations = {
   LOAD_PORTALS(state, payload) {
@@ -51,6 +52,9 @@ export const mutations = {
     console.log(payload.active)
     state.personaObject=payload
   },
+  SET_SELECTED_CUSTOM_FIELD(state,payload){
+    state.selectedCustomField=payload
+  },
   GET_PERSONA_OBJECT(state,payload){
     //console.log('mutator persona object',payload)
     state.personaObject=payload
@@ -72,6 +76,12 @@ export const mutations = {
   },
   GET_CUSTOM_CUSTOM_FIELDS(state,payload){
     state.customFields=payload
+  },
+
+  ADD_PERSONA_DATASOURCE_ITEM(state,payload){
+     state.selectedCustomField.dataSource.push(payload)
+    console.log(`mutator za dataObject ${payload}`)
+    //state.selectedCustomField.dataSource={...state.selectedCustomField.dataSource,dataSource:{display:payload,id:5}}
   }
 }
 export const actions = {
@@ -165,8 +175,15 @@ export const actions = {
       console.log('action set status',element)
       commit('SET_PERSONAS_STATUS',element)
     },
-    addNewPersona(){
-      console.log(`action dodavanja persone`)
+    setSelectedCustomField({commit},selectedCustomField){
+      commit('SET_SELECTED_CUSTOM_FIELD',selectedCustomField)
+    },
+    addNewPersona({commit},item){
+      console.log(`action dodavanja persone `)
+    },
+    addPersonaDataSourceItem({commit},item){
+      console.log(`action dodavanja persona data sourca ${item}`)
+      commit('ADD_PERSONA_DATASOURCE_ITEM',item)
     },
     onSelectedPersonasStatus({commit},persona){
       console.log(persona)

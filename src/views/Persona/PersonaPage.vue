@@ -66,25 +66,28 @@
                 ></PersonaDialogAddNewPersona>
               </v-dialog>
               </v-col>
-
             </v-row>
-
             <!-- / ADD NEW PERSONA -->
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
+            <!-- STATUS -->
             <template v-slot:item.status="{ item }">
               <v-chip
                 pill
                 @click="setPersonaStatus(item.id)"
                 :text-color="getStatusColor(item.active)"
               >
-                <v-avatar left :color="getStatusColor(item.active)">{{item.color}}</v-avatar>
+                <v-avatar left :color="getStatusColor(item.active)">                 
+                  <v-icon v-if="item.active">check_circle</v-icon>
+                  <v-icon v-else="item.active">close</v-icon>
+                </v-avatar>
                 {{item.status}}
               </v-chip>
             </template>
             <template v-slot:item.edit="{item}">
               <v-icon large color="blue darken-2" @click="onEditPersona(item.id)">mdi-table-edit</v-icon>
             </template>
+            <!-- / STATUS -->
             <!-- DELETE ICON -->
             <template v-slot:item.delete="{item}">
               <v-dialog v-model="onDialogConfirmation" persistent>

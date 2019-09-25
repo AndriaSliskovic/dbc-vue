@@ -204,7 +204,6 @@ export default {
       const cField = this.customFields.find(function(el) {
         return el.id === key
       })
-       console.log(cField)
       this.selectedCustomField = {
         id : cField.id,
         name:cField.name,
@@ -213,8 +212,11 @@ export default {
         type:cField.type,
         required:cField.required,
         visible:cField.visible,
-        editable:cField.editable
+        editable:cField.editable,
+        dataSource:cField.dataSource,
+        maskId:cField.maskId
       }
+      store.dispatch('persona/setSelectedCustomField',this.selectedCustomField)
       this.selectedCustomField = cField
       console.log(this.selectedCustomField)
       //Pozivanje servisa za selektovanu personu
