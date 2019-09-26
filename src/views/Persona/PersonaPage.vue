@@ -269,7 +269,7 @@ export default {
       this.onDialogAddNewPersona = value
     },
     mapPersonas() {
-      console.log('mapira persone')
+
       return this.persona.personas.map(p => {
         return {
           id: p.id,
