@@ -12,7 +12,6 @@
             @input="$v.name.$touch()"
             @blur="$v.name.$touch()"
           ></v-text-field>
-          <p>{{companyId}}</p>
         </v-col>
       </v-form>
       <v-col>

@@ -78,7 +78,7 @@
                 :text-color="getStatusColor(item.active)"
               >
                 <v-avatar left :color="getStatusColor(item.active)">                 
-                  <v-icon v-if="item.active">check_circle</v-icon>
+                  <v-icon v-if="item.active">check</v-icon>
                   <v-icon v-else="item.active">close</v-icon>
                 </v-avatar>
                 {{item.status}}

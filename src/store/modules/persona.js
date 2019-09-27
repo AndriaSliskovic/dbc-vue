@@ -77,11 +77,22 @@ export const mutations = {
   GET_CUSTOM_CUSTOM_FIELDS(state,payload){
     state.customFields=payload
   },
-
   ADD_PERSONA_DATASOURCE_ITEM(state,payload){
+    if (!state.selectedCustomField.dataSource) {
+      console.log(`kreiraj niz`)
+      state.selectedCustomField.dataSource=[]
+    }
      state.selectedCustomField.dataSource.push(payload)
     console.log(`mutator za dataObject ${payload}`)
     //state.selectedCustomField.dataSource={...state.selectedCustomField.dataSource,dataSource:{display:payload,id:5}}
+  },
+  REMOVE_PERSONA_DATASOURCE_ITEM(state,payload){
+    //console.log(`mutator remove ${payload}`)
+    const filteredArray=state.selectedCustomField.dataSource.filter(
+      (el)=>el.id!=payload
+    )
+    //console.log(fileredArray)
+    state.selectedCustomField.dataSource=filteredArray
   }
 }
 export const actions = {
@@ -184,6 +195,10 @@ export const actions = {
     addPersonaDataSourceItem({commit},item){
       console.log(`action dodavanja persona data sourca ${item}`)
       commit('ADD_PERSONA_DATASOURCE_ITEM',item)
+    },
+    removePersonaDataSourceItem({commit},id){
+      console.log(`action brisanja persona data sourca ${id}`)
+      commit('REMOVE_PERSONA_DATASOURCE_ITEM',id)
     },
     onSelectedPersonasStatus({commit},persona){
       console.log(persona)

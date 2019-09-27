@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <v-row align="end" justify="center" class="grey lighten-5" style="height: 450px;">
+        <v-row align="end" justify="center" class="grey lighten-5" style="height: 550px;">
           Container {{selectedType}}
           <!-- <v-col v-if="selectedType==='IMAGE1'">
               <ImagebankDialog></ImagebankDialog>
