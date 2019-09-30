@@ -88,7 +88,7 @@
                     color="error"
                     @click="onDeleteCustomFieldHandler(item.id)"
                     v-on="on"
-                  >mdi-delete-circle</v-icon>
+                  >mdi-delete</v-icon>
                   <!-- <v-btn color="red lighten-2" dark v-on="on">Delete</v-btn> -->
                   <!-- <v-btn color="error" dark @click.stop="onDialogConfirmation = true">Delete</v-btn> -->
                 </template>

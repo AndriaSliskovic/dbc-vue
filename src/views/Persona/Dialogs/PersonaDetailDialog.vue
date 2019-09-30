@@ -2,8 +2,11 @@
   <v-container>
     <v-card>
       <NotificationContainer />
+
       <v-form v-model="valid">
+
         <v-row class="grey lighten-5">
+
           <v-col cols="6">
             <v-col>
               <v-text-field
@@ -16,8 +19,8 @@
               ></v-text-field>
               <!-- <div>{{$v}}</div> -->
             </v-col>
-            <v-col>
-              <v-text-field v-model="cField.rank" label="Rank" required></v-text-field>
+            <v-col cols="4">
+              <v-text-field v-model="cField.rank" label="Rank" required type="number"></v-text-field>
             </v-col>
             <v-col>
               <v-text-field v-model="cField.category" label="Category" required></v-text-field>
@@ -43,8 +46,9 @@
                   </v-radio-group>
                 </v-col>
                 <v-col>
-                  <v-checkbox v-model="cField.visible" class="mx-2" label="Visible"></v-checkbox>
-                  <v-checkbox v-model="cField.editable" class="mx-2" label="Editable"></v-checkbox>
+                  <p>STATUS :</p>
+                  <v-checkbox v-model="cField.visible" class="mb-n2" label="Visible" ></v-checkbox>
+                  <v-checkbox v-model="cField.editable" class="mt-n4" label="Editable"></v-checkbox>
                 </v-col>
               </v-row>
             </v-col>

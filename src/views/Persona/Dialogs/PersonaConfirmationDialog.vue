@@ -1,4 +1,5 @@
 <template>
+<v-dialog v-model="dialog" persistent>
   <v-card>
     <v-card-title class="headline">Delete custom field ?</v-card-title>
 
@@ -12,24 +13,20 @@
       <v-btn color="green darken-1" text @click="onConfirmHandler">Agree</v-btn>
     </v-card-actions>
   </v-card>
+  </v-dialog>
 </template>
 <script>
 export default {
   data() {
-    return { dialog: null }
+    return { dialog: false }
   },
 
   methods: {
     onCloseDialogHandler: function() {
-      console.log('cancel button')
       this.dialog = false
-      this.$emit('closeDialog', this.dialog)
     },
     onConfirmHandler: function() {
-      //Logika za submitovanje forme
-      console.log('Potvrdjivanje Akcije')
       this.dialog = false
-      this.$emit('closeDialog', this.dialog)
     }
   }
 }
