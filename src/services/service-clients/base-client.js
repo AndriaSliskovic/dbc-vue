@@ -10,7 +10,6 @@ function setupInterceptors(client) {
       
     client.interceptors.response.use(response => {
         // Called on response
-        console.log("interceptor")
         NProgress.done()
         return response
       })

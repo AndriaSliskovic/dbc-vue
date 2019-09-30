@@ -1,5 +1,5 @@
 <template>
-<v-dialog v-model="dialog" persistent>
+
   <v-card>
     <v-card-title class="headline">Delete custom field ?</v-card-title>
 
@@ -13,7 +13,6 @@
       <v-btn color="green darken-1" text @click="onConfirmHandler">Agree</v-btn>
     </v-card-actions>
   </v-card>
-  </v-dialog>
 </template>
 <script>
 export default {
@@ -23,10 +22,12 @@ export default {
 
   methods: {
     onCloseDialogHandler: function() {
-      this.dialog = false
+    //Zatvaranje dialoga
+      this.$emit('close', false)
     },
     onConfirmHandler: function() {
-      this.dialog = false
+    //Zatvaranje dialoga
+      this.$emit('close', false)
     }
   }
 }

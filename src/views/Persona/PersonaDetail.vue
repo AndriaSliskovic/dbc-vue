@@ -68,7 +68,7 @@
                     v-on="on"
                   >mdi-table-edit</v-icon>
                 </template>
-                <PersonaDetailDialog @closeDialog="onCloseDialog" :cField="selectedCustomField"></PersonaDetailDialog>
+                <PersonaDetailDialog @close="val=>onDialogDetail=val" :cField="selectedCustomField"></PersonaDetailDialog>
               </v-dialog>
             </template>
             <!-- DIALOG BEZ AKTIVATORA -->
@@ -79,7 +79,7 @@
             <!-- selektuje stavku -->
             <template v-slot:item.delete="{item}">
               <!-- Definise dialog -->
-              <v-dialog v-model="onDialogConfirmation" persistent>
+              <v-dialog v-model="onDialogConfirmation" persistent max-width="300px">
                 <!-- Aktivator dialoga -->
                 <template v-slot:activator="{ on }">
                   <!-- Definise dogadjaj za aktivator -->
@@ -93,7 +93,7 @@
                   <!-- <v-btn color="error" dark @click.stop="onDialogConfirmation = true">Delete</v-btn> -->
                 </template>
                 <!-- Komponenta koja ce se prikazati kada se aktivira -->
-                <PersonaConfirmationDialog @closeDialog="onCloseConfirmationDialog"></PersonaConfirmationDialog>>
+                <PersonaConfirmationDialog @close="val=>onDialogConfirmation=val"></PersonaConfirmationDialog>>
               </v-dialog>
             </template>
           </v-data-table>
@@ -143,8 +143,13 @@ export default {
         { text: 'Type', value: 'type' },
         { text: 'Delete', value: 'delete' }
       ],
+      // dialog:{
+      //   detail:false,
+      //   confirmation:false
+      // },
       onDialogDetail: false,
       onDialogConfirmation: false,
+      dialog:false,
       selectedCustomField: null
     }
   },
@@ -207,7 +212,8 @@ export default {
         visible: cField.visible,
         editable: cField.editable,
         dataSource: cField.dataSource,
-        maskId: cField.maskId
+        maskId: cField.maskId,
+        defaultValue:cField.defaultValue
       }
       store.dispatch('persona/setSelectedCustomField', this.selectedCustomField)
       //this.selectedCustomField = cField

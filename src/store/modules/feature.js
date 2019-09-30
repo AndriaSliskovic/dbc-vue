@@ -115,7 +115,6 @@ export const actions = {
     commit('CLEAN_MODULES')
   },
   submitForm({commit,dispatch},object){
-    console.log(`action submita , ${object.moduleIds}`)
     commit('SEND_DATA',object)
     return featureManagerService.updateFeatures(object)
     .then(

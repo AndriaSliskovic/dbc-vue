@@ -21,6 +21,7 @@
     <style scoped>
     .notification-container {
       position: fixed;
-      top: 0;
+      top: 75px;
+      right: 20px;
     }
     </style>

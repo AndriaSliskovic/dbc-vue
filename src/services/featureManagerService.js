@@ -1,10 +1,10 @@
 import client from "./service-clients/base-client"
 
-if (!apiGatewayUrl) {
-    var apiGatewayUrl = 'http://10.99.0.100:5200'
-  }
+if (typeof window.apiGatewayUrl === 'undefined') {
+    window.apiGatewayUrl = 'http://10.99.0.100'
+}
 
-const apiGatewayClient = client(apiGatewayUrl)
+const apiGatewayClient = client(window.apiGatewayUrl)
 
 export default {
     getSubscribedFeatures(subscribedEntityGuid) {
@@ -14,7 +14,6 @@ export default {
         return apiGatewayClient.get('/feature-manager/features')
     },
     updateFeatures(dataObject) {
-        console.log(`servis feature,${dataObject.subscribedEntityId},${dataObject.moduleIds}`)
         return apiGatewayClient.put('/feature-manager/features', dataObject)
     }
 }

@@ -108,9 +108,7 @@ export default {
 
   methods: {
     onCloseDialogHandler: function() {
-      console.log('cancel button')
-      this.dialog = false
-      this.$emit('closeDialog', this.dialog)
+      this.$emit('close', false)
 
     },
     onSubmitHandler: function({dispatch}) {
