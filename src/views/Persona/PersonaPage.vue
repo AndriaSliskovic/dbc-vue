@@ -2,6 +2,19 @@
   <v-app id="inspire">
     <v-container fluid>
       <h3 class="pl-4 pt-4 indigo--text">Personae page</h3>
+      <v-dialog v-model="dialogOne" max-width="400px">
+        <template v-slot:activator="{ on }">
+          <v-btn color="primary" dark v-on="on">Dialog sa aktivatorom</v-btn>
+        </template>
+        <v-card>
+          <v-card-title >Tekst dialoga sa aktivatorom !</v-card-title>
+          <v-card-actions>
+            <div class="flex-grow-1"></div>
+            <v-btn color="green darken-1" text @click="dialogOne = false">Disagree</v-btn>
+            <v-btn color="green darken-1" text @click="dialogOne = false">Agree</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-col>
         <NotificationContainer />
         <template>
@@ -85,21 +98,16 @@
             </template>
             <!-- / STATUS -->
             <!-- DELETE ICON -->
-            <template v-slot:item.delete="{item}">
-              <!-- Definise dialog -->
+            <template v-slot:item.delete="{item}" v-slot:activator="{ on }">
+              <!-- DIALOG ZA DELETE -->
               <v-dialog v-model="onDialogConfirmation" persistent max-width="400px">
-                <!-- Aktivator dialoga -->
                 <template v-slot:activator="{ on }">
-                  <!-- Definise dogadjaj za aktivator -->
-                  <v-icon
-                    large
-                    color="error"
-
-                    v-on="on"
-                  >mdi-delete</v-icon>
+                  <v-icon large color="error" v-on="on">mdi-delete</v-icon>
                 </template>
-                <!-- Komponenta koja ce se prikazati kada se aktivira -->
-                <PersonaConfirmationDialog @close="val=>onDialogConfirmation=val" @submit="onDeleteCustomFieldHandler(item.id)">
+                <PersonaConfirmationDialog
+                  @close="val=>onDialogConfirmation=val"
+                  @submit="onDeletePersonadHandler(item.id)"
+                >
                   <template v-slot:header>
                     <h3>Delete persona {{item.name}}</h3>
                   </template>
@@ -108,10 +116,25 @@
                   </template>
                 </PersonaConfirmationDialog>
               </v-dialog>
+              
+              <!-- BEZ AKTIVATORA -->
+              <v-btn color="primary" dark @click.stop="dialogTwo = true">Bez aktivatora</v-btn>
+              <v-dialog v-model="dialogTwo" max-width="290">
+                <v-card>
+                  <v-card-title>Dialog bez aktivatora</v-card-title>
+                  <v-card-actions>
+                    <div class="flex-grow-1"></div>
+                    <v-btn color="green darken-1" text @click="dialogTwo = false">Disagree</v-btn>
+                    <v-btn color="green darken-1" text @click="dialogTwo = false">Agree</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </template>
           </v-data-table>
         </v-card>
         <!-- /Tabela -->
+
+        <!-- Pozivanje dialoga bez aktivatora -->
       </v-col>
     </v-container>
   </v-app>
@@ -186,12 +209,16 @@ export default {
           letter: ''
         }
       ],
-      personaId:null,
+      personaId: null,
       selectedStatus: null,
       selectedPersonaStatus: null,
+      selectedPersona: null,
       onDialogAddNewPersona: false,
       onDialogConfirmation: false,
-      dialog: false
+      dialog: false,
+      dialogOne:false,
+      dialogTwo: false,
+      dialog3:false
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
@@ -212,7 +239,6 @@ export default {
   },
   methods: {
     setSelectedCompany() {
-      console.log(defaultStatus)
       //Omogucava prikazivanje persona sa svim statusima
       this.selectedStatus = defaultStatus
       //Setovanje companyId u centralni store zbog goBack varijante
@@ -251,23 +277,32 @@ export default {
         ? (element.status = this.personaStatus[0].text)
         : (element.status = this.personaStatus[1].text)
     },
+    setSelectedPersona(key) {
+      this.selectedPersona = this.mapPersonas().find(function(el) {
+        return el.id === key
+      })
+    },
+    onOpenDialog(key) {
+      console.log(key)
+      this.personaId = key
+      //this.setSelectedPersona(key)
+    },
     onEditPersona(key) {
       this.personaId = key
-      console.log(`klik key ${this.personaId}`)
+      this.setSelectedPersona(key)
       this.$router.push({
         name: 'persona',
         params: { personaId: this.personaId, companyId: this.companyId }
       })
     },
-    onDeleteCustomFieldHandler(key) {
+    onDeletePersonadHandler: function(key) {
       this.personaId = key
-      console.log(`delete persona : ${this.personaIdString}`)
-      //store.dispatch('persona/deletePersona',this.personaId)
-
+      this.setSelectedPersona(key)
+      store.dispatch('persona/deletePersona', this.selectedPersona.stringId)
     },
     onCloseConfirmationDialog(value) {
       this.onDialogConfirmation = value
-      console.log("close dialog")
+      console.log('close dialog')
     },
 
     onAddNewPersona() {
@@ -285,7 +320,8 @@ export default {
           status: p.active
             ? this.personaStatus[0].text
             : this.personaStatus[1].text,
-          companyId: p.companyId
+          companyId: p.companyId,
+          stringId: `ids=${p.id}`
         }
       })
     }
@@ -321,14 +357,21 @@ export default {
       }
       return []
     },
+    itemsData: {
+      get: function() {
+        return this.persona.personas
+      },
+      set: function(newValue) {
+        newValue ? this.persona.personas : null
+      }
+    },
     personaIdString: function() {
       if (this.selectedPersonaStatus) {
-         return {
-        stringId: `ids=${this.selectedPersonaStatus}`
-      }
+        return {
+          stringId: `ids=${this.selectedPersonaStatus}`
+        }
       }
       return `ids=${this.personaId}`
-     
     },
     companyIsSelected: function() {
       return this.companyId || this.persona.selectedCompanyGuid ? true : false

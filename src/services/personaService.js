@@ -53,7 +53,8 @@ export default {
   createNewPersona(dataObject){
     return apiGatewayClient.post('/',dataObject)
   },
-  deleteSelectedPersona(personaId){
-    return apiGatewayClient.patch('/delete',personaId)
+  deleteSelectedPersona(personaIdString){
+    return apiGatewayClient.patch(`/delete?${personaIdString}`)
   }
+  
 }
