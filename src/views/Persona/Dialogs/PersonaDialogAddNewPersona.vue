@@ -43,17 +43,17 @@ export default {
   props: ['companyId'],
   methods: {
     onCloseDialogHandler: function() {
-      console.log('cancel button')
-      this.dialog = false
-      this.$emit('closeDialog', this.dialog)
+      // console.log('cancel button')
+      // this.dialog = false
+      this.$emit('close', false)
     },
     onSubmitHandler: function() {
       //Logika za submitovanje forme
 
       //console.log(`submitovanje forme ${this.dataObject}`, this.dataObject)
       store.dispatch('persona/createNewPersona',this.dataObject)
-      this.dialog = false
-      this.$emit('closeDialog', this.dialog)
+      // this.dialog = false
+      this.$emit('close', false)
     }
   },
   computed: {

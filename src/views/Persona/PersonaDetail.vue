@@ -86,14 +86,21 @@
                   <v-icon
                     large
                     color="error"
-                    @click="onDeleteCustomFieldHandler(item.id)"
+
                     v-on="on"
                   >mdi-delete</v-icon>
                   <!-- <v-btn color="red lighten-2" dark v-on="on">Delete</v-btn> -->
                   <!-- <v-btn color="error" dark @click.stop="onDialogConfirmation = true">Delete</v-btn> -->
                 </template>
                 <!-- Komponenta koja ce se prikazati kada se aktivira -->
-                <PersonaConfirmationDialog @close="val=>onDialogConfirmation=val"></PersonaConfirmationDialog>>
+                <PersonaConfirmationDialog @close="val=>onDialogConfirmation=val" @submit="onDeleteCustomFieldHandler(item.id)" max-width="450px">
+                  <template v-slot:header>
+                    <h3>Delete custom field : {{item.name}}</h3>
+                  </template>
+                  <template v-slot:body>
+                    <p>Are you sure you want to delete this custom field ?</p>
+                  </template>
+                  </PersonaConfirmationDialog>
               </v-dialog>
             </template>
           </v-data-table>
@@ -220,8 +227,8 @@ export default {
       console.log(this.selectedCustomField)
       //Pozivanje servisa za selektovanu personu
     },
-    onDeleteCustomFieldHandler() {
-      console.log('delete custom field')
+    onDeleteCustomFieldHandler(id) {
+      console.log(`delete custom field ${id}`)
     },
     onCloseDialog(value) {
       this.onDialogDetail = value

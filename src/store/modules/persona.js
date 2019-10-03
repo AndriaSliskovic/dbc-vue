@@ -31,6 +31,7 @@ export const state = {
   selectedCustomField:null
 }
 export const mutations = {
+  //COMPANY
   LOAD_PORTALS(state, payload) {
     state.companies = payload
   },
@@ -38,26 +39,23 @@ export const mutations = {
 
     state.companyGuid=payload
   },
-  PERSONA_GUID(state,payload){
-
-    state.personaGuid=payload
-  },
   SET_COMPANY_ID(state,payload){
     state.selectedCompanyGuid=payload
   },
+  //PERSONA
+  //
   GET_PERSONAS_BY_COMPANY(state,payload){
     state.personas = payload
   },
-  SET_PERSONAS_STATUS(state,payload){
-    console.log(payload.active)
-    state.personaObject=payload
+  CREATE_PERSONA(state,payload){
+    console.log(`mutator create persona ${payload}`)
   },
-  SET_SELECTED_CUSTOM_FIELD(state,payload){
-    state.selectedCustomField=payload
-  },
-  GET_PERSONA_OBJECT(state,payload){
-    //console.log('mutator persona object',payload)
-    state.personaObject=payload
+  DELETE_PERSONA(state,payload){
+    const newArray=state.personas.filter(
+      el=>el.id !==payload
+    )
+    state.personas=newArray
+    console.log(`mutator delete ${newArray}`)
   },
   EDIT_PERSONA_DATA(state,editedObject){
     state.personaObject.name=editedObject.name
@@ -66,17 +64,35 @@ export const mutations = {
   CLEAR_PERSONA(state){
     state.personas=null
   },
+  GET_PERSONA_OBJECT(state,payload){
+    //console.log('mutator persona object',payload)
+    state.personaObject=payload
+  },
+  PERSONA_GUID(state,payload){
+    state.personaGuid=payload
+  },
+
+  //STATUS PERSONA
+  SET_PERSONAS_STATUS(state,payload){
+    console.log(payload.active)
+    state.personaObject=payload
+  },
   SELECTED_PERSONAS_STATUS(state,payload){
     console.log(payload)
     state.personas=payload
   },
-  GET_PERSONA_OBJECT(state,payload){
-    //console.log(`mutator setuje ${payload}`)
-    state.personaObject=payload
+//CUSTOM FIELDS
+GET_CUSTOM_CUSTOM_FIELDS(state,payload){
+  state.customFields=payload
+},
+  SET_SELECTED_CUSTOM_FIELD(state,payload){
+    state.selectedCustomField=payload
   },
-  GET_CUSTOM_CUSTOM_FIELDS(state,payload){
-    state.customFields=payload
-  },
+
+
+
+
+  //DATA SOURCE ITEMS
   ADD_PERSONA_DATASOURCE_ITEM(state,payload){
     if (!state.selectedCustomField.dataSource) {
       console.log(`kreiraj niz`)
@@ -96,6 +112,7 @@ export const mutations = {
   }
 }
 export const actions = {
+  //COMPNIES
   loadPortals({ commit, dispatch }) {
     return portalService
       .getAllActivePortals()
@@ -116,6 +133,7 @@ export const actions = {
     setCompanyId({commit},companyId){
       commit('SET_COMPANY_ID',companyId)
     } ,
+    //PERSONAS
     getPersonasByCompanyGuid({ commit,dispatch}, companyGuidString) {
         console.log(`action za kompanijine persone ${companyGuidString}`)
         return personaService.getPersonas(companyGuidString)
@@ -133,7 +151,53 @@ export const actions = {
         
 
     },
+    createNewPersona({commit,dispatch},dataObject){
+      //console.log(`kreirana persona ${dataObject}`,dataObject)
+      personaService.createNewPersona(dataObject)
+      .then(commit("CREATE_PERSONA",dataObject))
+      .then(          
+        ()=>{
+        const notification={
+          type:'success',
+          message:`Persona successfully created !`
+        }
+        //Dobijanje poruke
+        dispatch('notification/add',notification,{root:true})
+      })
+      .catch(error=>{
+        const notification={
+          type:'error',
+          message:`Can not create new persona - server error, please contact administrator.`
+        }
+        console.log(notification,error)
+        dispatch('notification/add',notification,{root:true})
+      })
+    },
 
+
+    deletePersona({commit,dispatch},personaId){
+      //console.log(`kreirana persona ${dataObject}`,dataObject)
+      //commit("DELETE_PERSONA",personaId)
+      personaService.deleteSelectedPersona(personaId)
+      .then(commit("DELETE_PERSONA",personaId))
+      .then(          
+        ()=>{
+        const notification={
+          type:'success',
+          message:`Persona successfully deleted !`
+        }
+        //Dobijanje poruke
+        dispatch('notification/add',notification,{root:true})
+      })
+      .catch(error=>{
+        const notification={
+          type:'error',
+          message:`Can not delete selected persona - server error, please contact administrator.`
+        }
+        dispatch('notification/add',notification,{root:true})
+      })
+    },
+    //PERSONA STATUS
     setPersonasStatusOnServer({commit,dispatch},element){
       console.log(element.stringId,element.active)
       const status=element.active
@@ -186,11 +250,13 @@ export const actions = {
       console.log('action set status',element)
       commit('SET_PERSONAS_STATUS',element)
     },
+    onSelectedPersonasStatus({commit},persona){
+      console.log(persona)
+      commit('SELECTED_PERSONAS_STATUS',persona)
+    },
+    //CUSTOM FIELDS
     setSelectedCustomField({commit},selectedCustomField){
       commit('SET_SELECTED_CUSTOM_FIELD',selectedCustomField)
-    },
-    addNewPersona({commit},item){
-      console.log(`action dodavanja persone `)
     },
     addPersonaDataSourceItem({commit},item){
       console.log(`action dodavanja persona data sourca ${item}`)
@@ -200,10 +266,7 @@ export const actions = {
       console.log(`action brisanja persona data sourca ${id}`)
       commit('REMOVE_PERSONA_DATASOURCE_ITEM',id)
     },
-    onSelectedPersonasStatus({commit},persona){
-      console.log(persona)
-      commit('SELECTED_PERSONAS_STATUS',persona)
-    },
+    
     getSelectedPersonaByPersonaId({commit,dispatch},personaId){
       console.log(`action persona objekta ${personaId}`)
       return personaService.getSelectedPersonaByPersonaId(personaId)
@@ -247,19 +310,7 @@ export const actions = {
     getSelectedCustomField({commit},cFieldId){
       console.log(`action customFielda ${cFieldId}`)
     },
-    createNewPersona({commit,dispatch},dataObject){
-      //console.log(`kreirana persona ${dataObject}`,dataObject)
-      return personaService.createNewPersona(dataObject)
-      .then(response=>console.log(`kreirana persona ${dataObject}`,dataObject))
-      .catch(error=>{
-        const notification={
-          type:'error',
-          message:`Can not create new persona - server error, please contact administrator.`
-        }
-        console.log(notification,error)
-        dispatch('notification/add',notification,{root:true})
-      })
-    }
+    
 
 }
 
