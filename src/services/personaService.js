@@ -19,10 +19,7 @@ export default {
   updateFeatures(personaGuid) {
     return apiGatewayClient.put('/', personaGuid)
   },
-  getCustomFieldsByPersonaID(personaId){
-    console.log(`servis CustomFields objekta ${personaId}`)
-    return apiGatewayClient.get(`/${personaId}/fields`)
-  },
+
   getSelectedPersonaByPersonaId(personaId){
     console.log(`servis persona objekta ${personaId}`)
     return apiGatewayClient.get(`/${personaId}` )
@@ -54,7 +51,13 @@ export default {
     return apiGatewayClient.post('/',dataObject)
   },
   deleteSelectedPersona(personaIdString){
+    console.log(`servis delete ${personaIdString}`)
     return apiGatewayClient.patch(`/delete?${personaIdString}`)
-  }
+  },
+  //Custom fields
+  getCustomFieldsByPersonaID(personaId){
+    console.log(`servis CustomFields objekta ${personaId}`)
+    return apiGatewayClient.get(`/${personaId}/fields`)
+  },
   
 }

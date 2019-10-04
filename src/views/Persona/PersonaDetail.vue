@@ -2,7 +2,7 @@
   <v-app id="inspire">
     <v-container>
       <v-card>
-        <NotificationContainer />
+        <!-- <NotificationContainer /> -->
         <v-row align="baseline" justify="space-between">
           <v-col cols="4" md="4" class="pl-6">
             <v-text-field v-model="personaName" label="Persona name"></v-text-field>
@@ -29,7 +29,6 @@
           <v-card-title>
             <v-row align="baseline" justify="space-between">
               <v-col class="pl-4">Custom Fields</v-col>
-
               <div class="flex-grow-1"></div>
               <v-text-field
                 v-model="search"
@@ -39,27 +38,27 @@
                 hide-details
               ></v-text-field>
               <div class="flex-grow-1"></div>
+              <!-- CREATE Custom Fielda -->
               <v-col class="pr-6">
-                <v-btn @click="createCustomFieldHandler" color="primary">Create new Custom field</v-btn>
+                <v-dialog v-model="dialogCreate" persistent max-width="1200px">
+                  <!-- Aktivator -->
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      v-on="on"
+                      color="primary"
+                      @click="createCustomFieldObject"
+                    >Create new Custom field</v-btn>
+                  </template>
+                  <!-- <template>Kreiranje objekta</template> -->
+                  <PersonaDetailDialog @close="val=>dialogCreate=val" :cField="dataObject"></PersonaDetailDialog>
+                </v-dialog>
               </v-col>
-
-              <!-- <v-select
-              :items="personaStatus"
-              name="status"
-              item-text="text"
-              filled
-              return-object
-              label="Select status"
-              persistent-hint
-              v-model="selectedStatus"
-              @change="setSelectStatus"
-              ></v-select>-->
             </v-row>
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
             <template v-slot:item.edit="{item}">
               <!-- DIALOG EDIT -->
-              <v-dialog v-model="onDialogDetail" persistent max-width="1200px">
+              <v-dialog v-model="dialogEdit" persistent max-width="1200px">
                 <template v-slot:activator="{ on }">
                   <v-icon
                     large
@@ -68,39 +67,31 @@
                     v-on="on"
                   >mdi-table-edit</v-icon>
                 </template>
-                <PersonaDetailDialog @close="val=>onDialogDetail=val" :cField="selectedCustomField"></PersonaDetailDialog>
+                <PersonaDetailDialog @close="val=>dialogEdit=val" :cField="selectedCustomField"></PersonaDetailDialog>
               </v-dialog>
             </template>
-            <!-- DIALOG BEZ AKTIVATORA -->
-            <!-- <template v-slot:item.activator="{item}">
-              <v-btn color="error" dark @click.stop="onDialogConfirmation = true">Delete</v-btn>
-            </template>-->
-            <!-- DIALOG SA AKTIVATOROM -->
-            <!-- selektuje stavku -->
             <template v-slot:item.delete="{item}">
               <!-- Definise dialog -->
-              <v-dialog v-model="onDialogConfirmation" persistent max-width="300px">
+              <v-dialog v-model="dialogConf" persistent max-width="400px">
                 <!-- Aktivator dialoga -->
                 <template v-slot:activator="{ on }">
                   <!-- Definise dogadjaj za aktivator -->
                   <v-icon
                     large
                     color="error"
-
                     v-on="on"
+                    @click="setSelectedCustomField(item.id)"
                   >mdi-delete</v-icon>
-                  <!-- <v-btn color="red lighten-2" dark v-on="on">Delete</v-btn> -->
-                  <!-- <v-btn color="error" dark @click.stop="onDialogConfirmation = true">Delete</v-btn> -->
                 </template>
                 <!-- Komponenta koja ce se prikazati kada se aktivira -->
-                <PersonaConfirmationDialog @close="val=>onDialogConfirmation=val" @submit="onDeleteCustomFieldHandler(item.id)" max-width="450px">
-                  <template v-slot:header>
-                    <h3>Delete custom field : {{item.name}}</h3>
-                  </template>
-                  <template v-slot:body>
-                    <p>Are you sure you want to delete this custom field ?</p>
-                  </template>
-                  </PersonaConfirmationDialog>
+                <ConfirmationDialog
+                  @close="val=>dialogConf=val"
+                  @submit="onDeleteCustomFieldHandler(item.id)"
+                  max-width="450px"
+                >
+                  <template v-slot:header>Delete custom field : {{selectedCustomField.name}}</template>
+                  <template v-slot:body>Are you sure you want to delete this custom field ?</template>
+                </ConfirmationDialog>
               </v-dialog>
             </template>
           </v-data-table>
@@ -109,7 +100,6 @@
       </v-col>
       <v-row>
         <v-col>
-          <!-- <v-btn small @click="()=>this.$router.push({name:'personas',params:this.companyId}) ">Go back</v-btn> -->
           <v-btn small @click="()=>this.$router.go(-1) ">Go back</v-btn>
         </v-col>
         <v-col>
@@ -126,12 +116,12 @@ import store from '@/store/store'
 import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
 import PersonaDetailDialog from './Dialogs/PersonaDetailDialog'
-import PersonaConfirmationDialog from './Dialogs/PersonaConfirmationDialog'
+import ConfirmationDialog from './Dialogs/ConfirmationDialog'
 
 export default {
   components: {
     PersonaDetailDialog,
-    PersonaConfirmationDialog,
+    ConfirmationDialog,
     NotificationContainer
   },
   data() {
@@ -150,14 +140,12 @@ export default {
         { text: 'Type', value: 'type' },
         { text: 'Delete', value: 'delete' }
       ],
-      // dialog:{
-      //   detail:false,
-      //   confirmation:false
-      // },
-      onDialogDetail: false,
-      onDialogConfirmation: false,
-      dialog:false,
-      selectedCustomField: null
+      dialogCreate:false,
+      dialogEdit: false,
+      dialogConf: false,
+
+      selectedCustomField: null,
+      dataObject:null
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
@@ -167,6 +155,7 @@ export default {
   },
   created() {
     this.companies = this.persona.companies.SiteCustomersList
+
     //Dobijanje persona objekta
     store.dispatch('persona/getSelectedPersonaByPersonaId', this.personaId)
     //Dobijanje CustomFieldsa
@@ -201,11 +190,44 @@ export default {
     saveHandler() {
       console.log(`klik na save `)
     },
-    createCustomFieldHandler() {
-      console.log('create Custom field button')
+    createCustomFieldObject() {
+      console.log('create Custom field object')
+      this.dataObject=this.createDataObject()
+      console.log(this.dataObject)
+      store.dispatch('persona/setSelectedCustomField',this.dataObject)
+
+
     },
-    editCustomFieldHandler(key) {
-      console.log(`edit Custom Field ${key}`)
+    createDataObject(){
+      return {
+        id:null,
+        active:null,
+        name:null,
+        tag:null,
+        rank:null,
+        type:null,
+        summaryField:null,
+        required:null,
+        defaultValue:null,
+        maskId:null,
+        visible:null,
+        editable:null,
+        dataSource:[
+          {
+          id:null,
+          display:null
+          }
+        ],
+        description:{
+          position:[],
+          content:null
+        }
+
+
+
+      }
+    },
+    setSelectedCustomField(key) {
       const cField = this.customFields.find(function(el) {
         return el.id === key
       })
@@ -220,15 +242,18 @@ export default {
         editable: cField.editable,
         dataSource: cField.dataSource,
         maskId: cField.maskId,
-        defaultValue:cField.defaultValue
+        defaultValue: cField.defaultValue
       }
-      store.dispatch('persona/setSelectedCustomField', this.selectedCustomField)
-      //this.selectedCustomField = cField
-      console.log(this.selectedCustomField)
-      //Pozivanje servisa za selektovanu personu
     },
-    onDeleteCustomFieldHandler(id) {
-      console.log(`delete custom field ${id}`)
+    editCustomFieldHandler(key) {
+      console.log(`edit Custom Field ${key}`)
+      this.setSelectedCustomField(key)
+      console.log(this.selectedCustomField)
+      store.dispatch('persona/setSelectedCustomField', this.selectedCustomField)
+    },
+    onDeleteCustomFieldHandler(key) {
+      this.setSelectedPersona(key)
+      console.log(`delete custom field ${key}`)
     },
     onCloseDialog(value) {
       this.onDialogDetail = value

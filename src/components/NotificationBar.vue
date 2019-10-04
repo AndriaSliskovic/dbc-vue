@@ -9,7 +9,7 @@
 </template>
     
     <script>
-import { mapActions } from 'vuex'
+import { mapActions,mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -23,10 +23,10 @@ export default {
   beforeDestroy() {
     clearTimeout(this.timeout)
     //Hendlovanje redirekcije samo na error type
-
-          this.$router.go()
-
-
+    if (this.notif.reload) {
+      console.log(`reload ${this.notification.reload}`)
+      this.$router.go()
+    }
   },
 
   props: {
@@ -36,8 +36,9 @@ export default {
     }
   },
 
-  methods: mapActions('notification', ['remove']),
+  methods: mapActions('notification', ['remove','reloadPage']),
   computed: {
+    ...mapState({ notif: 'notification' }),
     notificationTypeClass() {
       return `text-${this.notification.type}`
     }

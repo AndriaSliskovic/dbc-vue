@@ -1,16 +1,21 @@
 <template>
-
   <v-card>
-    <v-card-title class="headline"><slot name="header"></slot></v-card-title>
+    <v-card-title class="headline">
+      <h4>
+        <slot name="header"></slot>
+      </h4>
+    </v-card-title>
 
     <v-card-text>
-      <slot name="body"></slot>
+      <p>
+        <slot name="body"></slot>
+      </p>
     </v-card-text>
 
     <v-card-actions>
       <div class="flex-grow-1"></div>
 
-      <v-btn color="green darken-1" text @click="onCloseDialogHandler">Cancel</v-btn>
+      <v-btn color="normal" text @click="onCloseDialogHandler">Cancel</v-btn>
 
       <v-btn color="green darken-1" text @click="onSubmitHandler">Confirm</v-btn>
     </v-card-actions>
@@ -24,13 +29,13 @@ export default {
 
   methods: {
     onCloseDialogHandler: function() {
-    //Zatvaranje dialoga
+      //Zatvaranje dialoga
       this.$emit('close', false)
     },
     onSubmitHandler: function() {
-    //Potvrda akcije dialoga
+      //Potvrda akcije dialoga
       this.$emit('submit')
-          //Zatvaranje dialoga
+      //Zatvaranje dialoga
       this.$emit('close', false)
     }
   }

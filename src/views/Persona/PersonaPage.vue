@@ -1,13 +1,13 @@
 <template>
   <v-app id="inspire">
     <v-container fluid>
-      <h3 class="pl-4 pt-4 indigo--text">Personae page</h3>
+      <h3 class="pl-4 pt-4 indigo--text">Persona page</h3>
       <v-dialog v-model="dialogOne" max-width="400px">
         <template v-slot:activator="{ on }">
           <v-btn color="primary" dark v-on="on">Dialog sa aktivatorom</v-btn>
         </template>
         <v-card>
-          <v-card-title >Tekst dialoga sa aktivatorom !</v-card-title>
+          <v-card-title>Tekst dialoga sa aktivatorom !</v-card-title>
           <v-card-actions>
             <div class="flex-grow-1"></div>
             <v-btn color="green darken-1" text @click="dialogOne = false">Disagree</v-btn>
@@ -68,7 +68,7 @@
               <!-- / Select personas status -->
               <!-- ADD NEW PERSONA -->
               <v-col>
-                <v-dialog v-model="onDialogAddNewPersona" persistent max-width="600px">
+                <v-dialog v-model="dialogAddNewPersona" persistent max-width="600px">
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" v-on="on">Add new persona</v-btn>
                   </template>
@@ -98,25 +98,26 @@
             </template>
             <!-- / STATUS -->
             <!-- DELETE ICON -->
-            <template v-slot:item.delete="{item}" v-slot:activator="{ on }">
+            <template v-slot:item.delete="{item}">
               <!-- DIALOG ZA DELETE -->
-              <v-dialog v-model="onDialogConfirmation" persistent max-width="400px">
+              <v-dialog v-model="dialogConf" persistent max-width="400px">
                 <template v-slot:activator="{ on }">
-                  <v-icon large color="error" v-on="on">mdi-delete</v-icon>
+                  <v-icon
+                    large
+                    color="error"
+                    v-on="on"
+                    @click="setSelectedPersona(item.id)"
+                  >mdi-delete</v-icon>
                 </template>
-                <PersonaConfirmationDialog
-                  @close="val=>onDialogConfirmation=val"
+                <ConfirmationDialog
+                  @close="val=>dialogConf=val"
                   @submit="onDeletePersonadHandler(item.id)"
                 >
-                  <template v-slot:header>
-                    <h3>Delete persona {{item.name}}</h3>
-                  </template>
-                  <template v-slot:body>
-                    <p>Are you sure you want to delete this persona ?</p>
-                  </template>
-                </PersonaConfirmationDialog>
+                  <template v-slot:header>Delete persona : {{selectedPersona.name}}</template>
+                  <template v-slot:body>Are you sure you want to delete this persona ?</template>
+                </ConfirmationDialog>
               </v-dialog>
-              
+
               <!-- BEZ AKTIVATORA -->
               <v-btn color="primary" dark @click.stop="dialogTwo = true">Bez aktivatora</v-btn>
               <v-dialog v-model="dialogTwo" max-width="290">
@@ -133,8 +134,6 @@
           </v-data-table>
         </v-card>
         <!-- /Tabela -->
-
-        <!-- Pozivanje dialoga bez aktivatora -->
       </v-col>
     </v-container>
   </v-app>
@@ -149,21 +148,16 @@ import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
 import router from 'vue-router'
 import PersonaDialogAddNewPersona from './Dialogs/PersonaDialogAddNewPersona'
-import PersonaConfirmationDialog from './Dialogs/PersonaConfirmationDialog'
+import ConfirmationDialog from './Dialogs/ConfirmationDialog'
 
 const defaultStatus = function() {
-  return {
-    active: null,
-    text: 'All',
-    color: 'blue',
-    letter: ''
-  }
+  return { active: null, text: 'All', color: 'blue', letter: '' }
 }
 export default {
   components: {
     NotificationContainer,
     PersonaDialogAddNewPersona,
-    PersonaConfirmationDialog
+    ConfirmationDialog
   },
   data() {
     return {
@@ -172,53 +166,25 @@ export default {
       companyId: null,
       search: '',
       headers: [
-        {
-          text: 'Edit',
-          value: 'edit'
-        },
-        {
-          text: 'Persona',
-          value: 'name'
-        },
-        {
-          text: 'Status',
-          value: 'status'
-        },
-        {
-          text: 'Delete',
-          value: 'delete'
-        }
+        { text: 'Edit', value: 'edit' },
+        { text: 'Persona', value: 'name' },
+        { text: 'Status', value: 'status' },
+        { text: 'Delete', value: 'delete' }
       ],
       personaStatus: [
-        {
-          active: true,
-          text: 'Active',
-          color: 'green',
-          letter: 'A'
-        },
-        {
-          active: false,
-          text: 'Inactive',
-          color: 'error',
-          letter: 'I'
-        },
-        {
-          active: null,
-          text: 'All',
-          color: 'blue',
-          letter: ''
-        }
+        { active: true, text: 'Active', color: 'green darken-1', letter: 'A' },
+        { active: false, text: 'Inactive', color: 'error', letter: 'I' },
+        { active: null, text: 'All', color: 'blue', letter: '' }
       ],
       personaId: null,
       selectedStatus: null,
       selectedPersonaStatus: null,
       selectedPersona: null,
-      onDialogAddNewPersona: false,
-      onDialogConfirmation: false,
-      dialog: false,
-      dialogOne:false,
-      dialogTwo: false,
-      dialog3:false
+      dialogAddNewPersona: false,
+      dialogConf: false,
+
+      dialogOne: false,
+      dialogTwo: false
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
@@ -278,14 +244,10 @@ export default {
         : (element.status = this.personaStatus[1].text)
     },
     setSelectedPersona(key) {
+      console.log(`setovanje persone ${key}`)
       this.selectedPersona = this.mapPersonas().find(function(el) {
         return el.id === key
       })
-    },
-    onOpenDialog(key) {
-      console.log(key)
-      this.personaId = key
-      //this.setSelectedPersona(key)
     },
     onEditPersona(key) {
       this.personaId = key
@@ -296,8 +258,8 @@ export default {
       })
     },
     onDeletePersonadHandler: function(key) {
-      this.personaId = key
-      this.setSelectedPersona(key)
+      //Persona je setovana na prethodni klik
+      console.log(`selektovana persona ${this.selectedPersona}`)
       store.dispatch('persona/deletePersona', this.selectedPersona.stringId)
     },
     onCloseConfirmationDialog(value) {
@@ -309,7 +271,7 @@ export default {
       console.log('Dodavanje persone')
     },
     onCloseDialog(value) {
-      this.onDialogAddNewPersona = value
+      this.dialogAddNewPersona = value
     },
     mapPersonas() {
       return this.persona.personas.map(p => {

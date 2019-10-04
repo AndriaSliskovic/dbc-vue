@@ -7,10 +7,10 @@ export const namespaced = true
 const companiesHardCoded={
     SiteCustomersList: [
       {
-        CompanyGuid: '74451a04-888f-4fe4-b1ac-c268930b97d6',
-        CompanyId: 712,
-        CompanyName: 'Academy of Learning',
-        IsDirectCompany: 1
+        "CompanyGuid": '74451a04-888f-4fe4-b1ac-c268930b97d6',
+        "CompanyId": 712,
+        "CompanyName": 'Academy of Learning',
+        "IsDirectCompany": 1
       },
       {"CompanyGuid":"9ccadb7b-9ea2-4934-ac0b-decb508609c7","CompanyId":238,"CompanyName":"Standard demo","IsDirectCompany":1},
       {"CompanyGuid":"c75b90a4-cfa1-423e-8d3b-65a3cf7be720","CompanyId":1346,"CompanyName":"adsads","IsDirectCompany":1},
@@ -36,7 +36,6 @@ export const mutations = {
     state.companies = payload
   },
   COMPANY_GUID(state,payload){
-
     state.companyGuid=payload
   },
   SET_COMPANY_ID(state,payload){
@@ -51,6 +50,7 @@ export const mutations = {
     console.log(`mutator create persona ${payload}`)
   },
   DELETE_PERSONA(state,payload){
+    console.log(`mutator delete ${payload}`)
     const newArray=state.personas.filter(
       el=>el.id !==payload
     )
@@ -60,6 +60,10 @@ export const mutations = {
   EDIT_PERSONA_DATA(state,editedObject){
     state.personaObject.name=editedObject.name
     state.personaObject.companyId=editedObject.companyId
+    //Editovanje persone u nizu
+    const personaId=editedObject.id
+    const object=state.personas.filter(el=>el.id===personaId).map(e=>{e.name=editedObject.name})
+    console.log(object)
   },
   CLEAR_PERSONA(state){
     state.personas=null
@@ -176,8 +180,8 @@ export const actions = {
 
 
     deletePersona({commit,dispatch},personaId){
-      //console.log(`kreirana persona ${dataObject}`,dataObject)
-      //commit("DELETE_PERSONA",personaId)
+      console.log(`delete persona stringId : ${personaId}`)
+
       personaService.deleteSelectedPersona(personaId)
       .then(commit("DELETE_PERSONA",personaId))
       .then(          
@@ -296,7 +300,19 @@ export const actions = {
     editPersonaData({commit,dispatch},editedObject){
       console.log(`action edit persone ${editedObject}`)
       return personaService.editPersonaData(editedObject)
-              .then(response=>console.log(response))
+              .then(
+                ()=>{
+                  const notification={
+              type:'success',
+              message:`Data successfully changed !`
+            }
+            dispatch('notification/add',notification,{root:true})
+            commit('EDIT_PERSONA_DATA',editedObject)
+            dispatch('notification/reloadPage',{},{root:true})
+                }
+
+
+              )
               //treba setovati u centralni store
               .catch(error=>{
                 const notification={
@@ -305,7 +321,9 @@ export const actions = {
                 }
                 console.log(notification,error)
                 dispatch('notification/add',notification,{root:true})
+
               })
+
     },
     getSelectedCustomField({commit},cFieldId){
       console.log(`action customFielda ${cFieldId}`)

@@ -1,29 +1,40 @@
 <template>
   <v-container>
     <v-card>
-      <NotificationContainer />
+      <!-- <NotificationContainer /> -->
 
-      <v-form v-model="valid">
-
+      <v-form ref="form" v-model="valid">
         <v-row class="grey lighten-5">
-
           <v-col cols="6">
             <v-col>
               <v-text-field
                 v-model="cField.name"
                 :error-messages="nameErrors"
-                :counter="25"
                 label="Name"
                 @input="$v.cField.name.$touch()"
                 @blur="$v.cField.name.$touch()"
               ></v-text-field>
-              <!-- <div>{{$v}}</div> -->
             </v-col>
             <v-col cols="4">
-              <v-text-field v-model="cField.rank" label="Rank" required type="number"></v-text-field>
+              <v-text-field
+                v-model="cField.rank"
+                :error-messages="rankErrors"
+                label="Rank"
+                required
+                type="number"
+                @input="$v.cField.rank.$touch()"
+                @blur="$v.cField.rank.$touch()"
+              ></v-text-field>
             </v-col>
             <v-col>
-              <v-text-field v-model="cField.category" label="Category" required></v-text-field>
+              <v-text-field
+                v-model="cField.category"
+                :error-messages="categoryErrors"
+                label="Category"
+                required
+                @input="$v.cField.category.$touch()"
+                @blur="$v.cField.category.$touch()"
+              ></v-text-field>
             </v-col>
             <v-col>
               <!-- <v-text-field v-model="cField.type" label="Custom field type" required></v-text-field> -->
@@ -47,7 +58,7 @@
                 </v-col>
                 <v-col>
                   <p>STATUS :</p>
-                  <v-checkbox v-model="cField.visible" class="mb-n2" label="Visible" ></v-checkbox>
+                  <v-checkbox v-model="cField.visible" class="mb-n2" label="Visible"></v-checkbox>
                   <v-checkbox v-model="cField.editable" class="mt-n4" label="Editable"></v-checkbox>
                 </v-col>
               </v-row>
@@ -56,12 +67,13 @@
               <v-row>
                 <v-btn small text @click="onCloseDialogHandler">Cancel</v-btn>
                 <v-btn small color="primary" text @click="onSubmitHandler">Submit</v-btn>
+                <!-- <v-btn small color="primary" text @click="resetValidation">Resetuj validaciju</v-btn> -->
               </v-row>
             </v-col>
           </v-col>
           <!-- RIGHT DIALOG -->
           <v-col cols="6">
-            <PersonaDetailDialogRight :selectedType='cField.type'></PersonaDetailDialogRight>
+            <PersonaDetailDialogRight :selectedType="cField.type"></PersonaDetailDialogRight>
           </v-col>
           <!-- / RIGHT DIALOG -->
         </v-row>
@@ -78,14 +90,16 @@ import PersonaDetailDialogRight from './PersonaDetailDialogRight'
 import NotificationContainer from '../../../components/NotificationContainer'
 
 export default {
-  components:{
+  components: {
     PersonaDetailDialogRight,
     NotificationContainer
   },
   mixins: [validationMixin],
   validations: {
     cField: {
-      name: { required }
+      name: { required },
+      rank: { required },
+      category: { required }
     }
   },
   data() {
@@ -93,42 +107,42 @@ export default {
       dialog: null,
       valid: false,
       fieldtype: ['DROPDOWNLIST', 'IMAGEBANK', 'TEXTAREA', 'TEXTBOX'],
-      selectedType:null,
+      selectedType: null,
       submitStatus: null
     }
   },
   props: ['cField'],
 
-  created() {
-
-  },
+  created() {},
   beforeMount() {},
   mounted() {},
   beforeUpdate() {},
+  beforeDestroy() {
+    this.$v.$reset()
+  },
 
   methods: {
     onCloseDialogHandler: function() {
       this.$emit('close', false)
-
+      //Resetovanje prethodne validacije
+      this.$v.$reset()
     },
-    onSubmitHandler: function({dispatch}) {
+    onSubmitHandler: function({ dispatch }) {
       //Logika za submitovanje forme
       this.$v.$touch()
       if (this.$v.$invalid) {
         console.log(`submitovanje forme ${this.nameErrors}`)
-        const notification = {
+        const notification = 
+        {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
         }
         store.dispatch('notification/add', notification, { root: true })
-
-      } else{
-        console.log("sve je ok")
-
       }
-
-      // this.dialog = false
-      // this.$emit('closeDialog', this.dialog)
+    },
+    resetValidation() {
+      console.log(`resetovanje`)
+      this.$v.$reset()
     }
   },
   computed: {
@@ -139,8 +153,18 @@ export default {
       !this.$v.cField.name.required && errors.push('Name is required.')
       return errors
     },
-
-
+    categoryErrors() {
+      const errors = []
+      if (!this.$v.cField.category.$dirty) return errors
+      !this.$v.cField.category.required && errors.push('Category is required.')
+      return errors
+    },
+    rankErrors() {
+      const errors = []
+      if (!this.$v.cField.rank.$dirty) return errors
+      !this.$v.cField.rank.required && errors.push('Rank is required.')
+      return errors
+    }
   }
 }
 </script>
