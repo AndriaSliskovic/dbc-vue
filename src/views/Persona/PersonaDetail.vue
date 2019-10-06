@@ -1,8 +1,19 @@
 <template>
   <v-app id="inspire">
-    <v-container>
+    <v-container fluid>
+            <!-- Zaglavlje stranice -->
       <v-card>
-        <!-- <NotificationContainer /> -->
+        <v-row>
+          <v-col cols="6">
+            <v-card-title class="pl-4 pt-4 blue--text text--darken-4">Selected persona : {{personaName}}</v-card-title>
+          </v-col>
+          <v-col cols="6">
+            <NotificationContainer/>
+          </v-col>
+        </v-row>
+      </v-card>
+      <!-- /Zaglavlje stranice -->  
+      <v-card>
         <v-row align="baseline" justify="space-between">
           <v-col cols="4" md="4" class="pl-6">
             <v-text-field v-model="personaName" label="Persona name"></v-text-field>
@@ -17,9 +28,10 @@
               outlined
             ></v-select>
           </v-col>
-          <v-col cols="4" md="4">
+          <v-col cols="4" md="2">
             <v-btn color="primary" @click="editPersonaHandler()">Edit curent persona</v-btn>
           </v-col>
+
         </v-row>
       </v-card>
 
@@ -46,11 +58,10 @@
                     <v-btn
                       v-on="on"
                       color="primary"
-                      @click="createCustomFieldObject"
+                      @click="onCreateCustomFieldObject"
                     >Create new Custom field</v-btn>
                   </template>
-                  <!-- <template>Kreiranje objekta</template> -->
-                  <PersonaDetailDialog @close="val=>dialogCreate=val" :cField="dataObject"></PersonaDetailDialog>
+                   <PersonaDetailDialog @close="val=>dialogCreate=val" :cField="dataObject" :dialogType="dialogType"></PersonaDetailDialog>
                 </v-dialog>
               </v-col>
             </v-row>
@@ -63,11 +74,11 @@
                   <v-icon
                     large
                     color="blue darken-2"
-                    @click="editCustomFieldHandler(item.id)"
+                    @click="onEditCustomFieldHandler(item.id)"
                     v-on="on"
                   >mdi-table-edit</v-icon>
                 </template>
-                <PersonaDetailDialog @close="val=>dialogEdit=val" :cField="selectedCustomField"></PersonaDetailDialog>
+                <PersonaDetailDialog @close="val=>dialogEdit=val" :cField="selectedCustomField" :dialogType="dialogType"></PersonaDetailDialog>
               </v-dialog>
             </template>
             <template v-slot:item.delete="{item}">
@@ -140,6 +151,8 @@ export default {
         { text: 'Type', value: 'type' },
         { text: 'Delete', value: 'delete' }
       ],
+      dialogType:null,
+
       dialogCreate:false,
       dialogEdit: false,
       dialogConf: false,
@@ -190,7 +203,8 @@ export default {
     saveHandler() {
       console.log(`klik na save `)
     },
-    createCustomFieldObject() {
+    onCreateCustomFieldObject() {
+      this.dialogType="create"
       console.log('create Custom field object')
       this.dataObject=this.createDataObject()
       console.log(this.dataObject)
@@ -200,6 +214,7 @@ export default {
     },
     createDataObject(){
       return {
+        personaId:this.personaId,
         id:null,
         active:null,
         name:null,
@@ -211,13 +226,9 @@ export default {
         defaultValue:null,
         maskId:null,
         visible:null,
+        javascriptFunctionId:null,
         editable:null,
-        dataSource:[
-          {
-          id:null,
-          display:null
-          }
-        ],
+        dataSource:[],
         description:{
           position:[],
           content:null
@@ -232,6 +243,7 @@ export default {
         return el.id === key
       })
       this.selectedCustomField = {
+        personaId:this.personaId,
         id: cField.id,
         name: cField.name,
         rank: cField.rank,
@@ -245,7 +257,8 @@ export default {
         defaultValue: cField.defaultValue
       }
     },
-    editCustomFieldHandler(key) {
+    onEditCustomFieldHandler(key) {
+      this.dialogType='edit'
       console.log(`edit Custom Field ${key}`)
       this.setSelectedCustomField(key)
       console.log(this.selectedCustomField)

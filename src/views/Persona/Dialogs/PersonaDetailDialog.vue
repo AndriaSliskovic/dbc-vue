@@ -1,8 +1,6 @@
 <template>
   <v-container>
     <v-card>
-      <!-- <NotificationContainer /> -->
-
       <v-form ref="form" v-model="valid">
         <v-row class="grey lighten-5">
           <v-col cols="6">
@@ -66,14 +64,20 @@
             <v-col>
               <v-row>
                 <v-btn small text @click="onCloseDialogHandler">Cancel</v-btn>
-                <v-btn small color="primary" text @click="onSubmitHandler">Submit</v-btn>
+                <template v-if="dialogType==='create'">
+                  <v-btn small color="primary" text @click="onSubmitHandler">Submit</v-btn>
+                </template>
+                <template v-if="dialogType==='edit'">
+                  <v-btn small color="primary" text @click="onUpdateHandler">Update</v-btn>
+                </template>
+
                 <!-- <v-btn small color="primary" text @click="resetValidation">Resetuj validaciju</v-btn> -->
               </v-row>
             </v-col>
           </v-col>
           <!-- RIGHT DIALOG -->
           <v-col cols="6">
-            <PersonaDetailDialogRight :selectedType="cField.type"></PersonaDetailDialogRight>
+            <PersonaDetailDialogRight :selectedType="cField.type" @close="val=>$emit('close',val)"></PersonaDetailDialogRight>
           </v-col>
           <!-- / RIGHT DIALOG -->
         </v-row>
@@ -87,12 +91,10 @@ import store from '@/store/store'
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, email } from 'vuelidate/lib/validators'
 import PersonaDetailDialogRight from './PersonaDetailDialogRight'
-import NotificationContainer from '../../../components/NotificationContainer'
 
 export default {
   components: {
     PersonaDetailDialogRight,
-    NotificationContainer
   },
   mixins: [validationMixin],
   validations: {
@@ -111,7 +113,7 @@ export default {
       submitStatus: null
     }
   },
-  props: ['cField'],
+  props: ['cField', 'dialogType'],
 
   created() {},
   beforeMount() {},
@@ -129,16 +131,33 @@ export default {
     },
     onSubmitHandler: function({ dispatch }) {
       //Logika za submitovanje forme
+      console.log(this.cField)
+
       this.$v.$touch()
       if (this.$v.$invalid) {
         console.log(`submitovanje forme ${this.nameErrors}`)
-        const notification = 
-        {
+        const notification = {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
         }
         store.dispatch('notification/add', notification, { root: true })
       }
+      //Slanje podataka posle validacije
+      store.dispatch('persona/createNewCustomField', this.cField)
+    },
+    onUpdateHandler(){
+      console.log(this.cField)
+      this.$v.$touch()
+      if (this.$v.$invalid) {
+        console.log(`submitovanje forme ${this.nameErrors}`)
+        const notification = {
+          type: 'error',
+          message: `Error on form : ${this.nameErrors}`
+        }
+        store.dispatch('notification/add', notification, { root: true })
+      }
+      //Slanje podataka posle validacije
+      store.dispatch('persona/updateCustomField', this.cField)
     },
     resetValidation() {
       console.log(`resetovanje`)

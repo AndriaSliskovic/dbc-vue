@@ -6,7 +6,6 @@
           <v-text-field
             v-model="name"
             :error-messages="nameErrors"
-            :counter="25"
             label="Name"
             required
             @input="$v.name.$touch()"
@@ -43,13 +42,19 @@ export default {
   props: ['companyId'],
   methods: {
     onCloseDialogHandler: function() {
-      // console.log('cancel button')
-      // this.dialog = false
       this.$emit('close', false)
     },
     onSubmitHandler: function() {
-      //Logika za submitovanje forme
-
+      //Validacija pri submitu
+      this.$v.$touch()
+      if (this.$v.$invalid) {
+        console.log(`submitovanje forme ${this.nameErrors}`)
+        const notification = {
+          type: 'error',
+          message: `Error on form : ${this.nameErrors}`
+        }
+        return store.dispatch('notification/add', notification, { root: true })
+      }
       //console.log(`submitovanje forme ${this.dataObject}`, this.dataObject)
       store.dispatch('persona/createNewPersona',this.dataObject)
       // this.dialog = false

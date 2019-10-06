@@ -1,7 +1,18 @@
 <template>
   <v-app id="inspire">
     <v-container fluid>
-      <h3 class="pl-4 pt-4 indigo--text">Persona page</h3>
+      <!-- Zaglavlje stranice -->
+      <v-card>
+        <v-row>
+          <v-col cols="6">
+            <v-card-title class="pl-4 pt-4 blue--text text--darken-4">Persona page</v-card-title>
+          </v-col>
+          <v-col cols="6">
+            <NotificationContainer/>
+          </v-col>
+        </v-row>
+      </v-card>
+      <!-- /Zaglavlje stranice -->      
       <v-dialog v-model="dialogOne" max-width="400px">
         <template v-slot:activator="{ on }">
           <v-btn color="primary" dark v-on="on">Dialog sa aktivatorom</v-btn>
@@ -16,7 +27,6 @@
         </v-card>
       </v-dialog>
       <v-col>
-        <NotificationContainer />
         <template>
           <form>
             <v-flex xs12 sm6 d-flex data-app>
@@ -61,7 +71,6 @@
                   label="Select status"
                   persistent-hint
                   v-model="selectedStatus"
-                  @change="setSelectStatus"
                 ></v-select>
               </v-col>
 
@@ -162,7 +171,6 @@ export default {
   data() {
     return {
       companies: null,
-      selectedCompany: null,
       companyId: null,
       search: '',
       headers: [
@@ -172,13 +180,13 @@ export default {
         { text: 'Delete', value: 'delete' }
       ],
       personaStatus: [
-        { active: true, text: 'Active', color: 'green darken-1', letter: 'A' },
+        { active: true, text: 'Active', color: 'teal darken-3', letter: 'A' },
         { active: false, text: 'Inactive', color: 'error', letter: 'I' },
-        { active: null, text: 'All', color: 'blue', letter: '' }
+        { text: 'All' }
       ],
       personaId: null,
       selectedStatus: null,
-      selectedPersonaStatus: null,
+      selectedPersonaStatusId: null,
       selectedPersona: null,
       dialogAddNewPersona: false,
       dialogConf: false,
@@ -205,23 +213,11 @@ export default {
   },
   methods: {
     setSelectedCompany() {
-      //Omogucava prikazivanje persona sa svim statusima
-      this.selectedStatus = defaultStatus
       //Setovanje companyId u centralni store zbog goBack varijante
       store.dispatch('persona/setCompanyId', this.companyId)
       //Dohvatanje persona
       store.dispatch('persona/getPersonasByCompanyGuid', this.companyIdString)
     },
-    setSelectStatus() {
-      if (!this.selectedStatus.text === 'All') {
-        const status = this.selectedStatus.active
-        console.log(this.selectedStatus, status)
-        const selectedItems = this.items.filter(i => {
-          return i.active === status
-        })
-      }
-    },
-
     getStatusColor(status) {
       const perStatus = this.personaStatus
       if (status) {
@@ -231,7 +227,7 @@ export default {
     },
     setPersonaStatus(key) {
       console.log('imam klik', key)
-      this.selectedPersonaStatus = key
+      this.selectedPersonaStatusId = key
 
       const element = this.items.find(x => x.id === key)
       element.active = !element.active
@@ -260,7 +256,7 @@ export default {
     onDeletePersonadHandler: function(key) {
       //Persona je setovana na prethodni klik
       console.log(`selektovana persona ${this.selectedPersona}`)
-      store.dispatch('persona/deletePersona', this.selectedPersona.stringId)
+      store.dispatch('persona/deletePersona', this.selectedPersona)
     },
     onCloseConfirmationDialog(value) {
       this.onDialogConfirmation = value
@@ -306,11 +302,9 @@ export default {
               return this.mapPersonas().filter(e => !e.active)
               break
             case 'All':
-              console.log('all case')
-              return this.setSelectedCompany()
+              return this.mapPersonas()
               break
             default:
-              console.log('default case')
               return this.mapPersonas()
               break
           }
@@ -319,18 +313,10 @@ export default {
       }
       return []
     },
-    itemsData: {
-      get: function() {
-        return this.persona.personas
-      },
-      set: function(newValue) {
-        newValue ? this.persona.personas : null
-      }
-    },
     personaIdString: function() {
-      if (this.selectedPersonaStatus) {
+      if (this.selectedPersonaStatusId) {
         return {
-          stringId: `ids=${this.selectedPersonaStatus}`
+          stringId: `ids=${this.selectedPersonaStatusId}`
         }
       }
       return `ids=${this.personaId}`

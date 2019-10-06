@@ -17,7 +17,7 @@
 
       <v-btn color="normal" text @click="onCloseDialogHandler">Cancel</v-btn>
 
-      <v-btn color="green darken-1" text @click="onSubmitHandler">Confirm</v-btn>
+      <v-btn color="teal darken-3" text @click="onSubmitHandler">Confirm</v-btn>
     </v-card-actions>
   </v-card>
 </template>

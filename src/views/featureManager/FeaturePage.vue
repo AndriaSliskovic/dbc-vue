@@ -114,10 +114,10 @@ export default {
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
     store
-      .dispatch('feature/loadPortals')
+      .dispatch('feature/loadHardCodedCompanies')
       .then(store.dispatch('feature/LoadAllModules'))
       .then(response => {
-        next() // Only once this is called does the navigation continue
+        next() 
       })
   },
   computed: {

@@ -17,7 +17,7 @@
             <v-card class="mx-auto" max-width="400" tile>
               <v-list dense>
                 <v-list-item-group v-model="itemsData" color="primary">
-                  <v-list-item v-for="item in itemsData" v-bind:key="item.id">
+                  <v-list-item v-for="item in itemsData" v-bind:key="item.id" input-value="true">
                     <v-list-item-content>
                       <v-list-item-title v-text="item.display" @click="setSelectedItem(item.id)"></v-list-item-title>
                     </v-list-item-content>
@@ -32,23 +32,30 @@
               <v-btn
                 small
                 color="primary"
+                tile
                 class="mb-2"
                 @click="upDataItem"
                 :disabled="disabledAddButton"
-              >Up</v-btn>
+              >
+              <v-icon >keyboard_arrow_up</v-icon>
+              </v-btn>
               <v-btn
                 small
                 color="primary"
+                tile
                 @click="removeItem"
                 :disabled="disabledRemoveButton"
               >remove</v-btn>
               <v-btn
                 small
                 color="primary"
+                tile
                 class="mt-2"
                 @click="downDataItem"
                 :disabled="disabledDownButton"
-              >Down</v-btn>
+              >
+              <v-icon>keyboard_arrow_down</v-icon>
+              </v-btn>
             </v-row>
           </v-col>
         </v-row>
@@ -134,25 +141,25 @@ export default {
       console.log(`up item ${this.selectedItem}`)
       const curentIndex = this.findIndexOfSelectedItem(this.selectedItem.id)
       const newIndex = curentIndex - 1
-      const newitemsDataArray = this.newitemsDataArray(
+      const newItemsDataArray = this.newItemsDataArray(
         this.itemsData,
         curentIndex,
         newIndex
       )
       console.log(this.findIndexOfSelectedItem(this.selectedItem.id))
-      console.log(newitemsDataArray)
+      console.log(newItemsDataArray)
     },
     downDataItem: function() {
       console.log(`Down data item ${this.selectedItem}`)
       const curentIndex = this.findIndexOfSelectedItem(this.selectedItem.id)
       const newIndex = curentIndex + 1
-      const newitemsDataArray = this.newitemsDataArray(
+      const newItemsDataArray = this.newItemsDataArray(
         this.itemsData,
         curentIndex,
         newIndex
       )
     },
-    newitemsDataArray: function(arr, fromIndex, toIndex) {
+    newItemsDataArray: function(arr, fromIndex, toIndex) {
       var element = arr[fromIndex]
       arr.splice(fromIndex, 1)
       arr.splice(toIndex, 0, element)
