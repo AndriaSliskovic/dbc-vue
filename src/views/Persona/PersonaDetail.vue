@@ -14,6 +14,7 @@
       </v-card>
       <!-- /Zaglavlje stranice -->  
       <v-card>
+        <!-- EDIT CURENT PERSONA -->
         <v-row align="baseline" justify="space-between">
           <v-col cols="4" md="4" class="pl-6">
             <v-text-field v-model="personaName" label="Persona name"></v-text-field>
@@ -21,9 +22,9 @@
           <v-col cols="4" md="4">
             <v-select
               v-model="companyId"
-              :items="this.persona.companies.SiteCustomersList"
+              :items="this.persona.companies"
               item-text="CompanyName"
-              item-value="CompanyGuid"
+              item-value="CompanyGUID"
               label="Select Company"
               outlined
             ></v-select>
@@ -162,7 +163,7 @@ export default {
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    store.dispatch('persona/loadHardCodedCompanies').then(response => {
+    store.dispatch('persona/loadPortals').then(response => {
       next()
     })
   },
@@ -232,6 +233,11 @@ export default {
         description:{
           position:[],
           content:null
+        },
+        category:{
+          name:null,
+          icon:null,
+          sortOrder:null
         }
 
 
@@ -247,7 +253,7 @@ export default {
         id: cField.id,
         name: cField.name,
         rank: cField.rank,
-        category: cField.category.name,
+        category: cField.category,
         type: cField.type,
         required: cField.required,
         visible: cField.visible,

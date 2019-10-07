@@ -9,9 +9,10 @@ if (apiGatewayUrl == null) {
 const apiGatewayClient = client(apiGatewayUrl + "/persona/persona")
 
 export default {
-  getPersonas(companyGuid) {
+  getPersonas(companyGuidString) {
+    console.log(companyGuidString)
     return apiGatewayClient
-      .get(`?${companyGuid}`)
+      .get(`?${companyGuidString}`)
       .then(response => {
         return response.data
       })
@@ -62,11 +63,11 @@ export default {
   createNewCustomField(cField){
     console.log(`servis za new peronu ${cField.personaId}`)
 
-    return apiGatewayClient.post(`/${cField.personaId}/fields`)
+    return apiGatewayClient.post(`/${cField.personaId}/fields`,cField)
   },
   updateCustomField(cField){
     console.log(`servis za edit peronu ${cField.personaId}`,cField.id)
-    return apiGatewayClient.put(`/${cField.personaId}/fields/${cField.id}`)
+    return apiGatewayClient.put(`/${cField.personaId}/fields/${cField.id}`,cField)
     //Request failed with status code 415
     //415 (Unsupported Media Type)
   }

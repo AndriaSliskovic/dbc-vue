@@ -128,14 +128,14 @@ export const actions = {
       dispatch('notification/add',notification,{root:true})
     })
   },
-  getCompanyGroups({commit},companyId){
+  getCompanyGroups({commit,dispatch},companyId){
     return portalService.getPortalUserGroups(companyId)
    .then(response=>{
-     var items = response.data.d.map(ug =>  {
+     var items = response.data.map(ug =>  {
         return {
-          id : ug.COMP_USERGROUP_ID,
-          name : ug.GROUP_NAME,
-          guid : ug.GUID
+          id : ug.Id,
+          name : ug.Name,
+          guid : ug.Guid
         }
      })
       commit('GET_COMPANY_GROUPS',items)

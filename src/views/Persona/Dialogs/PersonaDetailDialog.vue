@@ -26,12 +26,12 @@
             </v-col>
             <v-col>
               <v-text-field
-                v-model="cField.category"
+                v-model="cField.category.name"
                 :error-messages="categoryErrors"
                 label="Category"
                 required
-                @input="$v.cField.category.$touch()"
-                @blur="$v.cField.category.$touch()"
+                @input="$v.cField.category.name.$touch()"
+                @blur="$v.cField.category.name.$touch()"
               ></v-text-field>
             </v-col>
             <v-col>
@@ -101,7 +101,7 @@ export default {
     cField: {
       name: { required },
       rank: { required },
-      category: { required }
+      category: {  name:{required} }
     }
   },
   data() {
@@ -174,8 +174,8 @@ export default {
     },
     categoryErrors() {
       const errors = []
-      if (!this.$v.cField.category.$dirty) return errors
-      !this.$v.cField.category.required && errors.push('Category is required.')
+      if (!this.$v.cField.category.name.$dirty) return errors
+      !this.$v.cField.category.name.required && errors.push('Category is required.')
       return errors
     },
     rankErrors() {

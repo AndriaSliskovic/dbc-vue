@@ -9,20 +9,18 @@ const client = axiosClient(appUrl)
 
 export default {
   getAllActivePortals() {
-    return client.post('Services/WarehouseService.svc/GetSiteCustomers',
-    {siteId:57}
+    return client.get('api/portals?siteId=57'
     )
   },
   getPortalUserGroups(portalId) {
     let searchCriteria = {
       searchGroupCritera: {
-        COMP_ID: portalId,
-        ISACTIVE: true
+        CompanyId: portalId,
+        OnlyActive: true
       }
     }
-    return client.post(
-      'Services/CompanyService.svc/GetUsergroupsForCompany',
-      searchCriteria
+    return client.get(
+      `api/userGroup?companyId=${searchCriteria.searchGroupCritera.CompanyId}`
     )
   }
 }

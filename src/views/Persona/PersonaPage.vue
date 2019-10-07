@@ -31,10 +31,10 @@
           <form>
             <v-flex xs12 sm6 d-flex data-app>
               <v-select
-                :items="this.persona.companies.SiteCustomersList"
+                :items="this.persona.companies"
                 name="company"
                 item-text="CompanyName"
-                item-value="CompanyGuid"
+                item-value="CompanyGUID"
                 outlined
                 label="Company"
                 hint="Select company"
@@ -196,12 +196,12 @@ export default {
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    store.dispatch('persona/loadHardCodedCompanies').then(response => {
+    store.dispatch('persona/loadPortals').then(response => {
       next(
         //Dobijanje companyId pri povratku sa PersonaDetail
         function(vm) {
           if (!vm.companyId) {
-            vm.companyId = vm.$store.state.persona.selectedCompanyGuid
+            vm.companyId = vm.$store.state.persona.selectedCompanyGUID
           }
         }
       )
@@ -322,7 +322,7 @@ export default {
       return `ids=${this.personaId}`
     },
     companyIsSelected: function() {
-      return this.companyId || this.persona.selectedCompanyGuid ? true : false
+      return this.companyId || this.persona.selectedCompanyGUID ? true : false
     }
   }
 }

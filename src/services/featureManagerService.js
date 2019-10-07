@@ -1,7 +1,7 @@
 import client from "./service-clients/base-client"
 
 if (typeof window.apiGatewayUrl === 'undefined') {
-    window.apiGatewayUrl = 'http://10.99.0.100'
+    window.apiGatewayUrl = 'http://10.99.0.100:5200'
 }
 
 const apiGatewayClient = client(window.apiGatewayUrl)

@@ -7,7 +7,7 @@
         <form>
           <v-flex xs12 sm6 d-flex data-app>
             <v-select
-              :items="feature.companies.SiteCustomersList"
+              :items="feature.companies"
               name="company"
               item-text="CompanyName"
               filled
@@ -114,7 +114,7 @@ export default {
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
     store
-      .dispatch('feature/loadHardCodedCompanies')
+      .dispatch('feature/loadPortals')
       .then(store.dispatch('feature/LoadAllModules'))
       .then(response => {
         next() 
@@ -124,7 +124,7 @@ export default {
     ...mapState({ feature: 'feature' }),
     subscribedEntityId: function() {
       if (this.settingsType === 'portal') {
-        return this.selectedCompany.CompanyGuid
+        return this.selectedCompany.CompanyGUID
       } else {
         return this.selectedGroupGuid
       }
@@ -145,7 +145,6 @@ export default {
   methods: {
     onUserGroupSelect() {
       this.clearPreviousUserGroupSelection()
-
       store.dispatch('feature/getCompanyGroups', this.selectedCompany.CompanyId)
       if (this.selectedGroupGuid) {
         store.dispatch('feature/cleanModules')
@@ -164,7 +163,7 @@ export default {
       store
         .dispatch(
           'feature/getSelectedModules',
-          this.selectedCompany.CompanyGuid
+          this.selectedCompany.CompanyGUID
         )
         .then(() => {
           this.generateFeatureCheckboxes()
@@ -175,7 +174,7 @@ export default {
       store.dispatch('feature/cleanModules')
       store.dispatch(
         'feature/selectedCompanyGuid',
-        this.selectedCompany.CompanyGuid
+        this.selectedCompany.CompanyGUID
       )
     },
     onSettingsTypeChange() {
@@ -201,9 +200,8 @@ export default {
     generateFeatureCheckboxes() {
       const initialModules = this.feature.initialModules
       const currentFeatureNames = this.feature.selectedModules ? this.feature.selectedModules : []
-      
       this.currentFeatures = initialModules.map(function(el) {
-          el.selected = currentFeatureNames.includes(el.name) //dodaje se novo svojstvo na osnovu kog ce checkbox biti selektovan.
+          el.selected = currentFeatureNames.includes(el.name)
           return el
         })
     },

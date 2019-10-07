@@ -3,56 +3,56 @@ import personaService from '../../services/personaService'
 
 export const namespaced = true
 
-const companiesHardCoded = {
-  SiteCustomersList: [
-    {
-      CompanyGuid: '74451a04-888f-4fe4-b1ac-c268930b97d6',
-      CompanyId: 712,
-      CompanyName: 'Academy of Learning',
-      IsDirectCompany: 1
-    },
-    {
-      CompanyGuid: '9ccadb7b-9ea2-4934-ac0b-decb508609c7',
-      CompanyId: 238,
-      CompanyName: 'Standard demo',
-      IsDirectCompany: 1
-    },
-    {
-      CompanyGuid: 'c75b90a4-cfa1-423e-8d3b-65a3cf7be720',
-      CompanyId: 1346,
-      CompanyName: 'adsads',
-      IsDirectCompany: 1
-    },
-    {
-      CompanyGuid: 'beb815e8-5495-46ed-9882-78bad353af53',
-      CompanyId: 1341,
-      CompanyName: 'asdasd',
-      IsDirectCompany: 1
-    },
-    {
-      CompanyGuid: '5935f4ab-069e-4774-8af8-1a2eb9400ca4',
-      CompanyId: 1347,
-      CompanyName: 'asdasddas',
-      IsDirectCompany: 1
-    },
-    {
-      CompanyGuid: 'ba5f6bcf-ed8b-4900-b3c0-ab7fff64180b',
-      CompanyId: 1340,
-      CompanyName: 'asdsad',
-      IsDirectCompany: 1
-    },
-    {
-      CompanyGuid: '0ceb29f3-4dc5-48c3-9f57-1090bc12ecbf',
-      CompanyId: 727,
-      CompanyName: 'Big Smoke Burger',
-      IsDirectCompany: 1
-    }
-  ]
-}
+// const companiesHardCoded = {
+//   SiteCustomersList: [
+//     {
+//       CompanyGuid: '74451a04-888f-4fe4-b1ac-c268930b97d6',
+//       CompanyId: 712,
+//       CompanyName: 'Academy of Learning',
+//       IsDirectCompany: 1
+//     },
+//     {
+//       CompanyGuid: '9ccadb7b-9ea2-4934-ac0b-decb508609c7',
+//       CompanyId: 238,
+//       CompanyName: 'Standard demo',
+//       IsDirectCompany: 1
+//     },
+//     {
+//       CompanyGuid: 'c75b90a4-cfa1-423e-8d3b-65a3cf7be720',
+//       CompanyId: 1346,
+//       CompanyName: 'adsads',
+//       IsDirectCompany: 1
+//     },
+//     {
+//       CompanyGuid: 'beb815e8-5495-46ed-9882-78bad353af53',
+//       CompanyId: 1341,
+//       CompanyName: 'asdasd',
+//       IsDirectCompany: 1
+//     },
+//     {
+//       CompanyGuid: '5935f4ab-069e-4774-8af8-1a2eb9400ca4',
+//       CompanyId: 1347,
+//       CompanyName: 'asdasddas',
+//       IsDirectCompany: 1
+//     },
+//     {
+//       CompanyGuid: 'ba5f6bcf-ed8b-4900-b3c0-ab7fff64180b',
+//       CompanyId: 1340,
+//       CompanyName: 'asdsad',
+//       IsDirectCompany: 1
+//     },
+//     {
+//       CompanyGuid: '0ceb29f3-4dc5-48c3-9f57-1090bc12ecbf',
+//       CompanyId: 727,
+//       CompanyName: 'Big Smoke Burger',
+//       IsDirectCompany: 1
+//     }
+//   ]
+// }
 
 export const state = {
   companies: [],
-  selectedCompanyGuid: null,
+  selectedCompanyGUID: null,
   personas: [],
   personaObject: null,
   customFields: [],
@@ -64,10 +64,10 @@ export const mutations = {
     state.companies = payload
   },
   COMPANY_GUID(state, payload) {
-    state.companyGuid = payload
+    state.companyGUID = payload
   },
   SET_COMPANY_ID(state, payload) {
-    state.selectedCompanyGuid = payload
+    state.selectedCompanyGUID = payload
   },
   //PERSONA
   //
@@ -145,6 +145,7 @@ export const actions = {
     return portalService
       .getAllActivePortals()
       .then(response => {
+
         commit('LOAD_PORTALS', response.data)
       })
       .catch(error => {
@@ -163,10 +164,12 @@ export const actions = {
   },
   //PERSONAS
   getPersonasByCompanyGuid({ commit, dispatch }, companyGuidString) {
+
     console.log(`action za kompanijine persone ${companyGuidString}`)
     return personaService
       .getPersonas(companyGuidString)
       .then(response => {
+        console.log(`action persona po companyId stringu ${companyGuidString}`)
         commit('GET_PERSONAS_BY_COMPANY', response)
       })
       .catch(error => {
@@ -191,7 +194,7 @@ export const actions = {
         }
         //Dobijanje poruke
         dispatch('notification/add', notification, { root: true })
-        dispatch('notification/reloadPage', {}, { root: true })
+        // dispatch('notification/reloadPage', {}, { root: true })
       })
       .catch(error => {
         const notification = {
@@ -345,7 +348,7 @@ export const actions = {
         }
         console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
-        dispatch('notification/reloadPage', {}, { root: true })
+        // dispatch('notification/reloadPage', {}, { root: true })
       })
   },
   //CUSTOM FIELDS
@@ -371,7 +374,7 @@ export const actions = {
         }
         console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
-        dispatch('notification/reloadPage', {}, { root: true })
+        // dispatch('notification/reloadPage', {}, { root: true })
       })
   },
   updateCustomField({ commit, dispatch }, cField) {
