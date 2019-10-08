@@ -56,7 +56,8 @@ export const state = {
   personas: [],
   personaObject: null,
   customFields: [],
-  selectedCustomField: null
+  selectedCustomField: null,
+  masks:[]
 }
 export const mutations = {
   //COMPANY
@@ -137,6 +138,10 @@ export const mutations = {
     //console.log(fileredArray)
     state.selectedCustomField.dataSource = filteredArray
   },
+  GET_MASKS(state,payload){
+    console.log(`mutator za maske`,payload)
+    state.masks=payload
+  }
   
 }
 export const actions = {
@@ -366,6 +371,8 @@ export const actions = {
           message: `New custom fields successfully added for selected persona!`
         }
         dispatch('notification/add', notification, { root: true })
+        //dispatch('notification/reloadPage', {}, { root: true })
+
       })
       .catch(error => {
         const notification = {
@@ -387,6 +394,7 @@ export const actions = {
           message: `Custom field successfully updated for selected persona!`
         }
         dispatch('notification/add', notification, { root: true })
+
       })
       .catch(error => {
         const notification = {
@@ -397,6 +405,15 @@ export const actions = {
         dispatch('notification/add', notification, { root: true })
         dispatch('notification/reloadPage', {}, { root: true })
       })
+  },
+  getMasks({commit}){
+    console.log(`action za maske`)
+      return portalService.getMasks()
+      .then(
+
+        response=>commit('GET_MASKS',response.data)
+        
+      )
   }
 }
 

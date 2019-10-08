@@ -1,35 +1,64 @@
 <template>
   <v-container fluid>
     <v-select
-      v-model="mask"
-      :items="this.persona.selectedCustomField.dataSource"
-      item-text="display"
-      item-value="display"
+      v-model="maskId"
+      :items="this.persona.masks"
+      item-text="Value"
+      item-value="Id"
       label="Pick mask"
+      persistent-hint
       outlined
       dense
     ></v-select>
-    <v-text-field v-model="defaultValue" label="Default value" required></v-text-field>
+    <v-text-field
+      v-model="defaultValue"
+      label="Default value"
+      required
+      :error-messages="defaultValueErrors"
+      @input="$v.defaultValue.$touch()"
+      @blur="$v.defaultValue.$touch()"
+    ></v-text-field>
   </v-container>
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
+import { validationMixin } from 'vuelidate'
+import { required } from 'vuelidate/lib/validators'
 export default {
-  data(){
-    return {
-      mask:null
-    }
+  data() {
+    return {}
   },
-    computed: {
+  validations: {
+    defaultValue: { required }
+  },
+  computed: {
     ...mapState({ persona: 'persona' }),
     defaultValue: {
       get: function() {
         return this.persona.selectedCustomField.defaultValue
       },
       set: function(newValue) {
-        newValue ? this.persona.selectedCustomField.defaultValue : null
+        console.log(newValue)
+        newValue
+          ? (this.persona.selectedCustomField.defaultValue = newValue)
+          : null
       }
+    },
+    maskId: {
+      get: function() {
+        return this.persona.selectedCustomField.maskId
+      },
+      set: function(nV) {
+        nV ? (this.persona.selectedCustomField.maskId = nV) : null
+      }
+    },
+    defaultValueErrors() {
+      const errors = []
+      if (!this.$v.defaultValue.$dirty) return errors
+      !this.$v.defaultValue.required &&
+        errors.push('Default value is required.')
+      return errors
     }
   }
 }

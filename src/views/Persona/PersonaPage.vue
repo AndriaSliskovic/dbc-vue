@@ -39,6 +39,7 @@
                 label="Company"
                 hint="Select company"
                 persistent-hint
+                menu-props="auto"
                 v-model="companyId"
                 @change="setSelectedCompany"
               ></v-select>
@@ -196,7 +197,8 @@ export default {
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    store.dispatch('persona/loadPortals').then(response => {
+    store.dispatch('persona/loadPortals')
+    .then(response => {
       next(
         //Dobijanje companyId pri povratku sa PersonaDetail
         function(vm) {
@@ -206,10 +208,12 @@ export default {
         }
       )
     })
+   
   },
   beforeRouteUpdate() {},
   created() {
     this.companies = this.persona.companies
+    store.dispatch('persona/getMasks')
   },
   methods: {
     setSelectedCompany() {

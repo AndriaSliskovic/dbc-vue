@@ -1,18 +1,20 @@
 <template>
   <v-app id="inspire">
     <v-container fluid>
-            <!-- Zaglavlje stranice -->
+      <!-- Zaglavlje stranice -->
       <v-card>
         <v-row>
           <v-col cols="6">
-            <v-card-title class="pl-4 pt-4 blue--text text--darken-4">Selected persona : {{personaName}}</v-card-title>
+            <v-card-title
+              class="pl-4 pt-4 blue--text text--darken-4"
+            >Selected persona : {{personaName}}</v-card-title>
           </v-col>
           <v-col cols="6">
-            <NotificationContainer/>
+            <NotificationContainer />
           </v-col>
         </v-row>
       </v-card>
-      <!-- /Zaglavlje stranice -->  
+      <!-- /Zaglavlje stranice -->
       <v-card>
         <!-- EDIT CURENT PERSONA -->
         <v-row align="baseline" justify="space-between">
@@ -26,13 +28,13 @@
               item-text="CompanyName"
               item-value="CompanyGUID"
               label="Select Company"
+              menu-props="auto"
               outlined
             ></v-select>
           </v-col>
           <v-col cols="4" md="2">
             <v-btn color="primary" @click="editPersonaHandler()">Edit curent persona</v-btn>
           </v-col>
-
         </v-row>
       </v-card>
 
@@ -62,7 +64,11 @@
                       @click="onCreateCustomFieldObject"
                     >Create new Custom field</v-btn>
                   </template>
-                   <PersonaDetailDialog @close="val=>dialogCreate=val" :cField="dataObject" :dialogType="dialogType"></PersonaDetailDialog>
+                  <PersonaDetailDialog
+                    @close="val=>dialogCreate=val"
+                    :cField="dataObject"
+                    :dialogType="dialogType"
+                  ></PersonaDetailDialog>
                 </v-dialog>
               </v-col>
             </v-row>
@@ -79,7 +85,11 @@
                     v-on="on"
                   >mdi-table-edit</v-icon>
                 </template>
-                <PersonaDetailDialog @close="val=>dialogEdit=val" :cField="selectedCustomField" :dialogType="dialogType"></PersonaDetailDialog>
+                <PersonaDetailDialog
+                  @close="val=>dialogEdit=val"
+                  :cField="selectedCustomField"
+                  :dialogType="dialogType"
+                ></PersonaDetailDialog>
               </v-dialog>
             </template>
             <template v-slot:item.delete="{item}">
@@ -152,20 +162,21 @@ export default {
         { text: 'Type', value: 'type' },
         { text: 'Delete', value: 'delete' }
       ],
-      dialogType:null,
+      dialogType: null,
 
-      dialogCreate:false,
+      dialogCreate: false,
       dialogEdit: false,
       dialogConf: false,
 
       selectedCustomField: null,
-      dataObject:null
+      dataObject: null
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
     store.dispatch('persona/loadPortals').then(response => {
       next()
     })
+    
   },
   created() {
     this.companies = this.persona.companies.SiteCustomersList
@@ -205,43 +216,40 @@ export default {
       console.log(`klik na save `)
     },
     onCreateCustomFieldObject() {
-      this.dialogType="create"
+      this.dialogType = 'create'
       console.log('create Custom field object')
-      this.dataObject=this.createDataObject()
+      this.dataObject = this.createDataObject()
       console.log(this.dataObject)
-      store.dispatch('persona/setSelectedCustomField',this.dataObject)
-
-
+      store.dispatch('persona/setSelectedCustomField', this.dataObject)
     },
-    createDataObject(){
+    createDataObject() {
+
       return {
-        personaId:this.personaId,
-        id:null,
-        active:null,
-        name:null,
-        tag:null,
-        rank:null,
-        type:null,
-        summaryField:null,
-        required:null,
-        defaultValue:null,
-        maskId:null,
-        visible:null,
-        javascriptFunctionId:null,
-        editable:null,
-        dataSource:[],
-        description:{
-          position:[],
-          content:null
+        personaId: this.personaId,
+        id: null,
+        active: null,
+        name: null,
+        tag: null,
+        rank: null,
+        category: {
+          name: null,
+          icon: null,
+          sortOrder: 1
         },
-        category:{
-          name:null,
-          icon:null,
-          sortOrder:null
-        }
+        type: null,
+        required: null,
+        dataSource: [],
+        defaultValue: null,
+        maskId: null,
+        visible: null,
+        //javascriptFunctionId: null,
+        editable: null,
 
-
-
+        // description: {
+        //   position: [],
+        //   content: null
+        // },
+        //summaryField: null
       }
     },
     setSelectedCustomField(key) {
@@ -249,7 +257,7 @@ export default {
         return el.id === key
       })
       this.selectedCustomField = {
-        personaId:this.personaId,
+        personaId: this.personaId,
         id: cField.id,
         name: cField.name,
         rank: cField.rank,
@@ -260,11 +268,12 @@ export default {
         editable: cField.editable,
         dataSource: cField.dataSource,
         maskId: cField.maskId,
-        defaultValue: cField.defaultValue
+        defaultValue: cField.defaultValue,
+        tag:null
       }
     },
     onEditCustomFieldHandler(key) {
-      this.dialogType='edit'
+      this.dialogType = 'edit'
       console.log(`edit Custom Field ${key}`)
       this.setSelectedCustomField(key)
       console.log(this.selectedCustomField)

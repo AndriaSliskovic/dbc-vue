@@ -22,5 +22,9 @@ export default {
     return client.get(
       `api/userGroup?companyId=${searchCriteria.searchGroupCritera.CompanyId}`
     )
+  },
+  getMasks(){
+    console.log(`servis za maske`)
+    return client.get('api/masks')
   }
 }

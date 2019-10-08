@@ -130,9 +130,9 @@ export default {
       this.$v.$reset()
     },
     onSubmitHandler: function({ dispatch }) {
+      console.log("on submit")
       //Logika za submitovanje forme
-      console.log(this.cField)
-
+      // console.log(this.cField)
       this.$v.$touch()
       if (this.$v.$invalid) {
         console.log(`submitovanje forme ${this.nameErrors}`)
@@ -142,25 +142,37 @@ export default {
         }
         store.dispatch('notification/add', notification, { root: true })
       }
+      //Setovanje tag fielda
+      this.cField.tag=this.cField.name.trim().replace(/\s/g, '_')
       //Slanje podataka posle validacije
       store.dispatch('persona/createNewCustomField', this.cField)
+      store.dispatch('notification/reloadPage', {}, { root: true })
+      this.$emit('close', false)
+
     },
     onUpdateHandler(){
       console.log(this.cField)
       this.$v.$touch()
       if (this.$v.$invalid) {
-        console.log(`submitovanje forme ${this.nameErrors}`)
+        console.log(`editovanje forme ${this.nameErrors}`)
         const notification = {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
         }
         store.dispatch('notification/add', notification, { root: true })
       }
+      //Setovanje tag fielda
+      this.cField.tag=this.cField.name.trim().replace(/\s/g, '_')
       //Slanje podataka posle validacije
       store.dispatch('persona/updateCustomField', this.cField)
+      store.dispatch('notification/reloadPage', {}, { root: true })
+      this.$emit('close', false)
+ 
     },
     resetValidation() {
-      console.log(`resetovanje`)
+      console.log(`tag field`,this.cField.tag)
+
+      console.log(`novi tag field`,this.cField.tag)      
       this.$v.$reset()
     }
   },

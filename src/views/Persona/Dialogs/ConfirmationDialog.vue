@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card >
     <v-card-title class="headline">
       <h4>
         <slot name="header"></slot>
@@ -13,11 +13,11 @@
     </v-card-text>
 
     <v-card-actions>
-      <div class="flex-grow-1"></div>
+      <div class="flex-grow-1 "></div>
 
-      <v-btn color="normal" text @click="onCloseDialogHandler">Cancel</v-btn>
+      <v-btn color="normal" class="red--text text--darken-3" text @click="onCloseDialogHandler">Cancel</v-btn>
 
-      <v-btn color="teal darken-3" text @click="onSubmitHandler">Confirm</v-btn>
+      <v-btn color="normal"  class="teal--text text--darken-3" text @click="onSubmitHandler">Confirm</v-btn>
     </v-card-actions>
   </v-card>
 </template>
