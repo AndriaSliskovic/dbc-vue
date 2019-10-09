@@ -77,7 +77,7 @@
           </v-col>
           <!-- RIGHT DIALOG -->
           <v-col cols="6">
-            <PersonaDetailDialogRight :selectedType="cField.type" @close="val=>$emit('close',val)"></PersonaDetailDialogRight>
+            <PersonaDetailDialogRight :selectedType="cField.type" @close="val=>$emit('close',val)" :cField="cField"></PersonaDetailDialogRight>
           </v-col>
           <!-- / RIGHT DIALOG -->
         </v-row>
@@ -94,14 +94,14 @@ import PersonaDetailDialogRight from './PersonaDetailDialogRight'
 
 export default {
   components: {
-    PersonaDetailDialogRight,
+    PersonaDetailDialogRight
   },
   mixins: [validationMixin],
   validations: {
     cField: {
       name: { required },
       rank: { required },
-      category: {  name:{required} }
+      category: { name: { required } }
     }
   },
   data() {
@@ -130,7 +130,7 @@ export default {
       this.$v.$reset()
     },
     onSubmitHandler: function({ dispatch }) {
-      console.log("on submit")
+      console.log('on submit')
       //Logika za submitovanje forme
       // console.log(this.cField)
       this.$v.$touch()
@@ -142,15 +142,18 @@ export default {
         }
         store.dispatch('notification/add', notification, { root: true })
       }
+      console.log(this.cField)
       //Setovanje tag fielda
-      this.cField.tag=this.cField.name.trim().replace(/\s/g, '_')
+      if (this.cField.name) {
+        this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
+      }
+
       //Slanje podataka posle validacije
       store.dispatch('persona/createNewCustomField', this.cField)
       store.dispatch('notification/reloadPage', {}, { root: true })
       this.$emit('close', false)
-
     },
-    onUpdateHandler(){
+    onUpdateHandler() {
       console.log(this.cField)
       this.$v.$touch()
       if (this.$v.$invalid) {
@@ -162,17 +165,18 @@ export default {
         store.dispatch('notification/add', notification, { root: true })
       }
       //Setovanje tag fielda
-      this.cField.tag=this.cField.name.trim().replace(/\s/g, '_')
+      if (this.cField.name) {
+        this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
+      }
       //Slanje podataka posle validacije
       store.dispatch('persona/updateCustomField', this.cField)
       store.dispatch('notification/reloadPage', {}, { root: true })
       this.$emit('close', false)
- 
     },
     resetValidation() {
-      console.log(`tag field`,this.cField.tag)
+      console.log(`tag field`, this.cField.tag)
 
-      console.log(`novi tag field`,this.cField.tag)      
+      console.log(`novi tag field`, this.cField.tag)
       this.$v.$reset()
     }
   },
@@ -187,7 +191,8 @@ export default {
     categoryErrors() {
       const errors = []
       if (!this.$v.cField.category.name.$dirty) return errors
-      !this.$v.cField.category.name.required && errors.push('Category is required.')
+      !this.$v.cField.category.name.required &&
+        errors.push('Category is required.')
       return errors
     },
     rankErrors() {

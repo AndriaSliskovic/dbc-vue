@@ -141,11 +141,18 @@ export const mutations = {
   GET_MASKS(state,payload){
     console.log(`mutator za maske`,payload)
     state.masks=payload
-  }
+  },
+  //CUSTOM FIELDS
+  DELETE_CUSTOM_FIELD(state, payload) {
+    console.log(`mutator delete custom field ${payload}`)
+    const newArray = state.customFields.filter(el => el.id !== payload)
+    state.customFields = newArray
+    console.log(`mutator delete ${newArray}`,newArray)
+  },
   
 }
 export const actions = {
-  //COMPNIES
+  //COMPANIES
   loadPortals({ commit, dispatch }) {
     return portalService
       .getAllActivePortals()
@@ -399,12 +406,38 @@ export const actions = {
       .catch(error => {
         const notification = {
           type: 'error',
-          message: `Error updating new custom fields by selected persona, please contact administrator.`
+          message: error
         }
         console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
         dispatch('notification/reloadPage', {}, { root: true })
       })
+  },
+  deleteSelectedCustomField({commit,dispatch},params){
+    console.log(`action za delete`,params)
+    console.log(params.personaId)
+    console.log(params.cFieldId)
+    return personaService.deleteSelectedCustomField(params)
+      .then(()=>{
+        const notification = {
+          type: 'success',
+          message: `Custom field successfully deleted for selected persona!`
+        }
+        dispatch('notification/add', notification, { root: true })
+        commit("DELETE_CUSTOM_FIELD",params.cFieldId)
+      })
+      .catch(error => {
+        const notification = {
+          type: 'error',
+          message: error
+        }
+        console.log(notification, error)
+        dispatch('notification/add', notification, { root: true })
+      })
+
+      
+
+
   },
   getMasks({commit}){
     console.log(`action za maske`)

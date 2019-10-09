@@ -61,14 +61,17 @@ export default {
     return apiGatewayClient.get(`/${personaId}/fields`)
   },
   createNewCustomField(cField){
-    console.log(`servis za new peronu ${cField.personaId}`)
+    console.log(`servis za new custom field ${cField.personaId}`)
 
     return apiGatewayClient.post(`/${cField.personaId}/fields`,cField)
   },
   updateCustomField(cField){
     console.log(`servis za edit peronu ${cField.personaId}`,cField.id)
     return apiGatewayClient.put(`/${cField.personaId}/fields/${cField.id}`,cField)
-    //Request failed with status code 415
-    //415 (Unsupported Media Type)
+  },
+  deleteSelectedCustomField(params){
+    const cFieldIdString=`fieldIds=${params.cFieldId}`
+    console.log(`servis za delete custom field`,params,cFieldIdString)
+    return apiGatewayClient.patch(`/${params.personaId}/fields/delete?${cFieldIdString}`)
   }
 }

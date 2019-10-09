@@ -65,7 +65,8 @@
                     >Create new Custom field</v-btn>
                   </template>
                   <PersonaDetailDialog
-                    @close="val=>dialogCreate=val"
+                  
+                    @close="val=>onCloseDialog(val)"
                     :cField="dataObject"
                     :dialogType="dialogType"
                   ></PersonaDetailDialog>
@@ -86,7 +87,7 @@
                   >mdi-table-edit</v-icon>
                 </template>
                 <PersonaDetailDialog
-                  @close="val=>dialogEdit=val"
+                  @close="val=>onCloseDialog(val)"
                   :cField="selectedCustomField"
                   :dialogType="dialogType"
                 ></PersonaDetailDialog>
@@ -123,9 +124,6 @@
       <v-row>
         <v-col>
           <v-btn small @click="()=>this.$router.go(-1) ">Go back</v-btn>
-        </v-col>
-        <v-col>
-          <v-btn small color="primary" @click="saveHandler">Save</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -212,9 +210,6 @@ export default {
       console.log(`imam edit ${editedPersona}`)
       store.dispatch('persona/editPersonaData', editedPersona)
     },
-    saveHandler() {
-      console.log(`klik na save `)
-    },
     onCreateCustomFieldObject() {
       this.dialogType = 'create'
       console.log('create Custom field object')
@@ -227,7 +222,7 @@ export default {
       return {
         personaId: this.personaId,
         id: null,
-        active: null,
+        active: true,
         name: null,
         tag: null,
         rank: null,
@@ -241,10 +236,9 @@ export default {
         dataSource: [],
         defaultValue: null,
         maskId: null,
-        visible: null,
+        visible: false,
+        editable: false,
         //javascriptFunctionId: null,
-        editable: null,
-
         // description: {
         //   position: [],
         //   content: null
@@ -280,15 +274,20 @@ export default {
       store.dispatch('persona/setSelectedCustomField', this.selectedCustomField)
     },
     onDeleteCustomFieldHandler(key) {
-      this.setSelectedPersona(key)
-      console.log(`delete custom field ${key}`)
+      const params={
+        personaId:this.personaId,
+        cFieldId:key
+      }
+      store.dispatch('persona/deleteSelectedCustomField',params)
+      console.log(`delete custom field ${params}`)
     },
     onCloseDialog(value) {
-      this.onDialogDetail = value
+      this.dialogCreate = value
+      this.dialogEdit=value
+      //Kreiranje praznog objekta zbog resetovanja centralnog stora
+      this.dataObject = this.createDataObject()
+      store.dispatch('persona/setSelectedCustomField', this.dataObject)
     },
-    onCloseConfirmationDialog(value) {
-      this.onDialogConfirmation = value
-    }
   },
   computed: {
     ...mapState({ persona: 'persona' }),

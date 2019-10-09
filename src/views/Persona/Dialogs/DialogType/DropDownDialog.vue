@@ -37,7 +37,7 @@
                 @click="upDataItem"
                 :disabled="disabledAddButton"
               >
-              <v-icon >keyboard_arrow_up</v-icon>
+                <v-icon>keyboard_arrow_up</v-icon>
               </v-btn>
               <v-btn
                 small
@@ -54,13 +54,13 @@
                 @click="downDataItem"
                 :disabled="disabledDownButton"
               >
-              <v-icon>keyboard_arrow_down</v-icon>
+                <v-icon>keyboard_arrow_down</v-icon>
               </v-btn>
             </v-row>
           </v-col>
         </v-row>
         <v-row>
-        <v-col>
+          <v-col>
             <v-select
               v-model="defaultItemDataValue"
               :items="this.persona.selectedCustomField.dataSource"
@@ -70,9 +70,8 @@
               outlined
               dense
             ></v-select>
-        </v-col>
+          </v-col>
         </v-row>
-
       </v-form>
     </v-row>
   </v-container>
@@ -90,9 +89,9 @@ export default {
       disabledAddButton: true,
       disabledDownButton: true,
       disabledRemoveButton: true,
-      defaultItemDataValue:null
     }
   },
+  
   beforeCreate() {},
   created() {},
   methods: {
@@ -131,7 +130,7 @@ export default {
         'persona/removePersonaDataSourceItem',
         this.selectedItem.id
       )
-      if (this.itemsData.length===0) {
+      if (this.itemsData.length === 0) {
         this.disabledAddButton = true
         this.disabledDownButton = true
         this.disabledRemoveButton = true
@@ -230,6 +229,14 @@ export default {
       },
       set: function(newValue) {
         newValue ? this.persona.selectedCustomField.dataSource : null
+      }
+    },
+    defaultItemDataValue: {
+      get: function() {
+        return this.persona.selectedCustomField.defaultValue
+      },
+      set: function(nV) {
+        nV ? (this.persona.selectedCustomField.defaultValue = nV) : null
       }
     }
   }

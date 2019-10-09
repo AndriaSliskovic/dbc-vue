@@ -11,7 +11,7 @@
       dense
     ></v-select>
     <v-text-field
-      v-model="defaultValue"
+      v-model="cField.defaultValue"
       label="Default value"
       required
       :error-messages="defaultValueErrors"
@@ -28,6 +28,9 @@ import { required } from 'vuelidate/lib/validators'
 export default {
   data() {
     return {}
+  },
+    props: {
+    cField:Object,
   },
   validations: {
     defaultValue: { required }
