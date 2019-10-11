@@ -139,7 +139,6 @@ export const mutations = {
     state.selectedCustomField.dataSource = filteredArray
   },
   GET_MASKS(state,payload){
-    console.log(`mutator za maske`,payload)
     state.masks=payload
   },
   //CUSTOM FIELDS
@@ -440,12 +439,9 @@ export const actions = {
 
   },
   getMasks({commit}){
-    console.log(`action za maske`)
       return portalService.getMasks()
       .then(
-
-        response=>commit('GET_MASKS',response.data)
-        
+        response=>commit('GET_MASKS',response.data)       
       )
   }
 }

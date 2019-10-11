@@ -19,9 +19,10 @@
     </script>
     
     <style scoped>
-    /* .notification-container {
-      position: fixed;
-      top: 75px;
-      right: 20px;
-    } */
+    .notification-container {
+      position: relative;
+      top: 15px;
+      right: 15px;
+      
+    }
     </style>

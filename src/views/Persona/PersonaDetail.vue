@@ -74,7 +74,7 @@
               </v-col>
             </v-row>
           </v-card-title>
-          <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
+          <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id" sort-by="rank">
             <template v-slot:item.edit="{item}">
               <!-- DIALOG EDIT -->
               <v-dialog v-model="dialogEdit" persistent max-width="1200px">
@@ -234,7 +234,7 @@ export default {
         type: null,
         required: null,
         dataSource: [],
-        defaultValue: null,
+        defaultValue: "",
         maskId: null,
         visible: false,
         editable: false,

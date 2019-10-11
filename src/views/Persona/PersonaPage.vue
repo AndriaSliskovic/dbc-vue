@@ -13,7 +13,7 @@
         </v-row>
       </v-card>
       <!-- /Zaglavlje stranice -->      
-      <v-dialog v-model="dialogOne" max-width="400px">
+      <!-- <v-dialog v-model="dialogOne" max-width="400px">
         <template v-slot:activator="{ on }">
           <v-btn color="primary" dark v-on="on">Dialog sa aktivatorom</v-btn>
         </template>
@@ -25,7 +25,7 @@
             <v-btn color="green darken-1" text @click="dialogOne = false">Agree</v-btn>
           </v-card-actions>
         </v-card>
-      </v-dialog>
+      </v-dialog> -->
       <v-col>
         <template>
           <form>
@@ -129,17 +129,6 @@
               </v-dialog>
 
               <!-- BEZ AKTIVATORA -->
-              <v-btn color="primary" dark @click.stop="dialogTwo = true">Bez aktivatora</v-btn>
-              <v-dialog v-model="dialogTwo" max-width="290">
-                <v-card>
-                  <v-card-title>Dialog bez aktivatora</v-card-title>
-                  <v-card-actions>
-                    <div class="flex-grow-1"></div>
-                    <v-btn color="green darken-1" text @click="dialogTwo = false">Disagree</v-btn>
-                    <v-btn color="green darken-1" text @click="dialogTwo = false">Agree</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
             </template>
           </v-data-table>
         </v-card>

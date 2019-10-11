@@ -39,12 +39,12 @@ export default {
     ...mapState({ persona: 'persona' }),
     defaultValue: {
       get: function() {
-        return this.persona.selectedCustomField.defaultValue
+        return this.cField.defaultValue
       },
       set: function(newValue) {
         console.log(newValue)
         newValue
-          ? (this.persona.selectedCustomField.defaultValue = newValue)
+          ? (this.cField.defaultValue = newValue)
           : null
       }
     },

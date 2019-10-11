@@ -24,7 +24,6 @@ export default {
     )
   },
   getMasks(){
-    console.log(`servis za maske`)
     return client.get('api/masks')
   }
 }

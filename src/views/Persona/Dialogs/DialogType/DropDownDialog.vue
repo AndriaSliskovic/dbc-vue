@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h4>DATA SOURCE</h4>
+    <h4>Drop down items</h4>
     <v-row>
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row align="baseline">
@@ -12,9 +12,9 @@
           </v-col>
         </v-row>
         <!-- DATASOURCE LIST - CARD -->
-        <v-row v-if="itemsData">
+        <v-row v-if="itemsData.length">
           <v-col>
-            <v-card class="mx-auto" max-width="400" tile>
+            <v-card class="mx-auto" max-width="400" tile v-if="name"> 
               <v-list dense>
                 <v-list-item-group v-model="itemsData" color="primary">
                   <v-list-item v-for="item in itemsData" v-bind:key="item.id" input-value="true">

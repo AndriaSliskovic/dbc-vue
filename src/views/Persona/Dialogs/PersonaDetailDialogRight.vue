@@ -19,9 +19,9 @@
           <v-row align="end">
             Container {{selectedType}}
           </v-row>
-          <v-col v-if="selectedType==='IMAGE1'" >
+          <!-- <v-col v-if="selectedType==='IMAGE1'" >
               <ImagebankDialog ></ImagebankDialog>
-          </v-col>
+          </v-col> -->
 
           <keep-alive >
             <component v-bind:is="selectedType" :cField="cField"></component>
