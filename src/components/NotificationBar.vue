@@ -1,11 +1,14 @@
  <template>
+ <v-row>
     <v-alert 
     :type="messageType"
-    height="60"
     dense
+    dismissible
      >
     <p>{{ notification.message }}</p>
     </v-alert>
+ </v-row>
+
 </template>
     
     <script>

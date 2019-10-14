@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <v-card>
+      <v-card-title>Create new persona</v-card-title>
       <v-form v-model="valid">
         <v-col>
           <v-text-field
@@ -13,12 +14,11 @@
           ></v-text-field>
         </v-col>
       </v-form>
-      <v-col>
-        <v-row>
-          <v-btn small text @click="onCloseDialogHandler">Cancel</v-btn>
-          <v-btn small color="primary" text @click="onSubmitHandler">Submit</v-btn>
+      <v-card-actions>
+        <v-row align="center" justify="center">
+          <BaseSubmitGroup @close="onCloseCreatePersonaHandler" @submit="onSubmitCreatePersonaHandler"/>
         </v-row>
-      </v-col>
+      </v-card-actions>
     </v-card>
   </v-container>
 </template>
@@ -31,7 +31,6 @@ import { required } from 'vuelidate/lib/validators'
 export default {
   data() {
     return {
-      dialog: null,
       valid: false,
       name: ''
     }
@@ -41,11 +40,13 @@ export default {
   },
   props: ['companyId'],
   methods: {
-    onCloseDialogHandler: function() {
+    onCloseCreatePersonaHandler: function() {
       this.$emit('close', false)
+      //Reset validation
+      this.$v.$reset()
     },
-    onSubmitHandler: function() {
-      //Validacija pri submitu
+    onSubmitCreatePersonaHandler: function() {
+      //Submit validation
       this.$v.$touch()
       if (this.$v.$invalid) {
         console.log(`submitovanje forme ${this.nameErrors}`)
@@ -55,10 +56,10 @@ export default {
         }
         return store.dispatch('notification/add', notification, { root: true })
       }
-      //console.log(`submitovanje forme ${this.dataObject}`, this.dataObject)
       store.dispatch('persona/createNewPersona',this.dataObject)
-      // this.dialog = false
       this.$emit('close', false)
+      //Reset field name
+      this.name=''
     }
   },
   computed: {
@@ -66,7 +67,8 @@ export default {
     dataObject() {
       return {
         companyId: this.companyId,
-        name: this.name
+        name: this.name,
+        companyIdString:`?companyId=${this.companyId}`
       }
     },
     nameErrors() {

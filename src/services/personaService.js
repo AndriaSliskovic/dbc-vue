@@ -10,7 +10,7 @@ const apiGatewayClient = client(apiGatewayUrl + "/persona/persona")
 
 export default {
   getPersonas(companyGuidString) {
-    console.log(companyGuidString)
+    console.log(`servis za string ${companyGuidString}`)
     return apiGatewayClient
       .get(`?${companyGuidString}`)
       .then(response => {

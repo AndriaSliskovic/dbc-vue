@@ -5,53 +5,28 @@
       <v-card>
         <v-row>
           <v-col cols="6">
-            <v-card-title class="pl-4 pt-4 blue--text text--darken-4">Persona page</v-card-title>
+            <v-card-title class="pl-4 pt-4 blue--text text--darken-4 headline">Persona page</v-card-title>
           </v-col>
           <v-col cols="6">
-            <NotificationContainer/>
+            <NotificationContainer />
           </v-col>
         </v-row>
       </v-card>
-      <!-- /Zaglavlje stranice -->      
-      <!-- <v-dialog v-model="dialogOne" max-width="400px">
-        <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark v-on="on">Dialog sa aktivatorom</v-btn>
-        </template>
-        <v-card>
-          <v-card-title>Tekst dialoga sa aktivatorom !</v-card-title>
-          <v-card-actions>
-            <div class="flex-grow-1"></div>
-            <v-btn color="green darken-1" text @click="dialogOne = false">Disagree</v-btn>
-            <v-btn color="green darken-1" text @click="dialogOne = false">Agree</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog> -->
+
       <v-col>
         <template>
-          <form>
-            <v-flex xs12 sm6 d-flex data-app>
-              <v-select
-                :items="this.persona.companies"
-                name="company"
-                item-text="CompanyName"
-                item-value="CompanyGUID"
-                outlined
-                label="Company"
-                hint="Select company"
-                persistent-hint
-                menu-props="auto"
-                v-model="companyId"
-                @change="setSelectedCompany"
-              ></v-select>
-            </v-flex>
-          </form>
+          <!-- SELECT COMPANIES -->
+          <BaseSelectCompany
+            :companies="companies.allCompanies"
+            @on-change-select="onChangeSelectHandler(companyId)"
+          />
         </template>
       </v-col>
       <v-col v-show="companyIsSelected">
         <v-card class="grey lighten-4">
           <v-card-title>
             <v-row align="baseline" justify="space-between">
-              <v-col class="pl-6">
+              <v-col class="pl-6" cols="4">
                 <v-text-field
                   v-model="search"
                   append-icon="search"
@@ -62,7 +37,7 @@
               </v-col>
 
               <!-- Select personas status -->
-              <v-col>
+              <v-col cols="4">
                 <v-select
                   :items="personaStatus"
                   name="status"
@@ -76,17 +51,17 @@
               </v-col>
 
               <!-- / Select personas status -->
-              <!-- ADD NEW PERSONA -->
-              <v-col>
+              <!-- CREATE PERSONA -->
+              <v-col cols="4">
                 <v-dialog v-model="dialogAddNewPersona" persistent max-width="600px">
                   <template v-slot:activator="{ on }">
-                    <v-btn color="primary" v-on="on">Add new persona</v-btn>
+                    <v-btn color="primary" v-on="on">Create new persona</v-btn>
                   </template>
-                  <PersonaDialogAddNewPersona @close="onCloseDialog" :companyId="this.companyId"></PersonaDialogAddNewPersona>
+                  <PersonaCreateNew @close="onCloseDialog" :companyId="this.companyId"></PersonaCreateNew>
                 </v-dialog>
               </v-col>
             </v-row>
-            <!-- / ADD NEW PERSONA -->
+            <!-- / CREATE PERSONA -->
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
             <!-- STATUS -->
@@ -107,10 +82,10 @@
               <v-icon large color="blue darken-2" @click="onEditPersona(item.id)">mdi-table-edit</v-icon>
             </template>
             <!-- / STATUS -->
-            <!-- DELETE ICON -->
+            <!-- DELETE PERSONA -->
             <template v-slot:item.delete="{item}">
               <!-- DIALOG ZA DELETE -->
-              <v-dialog v-model="dialogConf" persistent max-width="400px">
+              <v-dialog v-model="dialogDeletePersona" persistent max-width="400px">
                 <template v-slot:activator="{ on }">
                   <v-icon
                     large
@@ -119,16 +94,14 @@
                     @click="setSelectedPersona(item.id)"
                   >mdi-delete</v-icon>
                 </template>
-                <ConfirmationDialog
-                  @close="val=>dialogConf=val"
+                <BaseConfirmationDialog
+                  @close="val=>dialogDeletePersona=val"
                   @submit="onDeletePersonadHandler(item.id)"
                 >
                   <template v-slot:header>Delete persona : {{selectedPersona.name}}</template>
                   <template v-slot:body>Are you sure you want to delete this persona ?</template>
-                </ConfirmationDialog>
+                </BaseConfirmationDialog>
               </v-dialog>
-
-              <!-- BEZ AKTIVATORA -->
             </template>
           </v-data-table>
         </v-card>
@@ -146,7 +119,7 @@ import store from '@/store/store'
 import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
 import router from 'vue-router'
-import PersonaDialogAddNewPersona from './Dialogs/PersonaDialogAddNewPersona'
+import PersonaCreateNew from './PersonaCreateNew'
 import ConfirmationDialog from './Dialogs/ConfirmationDialog'
 
 const defaultStatus = function() {
@@ -155,13 +128,12 @@ const defaultStatus = function() {
 export default {
   components: {
     NotificationContainer,
-    PersonaDialogAddNewPersona,
+    PersonaCreateNew,
     ConfirmationDialog
   },
   data() {
     return {
-      companies: null,
-      companyId: null,
+      companyChange: false,
       search: '',
       headers: [
         { text: 'Edit', value: 'edit' },
@@ -179,36 +151,28 @@ export default {
       selectedPersonaStatusId: null,
       selectedPersona: null,
       dialogAddNewPersona: false,
-      dialogConf: false,
-
-      dialogOne: false,
-      dialogTwo: false
+      dialogDeletePersona: false
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    store.dispatch('persona/loadPortals')
-    .then(response => {
+    store.dispatch('companies/loadAllCompanies').then(response => {
       next(
         //Dobijanje companyId pri povratku sa PersonaDetail
         function(vm) {
           if (!vm.companyId) {
-            vm.companyId = vm.$store.state.persona.selectedCompanyGUID
+            vm.companyId = vm.$store.state.companies.selectedCompanyGUID
           }
         }
       )
     })
-   
   },
-  beforeRouteUpdate() {},
+
   created() {
-    this.companies = this.persona.companies
     store.dispatch('persona/getMasks')
   },
+
   methods: {
-    setSelectedCompany() {
-      //Setovanje companyId u centralni store zbog goBack varijante
-      store.dispatch('persona/setCompanyId', this.companyId)
-      //Dohvatanje persona
+    onChangeSelectHandler(onChangeSelectHandler) {
       store.dispatch('persona/getPersonasByCompanyGuid', this.companyIdString)
     },
     getStatusColor(status) {
@@ -242,7 +206,7 @@ export default {
       this.personaId = key
       this.setSelectedPersona(key)
       this.$router.push({
-        name: 'persona',
+        name: 'customFields',
         params: { personaId: this.personaId, companyId: this.companyId }
       })
     },
@@ -272,14 +236,15 @@ export default {
             ? this.personaStatus[0].text
             : this.personaStatus[1].text,
           companyId: p.companyId,
-          stringId: `ids=${p.id}`
+          stringId: `ids=${p.id}`,
+          companyIdString:`?companyId=${p.companyId}`
         }
       })
     }
   },
 
   computed: {
-    ...mapState({ persona: 'persona' }),
+    ...mapState(['persona', 'companies']),
     companyIdString: function() {
       return `companyId=${this.companyId}`
     },
@@ -315,7 +280,23 @@ export default {
       return `ids=${this.personaId}`
     },
     companyIsSelected: function() {
-      return this.companyId || this.persona.selectedCompanyGUID ? true : false
+      return this.companies.selectedCompanyGUID ? true : false
+    },
+    companyId: {
+      get() {
+        return this.companies.selectedCompanyGUID
+      },
+      set(newValue) {
+        this.companies.selectedCompanyGUID = newValue
+      }
+    }
+  },
+  watch: {
+    companyId: function(newValue, oldValue) {
+      if (newValue != oldValue) {
+        console.log('New value: ' + newValue + ', Old value: ' + oldValue)
+        return (this.companyChange = true)
+      }
     }
   }
 }

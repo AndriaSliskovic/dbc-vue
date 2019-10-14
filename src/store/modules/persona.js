@@ -3,56 +3,7 @@ import personaService from '../../services/personaService'
 
 export const namespaced = true
 
-// const companiesHardCoded = {
-//   SiteCustomersList: [
-//     {
-//       CompanyGuid: '74451a04-888f-4fe4-b1ac-c268930b97d6',
-//       CompanyId: 712,
-//       CompanyName: 'Academy of Learning',
-//       IsDirectCompany: 1
-//     },
-//     {
-//       CompanyGuid: '9ccadb7b-9ea2-4934-ac0b-decb508609c7',
-//       CompanyId: 238,
-//       CompanyName: 'Standard demo',
-//       IsDirectCompany: 1
-//     },
-//     {
-//       CompanyGuid: 'c75b90a4-cfa1-423e-8d3b-65a3cf7be720',
-//       CompanyId: 1346,
-//       CompanyName: 'adsads',
-//       IsDirectCompany: 1
-//     },
-//     {
-//       CompanyGuid: 'beb815e8-5495-46ed-9882-78bad353af53',
-//       CompanyId: 1341,
-//       CompanyName: 'asdasd',
-//       IsDirectCompany: 1
-//     },
-//     {
-//       CompanyGuid: '5935f4ab-069e-4774-8af8-1a2eb9400ca4',
-//       CompanyId: 1347,
-//       CompanyName: 'asdasddas',
-//       IsDirectCompany: 1
-//     },
-//     {
-//       CompanyGuid: 'ba5f6bcf-ed8b-4900-b3c0-ab7fff64180b',
-//       CompanyId: 1340,
-//       CompanyName: 'asdsad',
-//       IsDirectCompany: 1
-//     },
-//     {
-//       CompanyGuid: '0ceb29f3-4dc5-48c3-9f57-1090bc12ecbf',
-//       CompanyId: 727,
-//       CompanyName: 'Big Smoke Burger',
-//       IsDirectCompany: 1
-//     }
-//   ]
-// }
-
 export const state = {
-  companies: [],
-  selectedCompanyGUID: null,
   personas: [],
   personaObject: null,
   customFields: [],
@@ -60,18 +11,7 @@ export const state = {
   masks:[]
 }
 export const mutations = {
-  //COMPANY
-  LOAD_PORTALS(state, payload) {
-    state.companies = payload
-  },
-  COMPANY_GUID(state, payload) {
-    state.companyGUID = payload
-  },
-  SET_COMPANY_ID(state, payload) {
-    state.selectedCompanyGUID = payload
-  },
   //PERSONA
-  //
   GET_PERSONAS_BY_COMPANY(state, payload) {
     state.personas = payload
   },
@@ -151,28 +91,6 @@ export const mutations = {
   
 }
 export const actions = {
-  //COMPANIES
-  loadPortals({ commit, dispatch }) {
-    return portalService
-      .getAllActivePortals()
-      .then(response => {
-
-        commit('LOAD_PORTALS', response.data)
-      })
-      .catch(error => {
-        const notification = {
-          type: 'error',
-          message: `Error loading companies, please contact administrator.`
-        }
-        dispatch('notification/add', notification, { root: true })
-      })
-  },
-  loadHardCodedCompanies({ commit }) {
-    commit('LOAD_PORTALS', companiesHardCoded)
-  },
-  setCompanyId({ commit }, companyId) {
-    commit('SET_COMPANY_ID', companyId)
-  },
   //PERSONAS
   getPersonasByCompanyGuid({ commit, dispatch }, companyGuidString) {
 
@@ -180,7 +98,7 @@ export const actions = {
     return personaService
       .getPersonas(companyGuidString)
       .then(response => {
-        console.log(`action persona po companyId stringu ${companyGuidString}`)
+        console.log(`action persona po companyId stringu ${companyGuidString}`,response)
         commit('GET_PERSONAS_BY_COMPANY', response)
       })
       .catch(error => {
@@ -203,9 +121,10 @@ export const actions = {
           type: 'success',
           message: `Persona successfully created !`
         }
-        //Dobijanje poruke
+        //Add to central store
+        dispatch('getPersonasByCompanyGuid',dataObject.companyIdString)
+        //Success mesage
         dispatch('notification/add', notification, { root: true })
-        // dispatch('notification/reloadPage', {}, { root: true })
       })
       .catch(error => {
         const notification = {
@@ -214,11 +133,12 @@ export const actions = {
         }
         console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
+        dispatch('getPersonasByCompanyGuid',dataObject.companyIdString)
       })
   },
 
   deletePersona({ commit, dispatch }, persona) {
-    console.log(`delete persona stringId : ${persona}`)
+    console.log(`delete persona stringId : ${persona}`,persona)
 
     personaService
       .deleteSelectedPersona(persona.stringId)
@@ -237,6 +157,7 @@ export const actions = {
           message: `Can not delete selected persona - server error, please contact administrator.`
         }
         dispatch('notification/add', notification, { root: true })
+        dispatch( 'getPersonasByCompanyGuid',persona.companyIdString)
       })
   },
   //PERSONA STATUS

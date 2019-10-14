@@ -22,7 +22,8 @@
             <v-text-field v-model="personaName" label="Persona name"></v-text-field>
           </v-col>
           <v-col cols="4" md="4">
-            <v-select
+            <BaseSelectCompany :companies="companies.allCompanies" />
+            <!-- <v-select
               v-model="companyId"
               :items="this.persona.companies"
               item-text="CompanyName"
@@ -30,7 +31,7 @@
               label="Select Company"
               menu-props="auto"
               outlined
-            ></v-select>
+            ></v-select> -->
           </v-col>
           <v-col cols="4" md="2">
             <v-btn color="primary" @click="editPersonaHandler()">Edit curent persona</v-btn>
@@ -149,7 +150,7 @@ export default {
       personaId: this.$route.params.personaId,
       companyId: this.$route.params.companyId,
       selectedCompany: null,
-      companies: [],
+
       editedCompany: null,
       search: '',
       headers: [
@@ -171,13 +172,13 @@ export default {
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    store.dispatch('persona/loadPortals').then(response => {
+    store.dispatch('companies/loadAllCompanies').then(response => {
       next()
     })
     
   },
   created() {
-    this.companies = this.persona.companies.SiteCustomersList
+    // this.companies = this.persona.companies.SiteCustomersList
 
     //Dobijanje persona objekta
     store.dispatch('persona/getSelectedPersonaByPersonaId', this.personaId)
@@ -290,7 +291,7 @@ export default {
     },
   },
   computed: {
-    ...mapState({ persona: 'persona' }),
+    ...mapState(['persona', 'companies']),
     personaName: {
       get: function() {
         return this.persona.personaObject ? this.persona.personaObject.name : ''
