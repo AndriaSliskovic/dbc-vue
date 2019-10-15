@@ -172,15 +172,14 @@ export default {
   },
 
   methods: {
+    setSelectedPersona(key) {
+      console.log(`setovanje persone ${key}`)
+      this.selectedPersona = this.mapPersonas().find(function(el) {
+        return el.id === key
+      })
+    },
     onChangeSelectHandler(onChangeSelectHandler) {
       store.dispatch('persona/getPersonasByCompanyGuid', this.companyIdString)
-    },
-    getStatusColor(status) {
-      const perStatus = this.personaStatus
-      if (status) {
-        return this.personaStatus[0].color
-      }
-      return this.personaStatus[1].color
     },
     setPersonaStatus(key) {
       console.log('imam klik', key)
@@ -196,12 +195,14 @@ export default {
         ? (element.status = this.personaStatus[0].text)
         : (element.status = this.personaStatus[1].text)
     },
-    setSelectedPersona(key) {
-      console.log(`setovanje persone ${key}`)
-      this.selectedPersona = this.mapPersonas().find(function(el) {
-        return el.id === key
-      })
+    getStatusColor(status) {
+      const perStatus = this.personaStatus
+      if (status) {
+        return this.personaStatus[0].color
+      }
+      return this.personaStatus[1].color
     },
+
     onEditPersona(key) {
       this.personaId = key
       this.setSelectedPersona(key)
@@ -237,7 +238,7 @@ export default {
             : this.personaStatus[1].text,
           companyId: p.companyId,
           stringId: `ids=${p.id}`,
-          companyIdString:`?companyId=${p.companyId}`
+          companyIdString: `?companyId=${p.companyId}`
         }
       })
     }

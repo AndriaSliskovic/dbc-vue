@@ -23,15 +23,6 @@
           </v-col>
           <v-col cols="4" md="4">
             <BaseSelectCompany :companies="companies.allCompanies" />
-            <!-- <v-select
-              v-model="companyId"
-              :items="this.persona.companies"
-              item-text="CompanyName"
-              item-value="CompanyGUID"
-              label="Select Company"
-              menu-props="auto"
-              outlined
-            ></v-select> -->
           </v-col>
           <v-col cols="4" md="2">
             <v-btn color="primary" @click="editPersonaHandler()">Edit curent persona</v-btn>
@@ -54,7 +45,7 @@
                 hide-details
               ></v-text-field>
               <div class="flex-grow-1"></div>
-              <!-- CREATE Custom Fielda -->
+              <!-- CREATE Custom Fields -->
               <v-col class="pr-6">
                 <v-dialog v-model="dialogCreate" persistent max-width="1200px">
                   <!-- Aktivator -->

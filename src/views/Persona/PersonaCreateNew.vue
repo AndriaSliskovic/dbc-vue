@@ -15,9 +15,7 @@
         </v-col>
       </v-form>
       <v-card-actions>
-        <v-row align="center" justify="center">
           <BaseSubmitGroup @close="onCloseCreatePersonaHandler" @submit="onSubmitCreatePersonaHandler"/>
-        </v-row>
       </v-card-actions>
     </v-card>
   </v-container>

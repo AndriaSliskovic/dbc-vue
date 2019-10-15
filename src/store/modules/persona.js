@@ -1,5 +1,6 @@
 import portalService from '../../services/portalService'
 import personaService from '../../services/personaService'
+import { stat } from 'fs'
 
 export const namespaced = true
 
@@ -8,7 +9,8 @@ export const state = {
   personaObject: null,
   customFields: [],
   selectedCustomField: null,
-  masks:[]
+  masks:[],
+  categories:[]
 }
 export const mutations = {
   //PERSONA
@@ -32,9 +34,6 @@ export const mutations = {
         ;(e.name = payload.name), (e.companyId = payload.companyId)
       })
   },
-  CLEAR_PERSONA(state) {
-    state.personas = null
-  },
   GET_PERSONA_OBJECT(state, payload) {
     //console.log('mutator persona object',payload)
     state.personaObject = payload
@@ -52,12 +51,19 @@ export const mutations = {
     console.log(payload)
     state.personas = payload
   },
+
   //CUSTOM FIELDS
   GET_CUSTOM_FIELDS(state, payload) {
     state.customFields = payload
   },
   SET_SELECTED_CUSTOM_FIELD(state, payload) {
     state.selectedCustomField = payload
+  },
+  //CATEGORY
+  CREATE_CATEGORY_ARRAY(state){
+    const catItems=state.customFields.map(e=>e.category.name)
+    const filteredCategories = [...new Set(catItems)]
+    state.categories=filteredCategories
   },
 
   //DATA SOURCE ITEMS
@@ -259,6 +265,10 @@ export const actions = {
         console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
       })
+      .then(
+        commit('CREATE_CATEGORY_ARRAY')
+        // console.log(`action get cf ${state.customFields}`,state.customFields)
+      )
   },
   editPersonaData({ commit, dispatch }, editedObject) {
     console.log(`action edit persone ${editedObject}`)

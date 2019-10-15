@@ -1,8 +1,10 @@
 <template>
-  <v-row align="center" justify="center">
+<div>
     <v-btn color="normal" class="red--text text--darken-3" text @click="onClose">Cancel</v-btn>
     <v-btn color="normal" class="teal--text text--darken-3" text @click="onSubmit">Confirm</v-btn>
-  </v-row>
+</div>
+
+
 </template>
 <script>
 export default {
