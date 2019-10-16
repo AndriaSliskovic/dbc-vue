@@ -1,11 +1,19 @@
 <template>
   <v-container>
     <v-card>
+      <!-- EDIT -->
       <template v-if="dialogType==='edit'">
-        <v-card-title>Edit {{cField.name}} custom field for {{persona.personaObject.name}} persona</v-card-title>
+        <v-row justify="space-between">
+          <v-card-title>Edit {{cField.name}} custom field for {{persona.personaObject.name}} persona</v-card-title>
+          <BaseIconClose @close="onCloseDialogHandler" />
+        </v-row>
       </template>
+      <!-- CREATE -->
       <template v-if="dialogType==='create'">
-        <v-card-title>Create new custom field for {{persona.personaObject.name}} persona</v-card-title>
+        <v-row justify="space-between">
+          <v-card-title>Create new custom field for {{persona.personaObject.name}} persona</v-card-title>
+          <BaseIconClose @close="onCloseDialogHandler" />
+        </v-row>
       </template>
       <v-form ref="form" v-model="valid">
         <v-card-text class="grey lighten-4">
@@ -33,23 +41,72 @@
               </v-col>
               <v-col>
                 <!-- CATEGORY DIALOG -->
-                <v-dialog v-model="dialogCategory" persistent max-width="800px">
-                  <template v-slot:activator="{ on }">
-                    <v-btn color="primary" v-on="on">Edit curent category</v-btn>
-                  </template>
-                  <CategoryDialog :category="cField.category" :name="cField.name" @close="()=>dialogCategory=false" @submit="onSubmitCategory">
-
-                  </CategoryDialog>
-
-                </v-dialog>
-                <v-text-field
-                  v-model="cField.category.name"
-                  :error-messages="categoryErrors"
-                  label="Category"
-                  required
-                  @input="$v.cField.category.name.$touch()"
-                  @blur="$v.cField.category.name.$touch()"
-                ></v-text-field>
+                <!-- EDIT CATEGORY -->
+                <template v-if="dialogType==='edit'">
+                  <v-card class="grey lighten-4">
+                    <v-card-title>
+                      <v-row justify="center">Curent category</v-row>
+                    </v-card-title>
+                    <!-- category table -->
+                    <v-card-text>
+                      <v-simple-table dense class="grey lighten-3">
+                        <template v-slot:default>
+                          <thead>
+                            <tr>
+                              <th class="text-left">Category name</th>
+                              <th class="text-left">Sort order</th>
+                              <th class="text-left">Icon</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>{{ cField.category.name }}</td>
+                              <td>{{ cField.category.sortOrder }}</td>
+                              <td>
+                                <template>
+                                  <v-icon small>{{cField.category.icon}}</v-icon>
+                                </template>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </template>
+                      </v-simple-table>
+                    </v-card-text>
+                    <v-card-actions>
+                      <template>
+                        <v-dialog v-model="dialogCategory" persistent max-width="800px">
+                          <template v-slot:activator="{ on }">
+                            <v-row justify="center">
+                              <v-btn color="primary" v-on="on">Edit curent category</v-btn>
+                            </v-row>
+                          </template>
+                          <CategoryDialog
+                            :category="cField.category"
+                            :name="cField.name"
+                            @close="()=>dialogCategory=false"
+                            @submit="onSubmitCategory"
+                          ></CategoryDialog>
+                        </v-dialog>
+                      </template>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+                <!-- CREATE CATEGORY -->
+                <template v-if="dialogType==='create'">
+                  <v-dialog v-model="dialogCategory" persistent max-width="800px">
+                    <template v-slot:activator="{ on }">
+                      <v-row justify="center">
+                        <v-btn color="primary" v-on="on">Create category</v-btn>
+                      </v-row>
+                    </template>
+                    <CategoryDialog
+                      :category="cField.category"
+                      :name="cField.name"
+                      @close="()=>dialogCategory=false"
+                      @submit="onSubmitCategory"
+                    ></CategoryDialog>
+                  </v-dialog>
+                </template>
               </v-col>
 
               <!-- // CATEGORY DIALOG -->
@@ -83,11 +140,11 @@
             </v-col>
             <!-- RIGHT DIALOG -->
             <v-col cols="6">
-              <PersonaDetailDialogRight
+              <CustomFieldSelectedContainer
                 :selectedType="cField.type"
                 @close="val=>$emit('close',val)"
                 :cField="cField"
-              ></PersonaDetailDialogRight>
+              ></CustomFieldSelectedContainer>
             </v-col>
             <!-- / RIGHT DIALOG -->
           </v-row>
@@ -118,12 +175,12 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, email } from 'vuelidate/lib/validators'
-import PersonaDetailDialogRight from './PersonaDetailDialogRight'
-import CategoryDialog from './CategoryDialog'
+import CustomFieldSelectedContainer from './Dialogs/CustomFieldSelectedContainer'
+import CategoryDialog from './Dialogs/CategoryDialog'
 
 export default {
   components: {
-    PersonaDetailDialogRight,
+    CustomFieldSelectedContainer,
     CategoryDialog
   },
   mixins: [validationMixin],
@@ -154,7 +211,6 @@ export default {
   },
 
   methods: {
-
     onCloseDialogHandler: function() {
       this.$emit('close', false)
       //Resetovanje prethodne validacije
@@ -205,8 +261,8 @@ export default {
       store.dispatch('notification/reloadPage', {}, { root: true })
       this.$emit('close', false)
     },
-    onSubmitCategory(){
-      console.log("submitovana je kategorija")
+    onSubmitCategory() {
+      console.log('submitovana je kategorija')
     },
     resetValidation() {
       console.log(`tag field`, this.cField.tag)

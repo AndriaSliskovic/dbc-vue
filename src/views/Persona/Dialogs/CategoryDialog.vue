@@ -30,13 +30,13 @@
             <v-row>
               <v-col class="text-right title">Icon preview :</v-col>
               <v-col cols="2">
-                <v-icon large>{{category.icon}}</v-icon>
+                <v-icon large outlined>{{category.icon}}</v-icon>
               </v-col>
             </v-row>
           </v-col>
         </v-row>
         <!-- SORT ORDER -->
-        <v-row>
+        <v-row class="mx-auto">
           <v-col cols="2">
             <v-text-field
               v-model="category.sortOrder"
@@ -48,13 +48,19 @@
               @blur="$v.category.sortOrder.$touch()"
             ></v-text-field>
           </v-col>
-          <v-col cols="4">
-            <v-card class="mx-auto" max-width="400" tile >
+          <v-spacer />
+          <v-col cols="6">
+            <v-card class="mx-auto grey lighten-4" max-width="400" tile >
+              <v-card-title>Select existing category :</v-card-title>
               <v-list dense>
                 <v-list-item-group v-model="itemsData" color="primary">
-                  <v-list-item v-for="(item,index) in itemsData" v-bind:key="index" input-value="true">
+                  <v-list-item
+                    v-for="(item,index) in itemsData"
+                    v-bind:key="index"
+                    input-value="true"
+                  >
                     <v-list-item-content>
-                      <v-list-item-title v-text="item" ></v-list-item-title>
+                      <v-list-item-title v-text="item" @click="setSelectedItem(key)"></v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                 </v-list-item-group>
@@ -64,7 +70,9 @@
         </v-row>
       </v-card-text>
       <v-card-actions>
-        <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler" />
+        <v-row justify="center">
+          <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler" />
+        </v-row>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -78,7 +86,7 @@ import { required, maxLength, email } from 'vuelidate/lib/validators'
 export default {
   props: {
     category: Object,
-    name:String
+    name: String
   },
   mixins: [validationMixin],
   validations: {
@@ -89,15 +97,18 @@ export default {
     }
   },
   methods: {
-    onCloseDialogHandler: function() {
+    onCloseDialogHandler() {
       this.$emit('close', false)
       //Resetovanje prethodne validacije
       this.$v.$reset()
     },
-    onSubmitHandler: function() {
+    onSubmitHandler() {
       console.log('on submit')
       this.$emit('submit', false)
       this.$emit('close', false)
+    },
+    setSelectedItem(key) {
+      console.log(`key : ${key}`)
     }
   },
 
@@ -112,7 +123,7 @@ export default {
         return []
       },
       set: function(newValue) {
-        newValue ? (this.persona.categories = newValue) : null
+        newValue ? this.persona.categories : null
       }
     },
     categoryErrors() {

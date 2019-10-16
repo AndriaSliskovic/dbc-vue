@@ -95,13 +95,13 @@
                     @click="setSelectedPersona(item.id)"
                   >mdi-delete</v-icon>
                 </template>
-                <BaseConfirmationDialog
-                  @close="val=>dialogDeletePersona=val"
+                <BaseDialogConfirmation
+                  @close="()=>dialogDeletePersona=false"
                   @submit="onDeletePersonadHandler(item.id)"
                 >
                   <template v-slot:header>Delete persona : {{selectedPersona.name}}</template>
                   <template v-slot:body>Are you sure you want to delete this persona ?</template>
-                </BaseConfirmationDialog>
+                </BaseDialogConfirmation>
               </v-dialog>
             </template>
           </v-data-table>
@@ -122,7 +122,7 @@ import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
 import router from 'vue-router'
 import PersonaCreateNew from './PersonaCreateNew'
-import ConfirmationDialog from './Dialogs/ConfirmationDialog'
+
 
 const defaultStatus = function() {
   return { active: null, text: 'All', color: 'blue', letter: '' }
@@ -131,7 +131,7 @@ export default {
   components: {
     NotificationContainer,
     PersonaCreateNew,
-    ConfirmationDialog
+
   },
   data() {
     return {

@@ -53,11 +53,11 @@
                     @click="onCreateCustomFieldObject"
                   >Create new Custom field</v-btn>
                 </template>
-                <PersonaDetailDialog
+                <CustomFieldSelected
                   @close="val=>onCloseDialog(val)"
                   :cField="dataObject"
                   :dialogType="dialogType"
-                ></PersonaDetailDialog>
+                ></CustomFieldSelected>
               </v-dialog>
             </v-col>
           </v-row>
@@ -80,15 +80,16 @@
                   v-on="on"
                 >mdi-table-edit</v-icon>
               </template>
-              <PersonaDetailDialog
+              <CustomFieldSelected
                 @close="val=>onCloseDialog(val)"
                 :cField="selectedCustomField"
                 :dialogType="dialogType"
-              ></PersonaDetailDialog>
+              ></CustomFieldSelected>
             </v-dialog>
           </template>
+          <!-- DIALOG DELETE -->
           <template v-slot:item.delete="{item}">
-             <v-dialog v-model="dialogConf" persistent max-width="400px">
+            <v-dialog v-model="dialogConf" persistent max-width="400px">
               <template v-slot:activator="{ on }">
                 <v-icon
                   large
@@ -97,20 +98,19 @@
                   @click="setSelectedCustomField(item.id)"
                 >mdi-delete</v-icon>
               </template>
-              <ConfirmationDialog
-                @close="val=>dialogConf=val"
+              <BaseDialogConfirmation
+                @close="()=>dialogConf=false"
                 @submit="onDeleteCustomFieldHandler(item.id)"
-                max-width="450px"
               >
-                <template v-slot:header>Delete custom field : {{selectedCustomField.name}}</template>
+                <template v-slot:header>Delete custom field 1 : {{selectedCustomField.name}}</template>
                 <template v-slot:body>Are you sure you want to delete this custom field ?</template>
-              </ConfirmationDialog>
+              </BaseDialogConfirmation>
             </v-dialog>
           </template>
         </v-data-table>
         <v-card-actions>
           <v-row justify="center">
-              <v-btn small @click="()=>this.$router.go(-1) ">Go back</v-btn>
+            <v-btn small @click="()=>this.$router.go(-1) ">Go back</v-btn>
           </v-row>
         </v-card-actions>
       </v-card>
@@ -123,14 +123,11 @@ import NProgress from 'nprogress'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import NotificationContainer from '../../components/NotificationContainer'
-import CompaniesHardCode from '../../../GetSiteCustomers.json'
-import PersonaDetailDialog from './Dialogs/PersonaDetailDialog'
-import ConfirmationDialog from './Dialogs/ConfirmationDialog'
+import CustomFieldSelected from './CustomFieldSelected'
 
 export default {
   components: {
-    PersonaDetailDialog,
-    ConfirmationDialog,
+    CustomFieldSelected,
     NotificationContainer
   },
   data() {
