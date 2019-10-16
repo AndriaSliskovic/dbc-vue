@@ -12,7 +12,8 @@
           </v-col>
         </v-row>
         <!-- DATASOURCE LIST - CARD -->
-        <v-row v-if="itemsData.length">
+        <v-row v-show="itemsData.length">
+          <!-- <v-row> -->
           <v-col>
             <v-card class="mx-auto" max-width="400" tile v-if="name"> 
               <v-list dense>
@@ -223,12 +224,17 @@ export default {
   },
   computed: {
     ...mapState({ persona: 'persona' }),
-    itemsData: {
+    itemsData:
+    {
       get: function() {
-        return this.persona.selectedCustomField.dataSource
+        if (this.persona.selectedCustomField.dataSource) {
+          return this.persona.selectedCustomField.dataSource
+        } 
+        //Must be array not null
+        return []
       },
       set: function(newValue) {
-        newValue ? this.persona.selectedCustomField.dataSource : null
+        newValue ? this.persona.selectedCustomField.dataSource=newValue : null
       }
     },
     defaultItemDataValue: {

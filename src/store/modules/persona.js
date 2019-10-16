@@ -265,10 +265,6 @@ export const actions = {
         console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
       })
-      .then(
-        commit('CREATE_CATEGORY_ARRAY')
-        // console.log(`action get cf ${state.customFields}`,state.customFields)
-      )
   },
   editPersonaData({ commit, dispatch }, editedObject) {
     console.log(`action edit persone ${editedObject}`)
@@ -292,6 +288,11 @@ export const actions = {
         dispatch('notification/add', notification, { root: true })
         // dispatch('notification/reloadPage', {}, { root: true })
       })
+  },
+  //CATEGORIES
+  getAllCategoriesForSelectedPersona({commit}){
+    console.log("pravi niz")
+    commit('CREATE_CATEGORY_ARRAY')
   },
   //CUSTOM FIELDS
   getSelectedCustomField({ commit, dispatch }, cFieldId) {

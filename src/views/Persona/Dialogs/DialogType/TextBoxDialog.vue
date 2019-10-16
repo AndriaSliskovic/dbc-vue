@@ -1,5 +1,6 @@
 <template>
   <v-container fluid>
+    <v-card class="grey lighten-4">
     <v-select
       v-model="maskId"
       :items="this.persona.masks"
@@ -18,6 +19,8 @@
       @input="$v.defaultValue.$touch()"
       @blur="$v.defaultValue.$touch()"
     ></v-text-field>
+    </v-card>
+
   </v-container>
 </template>
 <script>

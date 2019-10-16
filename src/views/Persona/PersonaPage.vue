@@ -3,27 +3,26 @@
     <v-container fluid>
       <!-- Zaglavlje stranice -->
       <v-card>
-        <v-row>
+        <v-row class="grey lighten-3 mx-0">
           <v-col cols="6">
-            <v-card-title class="pl-4 pt-4 blue--text text--darken-4 headline">Persona page</v-card-title>
+            <v-card-title class="pl-4 pt-4 blue--text text--darken-4">Persona page</v-card-title>
           </v-col>
           <v-col cols="6">
             <NotificationContainer />
           </v-col>
         </v-row>
-      </v-card>
-
-      <v-col>
+        <v-divider />
         <template>
-          <!-- SELECT COMPANIES -->
-          <BaseSelectCompany
-            :companies="companies.allCompanies"
-            @on-change-select="onChangeSelectHandler(companyId)"
-          />
+          <v-row class="grey lighten-4 mx-0 py-2">
+            <!-- SELECT COMPANIES -->
+            <BaseSelectCompany
+              :companies="companies.allCompanies"
+              @on-change-select="onChangeSelectHandler(companyId)"
+            />
+          </v-row>
         </template>
-      </v-col>
-      <v-col v-show="companyIsSelected">
-        <v-card class="grey lighten-4">
+        <v-divider />
+        <v-col v-show="companyIsSelected">
           <v-card-title>
             <v-row align="baseline" justify="space-between">
               <v-col class="pl-6" cols="4">
@@ -78,13 +77,15 @@
                 {{item.status}}
               </v-chip>
             </template>
+            <!-- / STATUS -->
+            <!-- EDIT PERSONA -->
             <template v-slot:item.edit="{item}">
               <v-icon large color="blue darken-2" @click="onEditPersona(item.id)">mdi-table-edit</v-icon>
             </template>
-            <!-- / STATUS -->
+
             <!-- DELETE PERSONA -->
             <template v-slot:item.delete="{item}">
-              <!-- DIALOG ZA DELETE -->
+              <!-- DIALOG FOR DELETE -->
               <v-dialog v-model="dialogDeletePersona" persistent max-width="400px">
                 <template v-slot:activator="{ on }">
                   <v-icon
@@ -104,9 +105,10 @@
               </v-dialog>
             </template>
           </v-data-table>
-        </v-card>
-        <!-- /Tabela -->
-      </v-col>
+
+          <!-- /Tabela -->
+        </v-col>
+      </v-card>
     </v-container>
   </v-app>
 </template>

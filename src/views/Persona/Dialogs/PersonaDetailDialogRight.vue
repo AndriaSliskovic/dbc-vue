@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid>
-    <v-row align="end" justify="end">
+  <v-container fluid >
+    <v-row align="end" justify="end" class="grey lighten-4 ma-0px">
     <v-btn
       fab 
       dark 
@@ -12,23 +12,11 @@
       <v-icon >close</v-icon>
     </v-btn>
     </v-row>
-
-    <v-row>
-      <v-col cols="12">
-        <v-row align="end" justify="center" class="grey lighten-5" style="height: 550px;">
-          <v-row align="end">
-            Container {{selectedType}}
-          </v-row>
-          <!-- <v-col v-if="selectedType==='IMAGE1'" >
-              <ImagebankDialog ></ImagebankDialog>
-          </v-col> -->
-
+        <v-row align="end" justify="center" class="grey lighten-4" style="height: 550px;">
           <keep-alive >
             <component v-bind:is="selectedType" :cField="cField"></component>
           </keep-alive>
         </v-row>
-      </v-col>
-    </v-row>
   </v-container>
 </template>
 <script>
