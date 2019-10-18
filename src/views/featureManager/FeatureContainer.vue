@@ -1,25 +1,24 @@
 <template>
-  <div>
-    <v-card class="pa-2" outlined>
-      <v-card-title>
-        <h3>Features</h3>
-      </v-card-title>
-      <v-card-text>
-        <v-layout wrap>
-          <v-flex v-for="mod in currentFeatures" xs2>
-            <v-checkbox v-model="mod.selected" :label="mod.name" @change="updateModules"></v-checkbox>
-          </v-flex>
-        </v-layout>
-      </v-card-text>
-    </v-card>
-  </div>
+  <v-card>
+    <v-card-title>Features</v-card-title>
+    <v-card-text>
+      <v-row>
+        <v-col v-for="item in currentFeatures" cols="4">
+            <FeatureCard :feature='item' @onChangeSelect="updateModules"/>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
 </template>
-
 <script>
 import store from '@/store/store'
 import { mapState, mapActions } from 'vuex'
+import FeatureCard from './FeatureCard'
 
 export default {
+    components:{
+FeatureCard
+    },
   data() {
     return {
       availableModules: []
@@ -35,7 +34,6 @@ export default {
       return this.currentFeatures.filter(e => e.selected).map(e => e.id)
     },
     updateModules: function() {
-      console.log(`checkedModules`,this.checkedModules())
       store.dispatch('feature/selectedModules', this.checkedModules())
       this.$emit('updateModules', this.checkedModules())
     }
@@ -45,5 +43,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-</style>

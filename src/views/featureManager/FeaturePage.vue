@@ -1,56 +1,68 @@
 <template>
   <v-app id="inspire">
-    <div>
-      <NotificationContainer />
-      <h3>Feature manager</h3>
-      <v-col>
-        <form>
-          <v-flex xs12 sm6 d-flex data-app>
-            <v-select
-              :items="feature.companies"
-              name="company"
-              item-text="CompanyName"
-              filled
-              return-object
-              label="Company"
-              hint="Select company"
-              persistent-hint
-              v-model="selectedCompany"
-              @change="setSelectedCompany"
-            ></v-select>
-          </v-flex>
-        </form>
-      </v-col>
-      <v-col>
-        <!-- Select options -->
-        <v-flex xs12 sm6 d-flex data-app>
-          <v-select
-            :items="selectOptions"
-            name="group"
-            item-text="name"
-            item-value="key"
-            filled
-            label="Settings"
-            hint="Select portal or user group"
-            persistent-hint
-            v-model="settingsType"
-            @change="onSettingsTypeChange"
-            :disabled="isSettingsDisabled"
-          ></v-select>
-        </v-flex>
-      </v-col>
+    <v-card>
+      <v-card-title>
+        <v-col cols="6">
+          <h3>Feature manager</h3>
+        </v-col>
+        <v-col cols="6">
+          <NotificationContainer />
+        </v-col>
+      </v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col cols="6">
+            <v-col>
+              <form>
+                <!-- COMPANY -->
+                <v-select
+                  :items="feature.companies"
+                  name="company"
+                  item-text="CompanyName"
+                  filled
+                  return-object
+                  label="Company"
+                  hint="Select company"
+                  persistent-hint
+                  v-model="selectedCompany"
+                  @change="setSelectedCompany"
+                ></v-select>
+              </form>
+            </v-col>
+            <!-- SETTINGS -->
+            <v-col>
+              <!-- Select options -->
+              <v-select
+                :items="selectOptions"
+                name="group"
+                item-text="name"
+                item-value="key"
+                filled
+                label="Settings"
+                hint="Select portal or user group"
+                persistent-hint
+                v-model="settingsType"
+                @change="onSettingsTypeChange"
+                :disabled="isSettingsDisabled"
+              ></v-select>
+            </v-col>
+          </v-col>
+          <v-col cols="6">
+            <FeatureContainer :currentFeatures="currentFeatures" @updateModules="featuresIds=$event"/>
+          </v-col>
+        </v-row>
 
-      <div>
-        <div v-if="selectedCompany">
+        <template v-if="selectedCompany">
           <v-col>
-            <!-- Ako je selektovan poratal -->
+            <!-- IF PORTAL IS SELECTED -->
             <div v-if="settingsType==='portal'">
               <FeatureDetail :currentFeatures="currentFeatures" @updateModules="featuresIds=$event"></FeatureDetail>
             </div>
-            <!-- Ako je selektovana grupa -->
+            <!-- IF SELECTED GROUP -->
             <div v-if="settingsType==='group'">
               <form>
-                <v-flex xs12 sm6 d-flex data-app>
+                <v-col cols="6">
+                  <!-- USERS GROUP -->
                   <v-select
                     :items="feature.groups"
                     name="group"
@@ -63,19 +75,25 @@
                     v-model="selectedGroupGuid"
                     @change="onSelectedGroupChange"
                   ></v-select>
-                </v-flex>
-                <FeatureDetail :currentFeatures="currentFeatures" @updateModules="featuresIds=$event"></FeatureDetail>
+                </v-col>
+
+                <FeatureDetail
+                  :currentFeatures="currentFeatures"
+                  @updateModules="featuresIds=$event"
+                ></FeatureDetail>
               </form>
             </div>
           </v-col>
 
           <!-- SUBMIT BUTTON -->
-          <v-row justify="center">
-            <v-btn color="error" @click.prevent="submitted" :disabled="isSaveButtonDisabled">Save</v-btn>
-          </v-row>
-        </div>
-      </div>
-    </div>
+          <v-card-actions>
+            <v-row justify="center">
+              <v-btn color="error" @click.prevent="submitted" :disabled="isSaveButtonDisabled">Save</v-btn>
+            </v-row>
+          </v-card-actions>
+        </template>
+      </v-card-text>
+    </v-card>
   </v-app>
 </template>
 
@@ -85,6 +103,8 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import FeatureDetail from './FeatureDetail'
 import NotificationContainer from '../../components/NotificationContainer'
+import FeatureCard from './FeatureCard'
+import FeatureContainer from './FeatureContainer'
 
 export default {
   data() {
@@ -110,14 +130,15 @@ export default {
   },
   components: {
     FeatureDetail,
-    NotificationContainer
+    NotificationContainer,
+    FeatureContainer
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
     store
       .dispatch('feature/loadPortals')
       .then(store.dispatch('feature/LoadAllModules'))
       .then(response => {
-        next() 
+        next()
       })
   },
   computed: {
@@ -137,7 +158,7 @@ export default {
     },
     isSettingsDisabled: function() {
       return !this.selectedCompany
-    },
+    }
   },
   created() {
     this.companies = this.feature.companies
@@ -199,12 +220,18 @@ export default {
     },
     generateFeatureCheckboxes() {
       const initialModules = this.feature.initialModules
-      const currentFeatureNames = this.feature.selectedModules ? this.feature.selectedModules : []
+      const currentFeatureNames = this.feature.selectedModules
+        ? this.feature.selectedModules
+        : []
       this.currentFeatures = initialModules.map(function(el) {
-          el.selected = currentFeatureNames.includes(el.name)
-          return el
-        })
+        el.selected = currentFeatureNames.includes(el.name)
+        return el
+      })
     },
+    makeFeatureIdsArray(){
+      this.featuresIds=this.currentFeatures.filter(e=>e.selected===true).map(el=>el.id)
+    },
+
 
     makeRequestObject() {
       return {
@@ -214,6 +241,9 @@ export default {
     },
     submitted() {
       this.isSubmited = true
+      if (!this.featuresIds.length) {
+        this.makeFeatureIdsArray()
+      }
       store.dispatch('feature/selectedModules', this.featuresIds)
       store.dispatch('feature/submitForm', this.makeRequestObject())
     },
@@ -221,7 +251,7 @@ export default {
       window.location.reload()
     },
     clearPreviousUserGroupSelection() {
-      this.selectedGroupGuid=null
+      this.selectedGroupGuid = null
     }
   }
 }

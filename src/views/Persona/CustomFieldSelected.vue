@@ -77,7 +77,7 @@
                         <v-dialog v-model="dialogCategory" persistent max-width="800px">
                           <template v-slot:activator="{ on }">
                             <v-row justify="center">
-                              <v-btn color="primary" v-on="on">Edit curent category</v-btn>
+                              <v-btn small depressed color="primary" v-on="on">Edit curent category</v-btn>
                             </v-row>
                           </template>
                           <CategoryDialog

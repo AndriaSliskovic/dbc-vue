@@ -159,6 +159,7 @@ export const actions = {
     commit('SELECTED_GROUP',group)
   },
   selectedModules({commit},modules){
+    console.log(modules)
     commit('SELECTED_MODULES',modules)
   },
   cleanModules({commit}){
