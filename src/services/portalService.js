@@ -1,16 +1,16 @@
 import axiosClient from './service-clients/base-client'
 
-if (appUrl == null) {
-  var appUrl = 'http://dev-admin.deluxebrand.com/'
+if (typeof window.adminUrl === 'undefined') {
+   window.adminUrl = 'http://dev-admin.deluxebrand.com/'
 }
 
 //Povezivanje preko json-servera
-const client = axiosClient(appUrl)
+const client = axiosClient(window.adminUrl)
 
 export default {
   getAllActivePortals() {
-    return client.get('api/portals?siteId=57'
-    )
+    var portalUrl = "api/portals?siteId=57";
+    return client.get(portalUrl)
   },
   getPortalUserGroups(portalId) {
     let searchCriteria = {

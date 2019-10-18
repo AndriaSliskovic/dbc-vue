@@ -1,9 +1,8 @@
 import client from './service-clients/base-client'
 
 
-if (apiGatewayUrl == null) {
-  var apiGatewayUrl = 'http://10.99.0.100:5200'
-  //var apiGatewayUrl = 'http://localhost:5200'
+if (typeof window.apiGatewayUrl === 'undefined') {
+  window.apiGatewayUrl = 'http://10.99.0.100:5200'
 }
 
 const apiGatewayClient = client(apiGatewayUrl + "/persona/persona")

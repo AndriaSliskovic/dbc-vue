@@ -1,10 +1,22 @@
 <template>
   <v-card>
-    <v-card-title>Features</v-card-title>
+    <v-card-title>Features for {{selCompany.CompanyName}}</v-card-title>
     <v-card-text>
-      <v-row>
+      <!-- LISTA -->
+      <v-list dense>
+        <v-subheader>STATUS</v-subheader>
+        <v-list-item-group v-model="currentFeatures" color="primary">
+          <v-list-item v-for="item in currentFeatures">
+            <v-list-item-content>
+              <v-list-item-title v-text="item.selected"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+      <!-- // LISTA -->
+      <v-row >
         <v-col v-for="item in currentFeatures" cols="4">
-            <FeatureCard :feature='item' @onChangeSelect="updateModules"/>
+          <FeatureCard :feature="item" @onChangeSelect="updateModules" />
         </v-col>
       </v-row>
     </v-card-text>
@@ -16,18 +28,27 @@ import { mapState, mapActions } from 'vuex'
 import FeatureCard from './FeatureCard'
 
 export default {
-    components:{
-FeatureCard
-    },
   data() {
     return {
-      availableModules: []
+      features:null,
     }
+  },
+  updated(){
+    // console.log("container updated",this.currentFeatures)
+    // this.features=this.currentFeatures
+
+  },
+  watch: { 
+
+  },
+  components: {
+    FeatureCard
   },
   props: {
     currentFeatures: {
       type: Array
-    }
+    },
+    selCompany: Object
   },
   methods: {
     checkedModules: function() {
@@ -36,10 +57,11 @@ FeatureCard
     updateModules: function() {
       store.dispatch('feature/selectedModules', this.checkedModules())
       this.$emit('updateModules', this.checkedModules())
-    }
+    },
   },
   computed: {
-    ...mapState({ feature: 'feature' })
+    ...mapState({ feature: 'feature' }),
+
   }
 }
 </script>

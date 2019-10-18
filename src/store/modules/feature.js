@@ -116,8 +116,10 @@ export const actions = {
   },
 
   getSelectedModules({commit,dispatch}, compGuid){
+    console.log("selektovani moduli za grupu", compGuid)
      return featureManagerService.getSubscribedFeatures(compGuid)
     .then(response=>{
+      console.log("vraceni moduli", response.data)
       commit('SELECTED_MODULES',response.data)
     })
     .catch(error=>{

@@ -46,37 +46,48 @@
                 :disabled="isSettingsDisabled"
               ></v-select>
             </v-col>
+            <v-col v-if="settingsType==='group'">
+              <!-- Select usr group -->
+                <v-select
+                  :items="feature.groups"
+                  name="group"
+                  item-text="name"
+                  item-value="guid"
+                  filled
+                  label="User Groups"
+                  hint="Select a user group"
+                  persistent-hint
+                  v-model="selectedGroupGuid"
+                  @change="onSelectedGroupChange"
+                ></v-select>
+            </v-col>
           </v-col>
-          <v-col cols="6">
-            <FeatureContainer :currentFeatures="currentFeatures" @updateModules="featuresIds=$event"/>
+          <!-- IF PORTAL IS SELECTED -->
+          <v-col cols="6" v-if="settingsType==='portal'">
+            <FeatureContainer
+              :currentFeatures="currentFeatures"
+              @updateModules="featuresIds=$event"
+              :selCompany="selectedCompany"
+            />
+          </v-col>
+          <!-- IF USERS GROUP -->
+          <v-col cols="6" v-if="settingsType==='group'">
+            <FeatureContainer
+              :currentFeatures="currentFeatures"
+              @updateModules="featuresIds=$event"
+            />
+              <!-- <FeatureDetail :currentFeatures="currentFeatures" @updateModules="featuresIds=$event"></FeatureDetail> -->
           </v-col>
         </v-row>
 
         <template v-if="selectedCompany">
           <v-col>
-            <!-- IF PORTAL IS SELECTED -->
             <div v-if="settingsType==='portal'">
               <FeatureDetail :currentFeatures="currentFeatures" @updateModules="featuresIds=$event"></FeatureDetail>
             </div>
             <!-- IF SELECTED GROUP -->
             <div v-if="settingsType==='group'">
               <form>
-                <v-col cols="6">
-                  <!-- USERS GROUP -->
-                  <v-select
-                    :items="feature.groups"
-                    name="group"
-                    item-text="name"
-                    item-value="guid"
-                    filled
-                    label="User Groups"
-                    hint="Select a user group"
-                    persistent-hint
-                    v-model="selectedGroupGuid"
-                    @change="onSelectedGroupChange"
-                  ></v-select>
-                </v-col>
-
                 <FeatureDetail
                   :currentFeatures="currentFeatures"
                   @updateModules="featuresIds=$event"
@@ -165,9 +176,11 @@ export default {
   },
   methods: {
     onUserGroupSelect() {
+      console.log("selektovana grupa")
       this.clearPreviousUserGroupSelection()
       store.dispatch('feature/getCompanyGroups', this.selectedCompany.CompanyId)
       if (this.selectedGroupGuid) {
+        console.log("onUserGroupSelect true")
         store.dispatch('feature/cleanModules')
         store
           .dispatch('feature/getSelectedModules', this.selectedGroupGuid)
@@ -175,12 +188,24 @@ export default {
             this.generateFeatureCheckboxes()
           })
       } else {
-        store.dispatch('feature/cleanModules').then(() => {
-          this.generateFeatureCheckboxes()
-        })
+                console.log("onUserGroupSelect false")
+        store.dispatch('feature/cleanModules')
+        // .then(() => {
+        //   this.generateFeatureCheckboxes()
+        // })
       }
     },
+        onSelectedGroupChange() {
+   
+      console.log("selektovana user grupa","popunjava checkboxeve")
+      store
+        .dispatch('feature/getSelectedModules', this.selectedGroupGuid)
+        .then(() => {
+          this.generateFeatureCheckboxes()
+        })
+    },
     onPortalSelect() {
+      console.log("selektovan portal")
       store
         .dispatch(
           'feature/getSelectedModules',
@@ -206,19 +231,17 @@ export default {
         case 'group':
           this.onUserGroupSelect()
           break
+        case 'userGroup':
+          this.onUserGroupSelect()
+          break          
         default:
           this.settingsType = null
           break
       }
     },
-    onSelectedGroupChange() {
-      store
-        .dispatch('feature/getSelectedModules', this.selectedGroupGuid)
-        .then(() => {
-          this.generateFeatureCheckboxes()
-        })
-    },
+
     generateFeatureCheckboxes() {
+      console.log("generise boxeve")
       const initialModules = this.feature.initialModules
       const currentFeatureNames = this.feature.selectedModules
         ? this.feature.selectedModules
@@ -228,10 +251,11 @@ export default {
         return el
       })
     },
-    makeFeatureIdsArray(){
-      this.featuresIds=this.currentFeatures.filter(e=>e.selected===true).map(el=>el.id)
+    makeFeatureIdsArray() {
+      this.featuresIds = this.currentFeatures
+        .filter(e => e.selected === true)
+        .map(el => el.id)
     },
-
 
     makeRequestObject() {
       return {
