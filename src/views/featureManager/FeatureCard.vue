@@ -9,9 +9,13 @@
       </v-badge>
 
       <v-card-title>
-        <v-row>{{feature.name}}</v-row>
+        <v-row justify="center" class="title">{{feature.name}}</v-row>
       </v-card-title>
-      <v-card-text>{{feature.selected}}</v-card-text>
+      <v-card-text>
+
+        <v-row justify="start" class="caption font-italic text-lowercase pl-1" text-transform: none>{{feature.description}}</v-row>
+        <!-- <p>{{selectedCard}}</p> -->
+        </v-card-text>
     </v-card>
   </div>
 </template>
@@ -24,7 +28,7 @@ export default {
     return {
       cardStatus: {
         selected: { active: true, color: 'primary' },
-        inactive: { active: true, color: 'red' }
+        inactive: { active: true, color: 'blue-grey darken-1' }
       },
 
       cardProps: {
@@ -37,25 +41,16 @@ export default {
   props: {
     feature: {
       type: Object
+    },
+    selectedCard:{
+      type:Boolean
     }
   },
   mounted() {
     this.cardProps.color = this.getStatusColor(this.feature.selected)
   },
-  beforeUpdate(){
-    if (this.dataChange) {
-      console.log("before updated")
-          this.cardStatus1=this.feature.selected
-    }
-   
-
-  },
-   updated(){
-      console.log("updated",this.feature.selected)
-    },
   methods: {
     onClickHandler() {
-      console.log(`klinuto ${this.feature.id}`, this.feature)
       this.feature.selected = !this.feature.selected
       this.cardProps.color = this.getStatusColor(this.feature.selected)
       this.$emit('onChangeSelect', this.feature)
@@ -69,24 +64,13 @@ export default {
     }
   },
   computed:{
-    cardStatus1:{
-      get:function(){
-        console.log("uzimam vrednost")
-        return this.feature.selected
-      },
-            set: function(newValue) {
-              console.log("setujem vrednost")
-        newValue ? (this.feature.selected = newValue) : null
-      }
-    }
+
   },
-    watch: {
-    cardStatus1: function(newValue, oldValue) {
-      if (newValue != oldValue) {
-        console.log('New value: ' + newValue + ', Old value: ' + oldValue)
-        return (this.dataChange = true)
-      }
+  watch:{
+    selectedCard:function(){
+      this.cardProps.color = this.getStatusColor(this.feature.selected)
     }
   }
+
 }
 </script>

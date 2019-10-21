@@ -13,9 +13,20 @@
             @blur="$v.name.$touch()"
           ></v-text-field>
         </v-col>
+        <v-row justify="space-arounds">
+          <v-col>
+            <v-checkbox v-model="allowShare" label="Allow share"></v-checkbox>
+          </v-col>
+          <v-col cols="3">
+            <v-text-field v-model="activeLimit" type="number" label="Active limits"></v-text-field>
+          </v-col>
+        </v-row>
       </v-form>
       <v-card-actions>
-          <BaseSubmitGroup @close="onCloseCreatePersonaHandler" @submit="onSubmitCreatePersonaHandler"/>
+        <BaseSubmitGroup
+          @close="onCloseCreatePersonaHandler"
+          @submit="onSubmitCreatePersonaHandler"
+        />
       </v-card-actions>
     </v-card>
   </v-container>
@@ -30,7 +41,9 @@ export default {
   data() {
     return {
       valid: false,
-      name: ''
+      name: '',
+      allowShare: false,
+      activeLimit: 0
     }
   },
   validations: {
@@ -54,10 +67,10 @@ export default {
         }
         return store.dispatch('notification/add', notification, { root: true })
       }
-      store.dispatch('persona/createNewPersona',this.dataObject)
+      store.dispatch('persona/createNewPersona', this.dataObject)
       this.$emit('close', false)
       //Reset field name
-      this.name=''
+      this.name = ''
     }
   },
   computed: {
@@ -66,7 +79,7 @@ export default {
       return {
         companyId: this.companyId,
         name: this.name,
-        companyIdString:`?companyId=${this.companyId}`
+        companyIdString: `?companyId=${this.companyId}`
       }
     },
     nameErrors() {

@@ -162,8 +162,6 @@ export default {
     })
   },
   created() {
-    // this.companies = this.persona.companies.SiteCustomersList
-
     //Dobijanje persona objekta
     store.dispatch('persona/getSelectedPersonaByPersonaId', this.personaId)
     //Dobijanje CustomFieldsa
@@ -222,12 +220,6 @@ export default {
         maskId: null,
         visible: false,
         editable: false
-        //javascriptFunctionId: null,
-        // description: {
-        //   position: [],
-        //   content: null
-        // },
-        //summaryField: null
       }
     },
     setSelectedCustomField(key) {
