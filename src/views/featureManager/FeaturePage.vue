@@ -3,10 +3,10 @@
     <v-card>
       <v-card-title>
         <v-col cols="6">
-          <h3>Feature manager</h3>
+          <v-card-title class="pl-4 pt-4 blue--text text--darken-4 headline">Feature manager</v-card-title>
         </v-col>
         <v-col cols="6">
-          <v-row justify="end">
+          <v-row justify="center">
             <NotificationContainer />
           </v-row>
         </v-col>
@@ -15,19 +15,19 @@
         <v-row>
           <v-col cols="6">
             <v-col>
-                <!-- COMPANY -->
-                <v-select
-                  :items="feature.companies"
-                  name="company"
-                  item-text="CompanyName"
-                  filled
-                  return-object
-                  label="Company"
-                  hint="Select company"
-                  persistent-hint
-                  v-model="selectedCompany"
-                  @change="setSelectedCompany"
-                ></v-select>
+              <!-- COMPANY -->
+              <v-select
+                :items="feature.companies"
+                name="company"
+                item-text="CompanyName"
+                filled
+                return-object
+                label="Company"
+                hint="Select company"
+                persistent-hint
+                v-model="selectedCompany"
+                @change="setSelectedCompany"
+              ></v-select>
             </v-col>
             <!-- SETTINGS -->
             <v-col>
@@ -80,17 +80,14 @@
         </v-row>
       </v-card-text>
 
-
-
-          <!-- SUBMIT BUTTON -->
-          <v-card-actions v-if="submitEnabled">
-            <v-row justify="center" >
-              <BaseSubmitGroup @submit="submitted" @close="onCancelHandler" />
-              <!-- <v-btn color="error" @click.prevent="submitted" :disabled="isSaveButtonDisabled">Save</v-btn> -->
-            </v-row>
-          </v-card-actions>
-
-
+      <!-- SUBMIT BUTTON -->
+      <v-card-actions v-if="submitEnabled">
+        <v-row justify="center">
+          <BaseSubmitGroup @submit="submitted" :cancelVisible="false">
+            <template v-slot:submit>Confirm changes</template>
+          </BaseSubmitGroup>
+        </v-row>
+      </v-card-actions>
     </v-card>
   </v-app>
 </template>
@@ -114,7 +111,7 @@ export default {
       selectedGroupGuid: null,
       settingsType: null,
       isSubmited: false,
-      submitEnabled:false,
+      submitEnabled: false,
       selectOptions: [
         {
           key: 'portal',
@@ -172,11 +169,10 @@ export default {
           .dispatch('feature/getSelectedModules', this.selectedGroupGuid)
           .then(() => {
             this.generateFeatureCheckboxes()
-
           })
       } else {
         store.dispatch('feature/cleanModules')
-        this.submitEnabled=false
+        this.submitEnabled = false
       }
     },
     onSelectedGroupChange() {
@@ -184,7 +180,7 @@ export default {
         .dispatch('feature/getSelectedModules', this.selectedGroupGuid)
         .then(() => {
           this.generateFeatureCheckboxes()
-          this.submitEnabled=true
+          this.submitEnabled = true
         })
     },
     onPortalSelect() {
@@ -208,10 +204,12 @@ export default {
     onSettingsTypeChange() {
       switch (this.settingsType) {
         case 'portal':
+          this.featuresIds=[]
           this.onPortalSelect()
-          this.submitEnabled=true
+          this.submitEnabled = true
           break
         case 'group':
+          this.featuresIds=[]
           this.onUserGroupSelect()
           break
         default:
@@ -249,13 +247,6 @@ export default {
       }
       store.dispatch('feature/selectedModules', this.featuresIds)
       store.dispatch('feature/submitForm', this.makeRequestObject())
-    },
-    onCancelHandler() {
-      if (this.settingsType === 'group') {
-        this.clearPreviousUserGroupSelection()
-        this.submitEnabled=false
-      }
-      this.settingsType = null
     },
 
     reloadPage() {

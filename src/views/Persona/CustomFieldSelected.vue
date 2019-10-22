@@ -216,7 +216,7 @@ export default {
       //Resetovanje prethodne validacije
       this.$v.$reset()
     },
-    onSubmitHandler: function({ dispatch }) {
+    onSubmitHandler: function() {
       console.log('on submit')
       //Logika za submitovanje forme
       // console.log(this.cField)
@@ -227,7 +227,7 @@ export default {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
         }
-        store.dispatch('notification/add', notification, { root: true })
+        //store.dispatch('notification/add', notification, { root: true })
       }
       console.log(this.cField)
       //Setovanje tag fielda

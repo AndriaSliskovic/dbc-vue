@@ -22,7 +22,6 @@
     .notification-container {
       position: relative;
       top: 15px;
-      right: 15px;
-      
+      right: 15px;      
     }
     </style>

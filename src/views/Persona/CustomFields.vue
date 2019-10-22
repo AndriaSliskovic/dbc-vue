@@ -18,13 +18,23 @@
 
         <!-- EDIT CURENT PERSONA -->
         <v-row align="baseline" justify="space-between" class="grey lighten-4 mx-0">
-          <v-col cols="4" md="4" class="pl-6">
-            <v-text-field v-model="personaName" label="Persona name"></v-text-field>
+          <v-col cols="4" md="3" class="pl-6">
+            <v-text-field v-model="persona.personaObject.name" label="Persona name"></v-text-field>
           </v-col>
-          <v-col cols="4" md="4">
+          <v-col cols="3" md="3">
             <BaseSelectCompany :companies="companies.allCompanies" />
           </v-col>
-          <v-col cols="4" md="2">
+          <v-col cols="3">
+            <v-row>
+              <v-col cols="4">
+                <v-text-field v-model="persona.personaObject.activeLimit" label="Active limit" type="number" dense></v-text-field>
+              </v-col>
+              <v-col cols="8">
+                <v-checkbox v-model="persona.personaObject.allowShare" label="Allow share" dense></v-checkbox>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="2" md="3">
             <v-btn color="primary" @click="editPersonaHandler()">Edit curent persona</v-btn>
           </v-col>
         </v-row>
@@ -174,19 +184,14 @@ export default {
       return this.$router.go(-1)
     },
     editedPersona: function() {
-      if (!this.editedCompany) {
-        return {
-          personaId: this.personaId,
-          name: this.persona.personaObject.name,
-          companyId: this.companyId
-        }
-      } else {
+        console.log('edit persona object')
         return {
           personaId: this.personaId,
           name: this.personaName,
-          companyId: this.editedCompany.CompanyGuid
+          companyId: this.persona.selectedCompanyGUID,
+          activeLimit: this.persona.personaObject.activeLimit,
+          allowShare: this.persona.personaObject.allowShare
         }
-      }
     },
     editPersonaHandler: function() {
       const editedPersona = this.editedPersona()

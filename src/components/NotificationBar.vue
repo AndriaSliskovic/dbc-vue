@@ -50,8 +50,7 @@ export default {
 </script>
     
     <style scoped>
-.notification-bar {
-
+/* .notification-bar {
   margin: 2em 0 1em;
-}
+} */
 </style>

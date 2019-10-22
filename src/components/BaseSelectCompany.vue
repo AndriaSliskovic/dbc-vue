@@ -1,6 +1,6 @@
 <template>
     <!-- <h4>{{companies}}</h4> -->
-    <v-flex xs12 sm6 d-flex data-app>
+    <v-flex xs12 sm10 d-flex data-app>
       <v-select
         :items="companies"
         name="company"

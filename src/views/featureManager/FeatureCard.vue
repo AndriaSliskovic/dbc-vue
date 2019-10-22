@@ -14,7 +14,7 @@
       <v-card-text>
 
         <v-row justify="start" class="caption font-italic text-lowercase pl-1" text-transform: none>{{feature.description}}</v-row>
-        <!-- <p>{{selectedCard}}</p> -->
+        <!-- <p>{{feature.selected}}</p> -->
         </v-card-text>
     </v-card>
   </div>
@@ -57,6 +57,7 @@ export default {
     },
 
     getStatusColor(status) {
+      console.log("status is :",status)
       if (status) {
         return this.cardStatus.selected.color
       }
