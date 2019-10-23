@@ -28,8 +28,11 @@ export default {
     console.log(`servis edit persona objekta ${object.personaId}`)
     const data={
       companyId:object.companyId,
-      name:object.name
-    }    
+      name:object.name,
+      allowShare:object.allowShare,
+      activeLimit:object.activeLimit
+    }
+    console.log("edited object",data)    
     return apiGatewayClient.put(`/${object.personaId}`,data)
   },
   setPersonaStaus(element){

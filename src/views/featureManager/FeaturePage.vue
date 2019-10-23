@@ -176,6 +176,7 @@ export default {
       }
     },
     onSelectedGroupChange() {
+                this.currentFeatures=[]
       store
         .dispatch('feature/getSelectedModules', this.selectedGroupGuid)
         .then(() => {
@@ -204,12 +205,11 @@ export default {
     onSettingsTypeChange() {
       switch (this.settingsType) {
         case 'portal':
-          this.featuresIds=[]
+          this.currentFeatures=[]
           this.onPortalSelect()
           this.submitEnabled = true
           break
         case 'group':
-          this.featuresIds=[]
           this.onUserGroupSelect()
           break
         default:

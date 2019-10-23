@@ -112,7 +112,7 @@
                 @close="()=>dialogConf=false"
                 @submit="onDeleteCustomFieldHandler(item.id)"
               >
-                <template v-slot:header>Delete custom field 1 : {{selectedCustomField.name}}</template>
+                <template v-slot:header>Delete custom field : {{selectedCustomField.name}}</template>
                 <template v-slot:body>Are you sure you want to delete this custom field ?</template>
               </BaseDialogConfirmation>
             </v-dialog>
@@ -172,6 +172,7 @@ export default {
     })
   },
   created() {
+    this.editedCompany=this.companyId
     //Dobijanje persona objekta
     store.dispatch('persona/getSelectedPersonaByPersonaId', this.personaId)
     //Dobijanje CustomFieldsa
@@ -188,14 +189,14 @@ export default {
         return {
           personaId: this.personaId,
           name: this.personaName,
-          companyId: this.persona.selectedCompanyGUID,
+          companyId: this.companies.selectedCompanyGUID,
           activeLimit: this.persona.personaObject.activeLimit,
           allowShare: this.persona.personaObject.allowShare
         }
     },
     editPersonaHandler: function() {
       const editedPersona = this.editedPersona()
-      console.log(`imam edit ${editedPersona}`)
+      console.log(`imam edit `,editedPersona)
       store.dispatch('persona/editPersonaData', editedPersona)
     },
     onCreateCustomFieldObject() {

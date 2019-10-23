@@ -6,7 +6,6 @@
         <v-col v-for="item in currentFeatures" cols="4">
           <FeatureCard
             :feature="item"
-            :selectedCard="item.selected"
             @onChangeSelect="updateModules"
           />
         </v-col>

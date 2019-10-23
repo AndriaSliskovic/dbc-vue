@@ -61,7 +61,7 @@ export const mutations = {
   },
   //CATEGORY
   CREATE_CATEGORY_ARRAY(state){
-    const catItems=state.customFields.map(e=>e.category.name)
+    const catItems=state.customFields.map(e=>e.category)
     const filteredCategories = [...new Set(catItems)]
     state.categories=filteredCategories
   },

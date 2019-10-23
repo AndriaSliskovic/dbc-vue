@@ -14,7 +14,6 @@
       <v-card-text>
 
         <v-row justify="start" class="caption font-italic text-lowercase pl-1" text-transform: none>{{feature.description}}</v-row>
-        <!-- <p>{{feature.selected}}</p> -->
         </v-card-text>
     </v-card>
   </div>
@@ -42,13 +41,11 @@ export default {
     feature: {
       type: Object
     },
-    selectedCard:{
-      type:Boolean
-    }
   },
   mounted() {
     this.cardProps.color = this.getStatusColor(this.feature.selected)
   },
+
   methods: {
     onClickHandler() {
       this.feature.selected = !this.feature.selected
@@ -57,21 +54,12 @@ export default {
     },
 
     getStatusColor(status) {
-      console.log("status is :",status)
       if (status) {
         return this.cardStatus.selected.color
       }
       return this.cardStatus.inactive.color
     }
   },
-  computed:{
-
-  },
-  watch:{
-    selectedCard:function(){
-      this.cardProps.color = this.getStatusColor(this.feature.selected)
-    }
-  }
 
 }
 </script>

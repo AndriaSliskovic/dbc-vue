@@ -71,10 +71,17 @@
                       v-for="(item,index) in itemsData"
                       v-bind:key="index"
                       input-value="true"
+                      @click="setSelectedItem(item)"
                     >
+                      <v-list-item-icon>
+                        <v-icon v-text="item.icon"></v-icon>
+                      </v-list-item-icon>
                       <v-list-item-content>
-                        <v-list-item-title v-text="item" @click="setSelectedItem(key)"></v-list-item-title>
+                        <v-list-item-title v-text="item.name"></v-list-item-title>
                       </v-list-item-content>
+                      <v-list-item-action>
+                        <v-list-item-title v-text="item.sortOrder"></v-list-item-title>
+                      </v-list-item-action>
                     </v-list-item>
                   </v-list-item-group>
                 </v-list>
@@ -98,6 +105,14 @@ import { validationMixin } from 'vuelidate'
 import { required, maxLength, email } from 'vuelidate/lib/validators'
 
 export default {
+  data(){
+    return{
+      tempCategory:{
+        type:Object,
+        default:null
+      }
+    }
+  },
   props: {
     category: Object,
     name: String
@@ -121,8 +136,17 @@ export default {
       this.$emit('submit', false)
       this.$emit('close', false)
     },
-    setSelectedItem(key) {
-      console.log(`key : ${key}`)
+    setSelectedItem(catObject) {
+      console.log(`name is : ${catObject.name}`)
+      const tempCat= this.createSelectedCategoryObject(catObject)
+      console.log("privremena kat :",tempCat)
+    },
+    createSelectedCategoryObject(obj) {
+      this.tempCategory.name = obj.name
+      this.tempCategory.icon = obj.icon
+      this.tempCategory.sortOrder = obj.sortOrder
+      return this.tempCategory
+
     }
   },
 
