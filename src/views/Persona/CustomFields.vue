@@ -35,11 +35,11 @@
             </v-row>
           </v-col>
           <v-col cols="2" md="3">
-            <v-btn color="primary" @click="editPersonaHandler()">Edit curent persona</v-btn>
+            <v-btn color="primary" @click="onEditPersonaHandler()">Edit curent persona</v-btn>
           </v-col>
         </v-row>
         <v-divider />
-        <!-- Tabela -->
+        <!-- TABLE -->
         <v-card-title>
           <v-row align="baseline" justify="space-between">
             <v-col class="pl-4">Custom Fields</v-col>
@@ -72,6 +72,7 @@
             </v-col>
           </v-row>
         </v-card-title>
+        <!-- DATA TABLE -->
         <v-data-table
           :headers="headers"
           :items="items"
@@ -110,7 +111,7 @@
               </template>
               <BaseDialogConfirmation
                 @close="()=>dialogConf=false"
-                @submit="onDeleteCustomFieldHandler(item.id)"
+                @submit="onDeleteCustomFieldHandler"
               >
                 <template v-slot:header>Delete custom field : {{selectedCustomField.name}}</template>
                 <template v-slot:body>Are you sure you want to delete this custom field ?</template>
@@ -194,7 +195,7 @@ export default {
           allowShare: this.persona.personaObject.allowShare
         }
     },
-    editPersonaHandler: function() {
+    onEditPersonaHandler: function() {
       const editedPersona = this.editedPersona()
       console.log(`imam edit `,editedPersona)
       store.dispatch('persona/editPersonaData', editedPersona)
@@ -205,6 +206,7 @@ export default {
       this.dataObject = this.createDataObject()
       console.log(this.dataObject)
       store.dispatch('persona/setSelectedCustomField', this.dataObject)
+      store.dispatch('persona/getAllCategoriesForSelectedPersona')
     },
     createDataObject() {
       return {
@@ -229,6 +231,7 @@ export default {
       }
     },
     setSelectedCustomField(key) {
+      console.log("setovanje cf-a",key)
       const cField = this.customFields.find(function(el) {
         return el.id === key
       })
@@ -256,13 +259,14 @@ export default {
       store.dispatch('persona/setSelectedCustomField', this.selectedCustomField)
       store.dispatch('persona/getAllCategoriesForSelectedPersona')
     },
-    onDeleteCustomFieldHandler(key) {
+    onDeleteCustomFieldHandler() {
       const params = {
         personaId: this.personaId,
-        cFieldId: key
+        cFieldId: this.selectedCustomField.id
       }
+      console.log(`delete custom field`,params)
       store.dispatch('persona/deleteSelectedCustomField', params)
-      console.log(`delete custom field ${params}`)
+
     },
     onCloseDialog(value) {
       this.dialogCreate = value
@@ -290,8 +294,8 @@ export default {
       }
     },
     items: function() {
-      if (this.customFields) {
-        return this.customFields.map(cf => {
+      if (this.persona.customFields) {
+        return this.persona.customFields.map(cf => {
           return {
             id: cf.id,
             rank: cf.rank,

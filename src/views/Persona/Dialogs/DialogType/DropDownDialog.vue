@@ -62,7 +62,7 @@
         <v-row>
         <v-col>
             <v-select
-              v-model="defaultItemDataValue"
+              v-model="cField.defaultValue"
               :items="this.persona.selectedCustomField.dataSource"
               item-text="display"
               item-value="display"
@@ -93,6 +93,11 @@ export default {
       defaultItemDataValue:null
     }
   },
+  props:{
+    cField:{
+      type:Object
+    }
+  },
   beforeCreate() {},
   created() {},
   methods: {
@@ -102,7 +107,8 @@ export default {
         const arrLength = this.itemsData.length + 1
         const dataSourceObject = {
           display: this.name,
-          id: arrLength
+          id: arrLength,
+          value:this.name
         }
         console.log(dataSourceObject)
         store.dispatch('persona/addPersonaDataSourceItem', dataSourceObject)
@@ -110,7 +116,8 @@ export default {
         console.log('usao else')
         const dataSourceObject = {
           display: this.name,
-          id: 0
+          id: 0,
+          value:this.name
         }
         store.dispatch('persona/addPersonaDataSourceItem', dataSourceObject)
       }

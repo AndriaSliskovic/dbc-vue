@@ -59,6 +59,10 @@ export const mutations = {
   SET_SELECTED_CUSTOM_FIELD(state, payload) {
     state.selectedCustomField = payload
   },
+  ADD_CUSTOM_FIELD_TO_ARRAY(state,payload){
+    [...state.customFields,payload]
+    console.log("mutator")
+  },
   //CATEGORY
   CREATE_CATEGORY_ARRAY(state){
     const catItems=state.customFields.map(e=>e.category)
@@ -252,20 +256,7 @@ export const actions = {
         dispatch('notification/add', notification, { root: true })
       })
   },
-  getCustomFieldsByPersonaID({ commit, dispatch }, personaId) {
-    console.log(`action CustomFields ${personaId}`)
-    return personaService
-      .getCustomFieldsByPersonaID(personaId)
-      .then(response => commit('GET_CUSTOM_FIELDS', response.data))
-      .catch(error => {
-        const notification = {
-          type: 'error',
-          message: `Error loading custom fields by selected persona, please contact administrator.`
-        }
-        console.log(notification, error)
-        dispatch('notification/add', notification, { root: true })
-      })
-  },
+ 
   editPersonaData({ commit, dispatch }, editedObject) {
     console.log(`action edit persone ${editedObject}`)
 
@@ -309,8 +300,7 @@ export const actions = {
           message: `New custom fields successfully added for selected persona!`
         }
         dispatch('notification/add', notification, { root: true })
-        //dispatch('notification/reloadPage', {}, { root: true })
-
+        commit('ADD_CUSTOM_FIELD_TO_ARRAY',cField)
       })
       .catch(error => {
         const notification = {
@@ -320,6 +310,25 @@ export const actions = {
         console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
         // dispatch('notification/reloadPage', {}, { root: true })
+      })
+      .then(()=>
+        //console.log("state pesona id :",state.personaObject.id)
+        dispatch('getCustomFieldsByPersonaID', state.personaObject.id) 
+      )
+ 
+  },
+  getCustomFieldsByPersonaID({ commit, dispatch }, personaId) {
+    console.log(`action CustomFields ${personaId}`)
+    return personaService
+      .getCustomFieldsByPersonaID(personaId)
+      .then(response => commit('GET_CUSTOM_FIELDS', response.data))
+      .catch(error => {
+        const notification = {
+          type: 'error',
+          message: `Error loading custom fields by selected persona, please contact administrator.`
+        }
+        console.log(notification, error)
+        dispatch('notification/add', notification, { root: true })
       })
   },
   updateCustomField({ commit, dispatch }, cField) {

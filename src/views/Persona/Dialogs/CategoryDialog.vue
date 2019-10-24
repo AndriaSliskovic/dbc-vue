@@ -12,6 +12,7 @@
             :error-messages="categoryErrors"
             label="Category"
             required
+            dence
             @input="$v.category.name.$touch()"
             @blur="$v.category.name.$touch()"
           ></v-text-field>
@@ -23,14 +24,7 @@
           <v-col cols="4">
             <!-- ICON -->
             <v-col>
-              <v-text-field
-                v-model="category.icon"
-                :error-messages="categoryIconErrors"
-                label="Icon"
-                required
-                @input="$v.category.icon.$touch()"
-                @blur="$v.category.icon.$touch()"
-              ></v-text-field>
+              <v-text-field v-model="category.icon" label="Icon" dense></v-text-field>
             </v-col>
             <v-col>
               <v-row>
@@ -76,12 +70,16 @@
                       <v-list-item-icon>
                         <v-icon v-text="item.icon"></v-icon>
                       </v-list-item-icon>
-                      <v-list-item-content>
-                        <v-list-item-title v-text="item.name"></v-list-item-title>
-                      </v-list-item-content>
-                      <v-list-item-action>
-                        <v-list-item-title v-text="item.sortOrder"></v-list-item-title>
-                      </v-list-item-action>
+                      <v-list-item>
+                        <v-row>
+                          <v-col>
+                            <v-list-item-title v-text="item.name"></v-list-item-title>
+                          </v-col>
+                          <v-col>
+                            <v-list-item-title v-text="item.sortOrder" ></v-list-item-title>
+                          </v-col>
+                        </v-row>
+                      </v-list-item>
                     </v-list-item>
                   </v-list-item-group>
                 </v-list>
@@ -105,11 +103,11 @@ import { validationMixin } from 'vuelidate'
 import { required, maxLength, email } from 'vuelidate/lib/validators'
 
 export default {
-  data(){
-    return{
-      tempCategory:{
-        type:Object,
-        default:null
+  data() {
+    return {
+      tempCategory: {
+        type: Object,
+        default: null
       }
     }
   },
@@ -121,7 +119,6 @@ export default {
   validations: {
     category: {
       name: { required },
-      icon: { required },
       sortOrder: { required }
     }
   },
@@ -138,15 +135,14 @@ export default {
     },
     setSelectedItem(catObject) {
       console.log(`name is : ${catObject.name}`)
-      const tempCat= this.createSelectedCategoryObject(catObject)
-      console.log("privremena kat :",tempCat)
+      const tempCat = this.createSelectedCategoryObject(catObject)
+      console.log('temp category :', tempCat)
     },
     createSelectedCategoryObject(obj) {
       this.tempCategory.name = obj.name
       this.tempCategory.icon = obj.icon
       this.tempCategory.sortOrder = obj.sortOrder
       return this.tempCategory
-
     }
   },
 
@@ -170,13 +166,13 @@ export default {
       !this.$v.category.name.required && errors.push('Category is required.')
       return errors
     },
-    categoryIconErrors() {
-      const errors = []
-      if (!this.$v.category.icon.$dirty) return errors
-      !this.$v.category.icon.required &&
-        errors.push('Icon for category is required.')
-      return errors
-    },
+    // categoryIconErrors() {
+    //   const errors = []
+    //   if (!this.$v.category.icon.$dirty) return errors
+    //   !this.$v.category.icon.required &&
+    //     errors.push('Icon for category is required.')
+    //   return errors
+    // },
     categorySortOrderErrors() {
       const errors = []
       if (!this.$v.category.sortOrder.$dirty) return errors

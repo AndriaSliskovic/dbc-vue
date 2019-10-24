@@ -74,6 +74,7 @@ export default {
   deleteSelectedCustomField(params){
     const cFieldIdString=`fieldIds=${params.cFieldId}`
     console.log(`servis za delete custom field`,params,cFieldIdString)
+    console.log(apiGatewayClient.patch(`/${params.personaId}/fields/delete?${cFieldIdString}`))
     return apiGatewayClient.patch(`/${params.personaId}/fields/delete?${cFieldIdString}`)
   }
 }

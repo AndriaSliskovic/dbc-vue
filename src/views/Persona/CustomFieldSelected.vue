@@ -229,17 +229,15 @@ export default {
         }
         //store.dispatch('notification/add', notification, { root: true })
       }
-      console.log(this.cField)
+      console.log("poslati podaci",this.cField)
       //Setovanje tag fielda
       if (this.cField.name) {
         this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
       }
-
       //Slanje podataka posle validacije
       store.dispatch('persona/createNewCustomField', this.cField)
-      // **RESITI NA DRUGI NACIN
-      //store.dispatch('notification/reloadPage', {}, { root: true })
-      this.$emit('close', false)
+     
+      //this.$emit('close', false)
     },
     onUpdateHandler() {
       console.log(this.cField)
