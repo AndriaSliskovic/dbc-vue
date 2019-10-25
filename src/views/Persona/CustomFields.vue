@@ -3,16 +3,7 @@
     <v-container fluid>
       <!-- Zaglavlje stranice -->
       <v-card>
-        <v-row class="grey lighten-3 mx-0">
-          <v-col cols="6">
-            <v-card-title
-              class="pl-4 pt-4 blue--text text--darken-4"
-            >Custom fields for {{personaName}} persona</v-card-title>
-          </v-col>
-          <v-col cols="6">
-            <NotificationContainer />
-          </v-col>
-        </v-row>
+        <BasePageTitle>Custom fields for : {{personaName}} persona</BasePageTitle>
         <v-divider />
         <!-- /Zaglavlje stranice -->
 
@@ -119,11 +110,12 @@
             </v-dialog>
           </template>
         </v-data-table>
-        <v-card-actions>
-          <v-row justify="center">
-            <v-btn small @click="()=>this.$router.go(-1) ">Go back</v-btn>
+        <!-- <v-card-actions class="grey darken-2 mx-0 title-page">
+          <v-row justify="center" >
+            <v-btn small @click="()=>this.$router.go(-1) " dark>Go back</v-btn>
           </v-row>
-        </v-card-actions>
+        </v-card-actions> -->
+        <BasePageFooter><v-btn small @click="()=>this.$router.go(-1) " dark>Go back</v-btn></BasePageFooter>
       </v-card>
       <!-- /Tabela -->
     </v-container>
@@ -133,13 +125,13 @@
 import NProgress from 'nprogress'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
-import NotificationContainer from '../../components/NotificationContainer'
+//import NotificationContainer from '../../components/NotificationContainer'
 import CustomFieldSelected from './CustomFieldSelected'
 
 export default {
   components: {
     CustomFieldSelected,
-    NotificationContainer
+
   },
   data() {
     return {
@@ -154,6 +146,7 @@ export default {
         { text: 'Rank', value: 'rank' },
         { text: 'Name', value: 'name' },
         { text: 'Category', value: 'category' },
+        {text:'Sort order', value:'sortOrder'},
         { text: 'Type', value: 'type' },
         { text: 'Delete', value: 'delete' }
       ],
@@ -301,6 +294,7 @@ export default {
             rank: cf.rank,
             name: cf.name,
             category: cf.category.name,
+            sortOrder:cf.category.sortOrder,
             type: cf.type
           }
         })

@@ -1,24 +1,26 @@
 <template>
   <v-app id="inspire">
     <v-container fluid>
-      <!-- Zaglavlje stranice -->
+      <!-- Page title -->
       <v-card>
-        <v-row class="grey lighten-3 mx-0">
-          <v-col cols="6">
-            <v-card-title class="pl-4 pt-4 blue--text text--darken-4">Persona page</v-card-title>
-          </v-col>
-          <v-col cols="6">
-            <NotificationContainer />
-          </v-col>
-        </v-row>
+        <BasePageTitle>Persona page</BasePageTitle>
         <v-divider />
         <template>
-          <v-row class="grey lighten-4 mx-0 py-2">
+          <v-row class="grey lighten-4 mx-0 py-2" align="center">
             <!-- SELECT COMPANIES -->
             <BaseSelectCompany
               :companies="companies.allCompanies"
               @on-change-select="onChangeSelectHandler(companyId)"
             />
+            <!-- TOOLTIP -->
+            <template v-if="!companyId">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon color="primary" dark v-on="on">info</v-icon>
+                </template>
+                <span>{{tooltips.companySelect}}</span>
+              </v-tooltip>
+            </template>
           </v-row>
         </template>
         <v-divider />
@@ -77,10 +79,20 @@
                 {{item.status}}
               </v-chip>
             </template>
+            <!-- TOOLTIP -->
+
+            <!-- // TOOLTIP -->
             <!-- / STATUS -->
             <!-- EDIT PERSONA -->
             <template v-slot:item.edit="{item}">
               <v-icon large color="blue darken-2" @click="onEditPersona(item.id)">mdi-table-edit</v-icon>
+              <!-- TOOLTIP -->
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-icon color="primary" dark v-on="on">info</v-icon>
+                </template>
+                <span>{{tooltips.editPersona}}</span>
+              </v-tooltip>
             </template>
 
             <!-- DELETE PERSONA -->
@@ -118,20 +130,17 @@
 import NProgress from 'nprogress'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
-import NotificationContainer from '../../components/NotificationContainer'
+//import NotificationContainer from '../../components/NotificationContainer'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
 import router from 'vue-router'
 import PersonaCreateNew from './PersonaCreateNew'
-
 
 const defaultStatus = function() {
   return { active: null, text: 'All', color: 'blue', letter: '' }
 }
 export default {
   components: {
-    NotificationContainer,
-    PersonaCreateNew,
-
+    PersonaCreateNew
   },
   data() {
     return {
@@ -153,7 +162,12 @@ export default {
       selectedPersonaStatusId: null,
       selectedPersona: null,
       dialogAddNewPersona: false,
-      dialogDeletePersona: false
+      dialogDeletePersona: false,
+      tooltips: {
+        companySelect: 'You must select company first !',
+        setStatus: 'Place where you change status of persona.',
+        editPersona: 'Click on the icon and change data for selected persona.'
+      }
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {

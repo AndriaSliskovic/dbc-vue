@@ -1,16 +1,23 @@
 <template>
   <v-container>
     <v-card>
-      <v-card-title>
-        <h3>Category for {{name}} Custom field</h3>
-      </v-card-title>
+      <template>
+        <BaseCardTitle
+          @close="onCloseDialogHandler"
+        >Category for Custom field</BaseCardTitle>
+      </template>
+
       <v-card-text>
+        <v-col cols="6">
+          <v-card-title class="primary white--text my-0 py-1">Edit curent category :</v-card-title>
+        </v-col>
+
         <!-- CATEGORY NAME -->
         <v-col cols="6">
           <v-text-field
             v-model="category.name"
             :error-messages="categoryErrors"
-            label="Category"
+            label="Category name"
             required
             dence
             @input="$v.category.name.$touch()"
@@ -61,6 +68,12 @@
                 <v-card-title class="primary white--text my-0 py-1">Select existing category :</v-card-title>
                 <v-list dense>
                   <v-list-item-group v-model="itemsData" color="primary">
+                    <v-row no-gutters justify="space-around">
+                      <v-subheader>Icon</v-subheader>
+                      <v-subheader>Category</v-subheader>
+                      <v-subheader>Sort order</v-subheader>
+                    </v-row>
+
                     <v-list-item
                       v-for="(item,index) in itemsData"
                       v-bind:key="index"
@@ -70,16 +83,16 @@
                       <v-list-item-icon>
                         <v-icon v-text="item.icon"></v-icon>
                       </v-list-item-icon>
-                      <v-list-item>
+                      <v-list-item-content>
                         <v-row>
-                          <v-col>
+                          <v-col cols="10" align-self="center">
                             <v-list-item-title v-text="item.name"></v-list-item-title>
                           </v-col>
                           <v-col>
-                            <v-list-item-title v-text="item.sortOrder" ></v-list-item-title>
+                            <v-list-item-title v-text="item.sortOrder"></v-list-item-title>
                           </v-col>
                         </v-row>
-                      </v-list-item>
+                      </v-list-item-content>
                     </v-list-item>
                   </v-list-item-group>
                 </v-list>
@@ -139,10 +152,10 @@ export default {
       console.log('temp category :', tempCat)
     },
     createSelectedCategoryObject(obj) {
-      this.tempCategory.name = obj.name
-      this.tempCategory.icon = obj.icon
-      this.tempCategory.sortOrder = obj.sortOrder
-      return this.tempCategory
+      this.category.name = obj.name
+      this.category.icon = obj.icon
+      this.category.sortOrder = obj.sortOrder
+      return this.category
     }
   },
 

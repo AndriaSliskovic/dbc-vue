@@ -3,17 +3,15 @@
     <v-card>
       <!-- EDIT -->
       <template v-if="dialogType==='edit'">
-        <v-row justify="space-between">
-          <v-card-title>Edit {{cField.name}} custom field for {{persona.personaObject.name}} persona</v-card-title>
-          <BaseIconClose @close="onCloseDialogHandler" />
-        </v-row>
+        <BaseCardTitle
+          @close="onCloseDialogHandler"
+        >Edit {{cField.name}} custom field for {{persona.personaObject.name}} persona</BaseCardTitle>
       </template>
       <!-- CREATE -->
       <template v-if="dialogType==='create'">
-        <v-row justify="space-between">
-          <v-card-title>Create new custom field for {{persona.personaObject.name}} persona</v-card-title>
-          <BaseIconClose @close="onCloseDialogHandler" />
-        </v-row>
+        <BaseCardTitle
+          @close="onCloseDialogHandler"
+        >Create new custom field for {{persona.personaObject.name}} persona</BaseCardTitle>
       </template>
       <v-form ref="form" v-model="valid">
         <v-card-text class="grey lighten-4">
@@ -74,7 +72,7 @@
                     </v-card-text>
                     <v-card-actions>
                       <template>
-                        <v-dialog v-model="dialogCategory" persistent max-width="800px">
+                        <v-dialog v-model="dialogCategory" persistent max-width="1200px">
                           <template v-slot:activator="{ on }">
                             <v-row justify="center">
                               <v-btn small depressed color="primary" v-on="on">Edit curent category</v-btn>
@@ -93,7 +91,7 @@
                 </template>
                 <!-- CREATE CATEGORY -->
                 <template v-if="dialogType==='create'">
-                  <v-dialog v-model="dialogCategory" persistent max-width="800px">
+                  <v-dialog v-model="dialogCategory" persistent max-width="1200px">
                     <template v-slot:activator="{ on }">
                       <v-row justify="center">
                         <v-btn color="primary" v-on="on">Create category</v-btn>
@@ -151,15 +149,15 @@
         </v-card-text>
 
         <!-- SUBMIT GROUP -->
-        <v-card-actions>
+        <v-card-actions class="grey darken-2 mx-0 title-page">
           <v-row justify="center">
             <template v-if="dialogType==='create'">
-              <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler">
+              <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler" :closeOnSubmit="closeOnSubmit" :disabledSubmit="!valid">
                 <template v-slot:submit>Submit</template>
               </BaseSubmitGroup>
             </template>
             <template v-if="dialogType==='edit'">
-              <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onUpdateHandler">
+              <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onUpdateHandler" :closeOnSubmit="closeOnSubmit" :disabledSubmit="!valid">
                 <template v-slot:submit>Update</template>
               </BaseSubmitGroup>
             </template>
@@ -197,19 +195,33 @@ export default {
       valid: false,
       fieldtype: ['DROPDOWNLIST', 'IMAGEBANK', 'TEXTAREA', 'TEXTBOX'],
       selectedType: null,
-      submitStatus: null
+      submitStatus: null,
+      closeOnSubmit:false
     }
   },
   props: ['cField', 'dialogType'],
 
-  created() {},
+  created() {
+
+  },
   beforeMount() {},
-  mounted() {},
-  beforeUpdate() {},
+  mounted() {
+    console.log("mounted")
+  },
+  beforeUpdate() {
+
+  },
+  updated(){
+
+  },
   beforeDestroy() {
+    console.log("before destroy")
     this.$v.$reset()
   },
-
+  destroyed(){
+    console.log("destroyed")
+    this.valid=false
+  },
   methods: {
     onCloseDialogHandler: function() {
       this.$emit('close', false)
@@ -218,7 +230,7 @@ export default {
     },
     onSubmitHandler: function() {
       console.log('on submit')
-      //Logika za submitovanje forme
+      //Submit form logic
       // console.log(this.cField)
       this.$v.$touch()
       if (this.$v.$invalid) {
@@ -227,37 +239,39 @@ export default {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
         }
-        //store.dispatch('notification/add', notification, { root: true })
+        console.log("not valid")
+        return  store.dispatch('notification/add', notification, { root: true })
       }
-      console.log("poslati podaci",this.cField)
-      //Setovanje tag fielda
+      console.log('poslati podaci', this.cField)
+      //Setting tag field
       if (this.cField.name) {
         this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
       }
       //Slanje podataka posle validacije
       store.dispatch('persona/createNewCustomField', this.cField)
-     
-      //this.$emit('close', false)
+      this.$emit('close', false)
+
     },
     onUpdateHandler() {
       console.log(this.cField)
       this.$v.$touch()
       if (this.$v.$invalid) {
-        console.log(`editovanje forme ${this.nameErrors}`)
+        console.log(`edit form error : ${this.nameErrors}`)
         const notification = {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
         }
-        store.dispatch('notification/add', notification, { root: true })
+        console.log("invalid data")
+        return  store.dispatch('notification/add', notification, { root: true })
+
       }
       //Setovanje tag fielda
       if (this.cField.name) {
         this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
       }
-      //Slanje podataka posle validacije
       store.dispatch('persona/updateCustomField', this.cField)
-      store.dispatch('notification/reloadPage', {}, { root: true })
       this.$emit('close', false)
+          this.valid=false
     },
     onSubmitCategory() {
       console.log('submitovana je kategorija')

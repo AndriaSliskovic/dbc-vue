@@ -1,30 +1,31 @@
 <template>
   <div>
     <v-btn
-      color="normal"
-      class="red--text text--darken-3"
-      text
+      color="secondary"
       @click="onClose"
       v-show="cancelVisible"
     >
       <slot>Cancel</slot>
     </v-btn>
-    <v-btn color="normal" class="teal--text text--darken-3" text @click="onSubmit">
+    <v-btn color="primary" @click="onSubmit" :disabled="disabledSubmit" >
       <slot name="submit">Confirm</slot>
     </v-btn>
   </div>
 </template>
 <script>
 export default {
-  // data(){
-  //   return {
-  //     cancelVisible:true
-  //   }
-  // },
   props: {
     cancelVisible: {
       default: true,
       type: Boolean
+    },
+    closeOnSubmit:{
+      default:true,
+      type:Boolean
+    },
+    disabledSubmit:{
+      default:false,
+      type:Boolean
     }
   },
   methods: {
@@ -33,7 +34,10 @@ export default {
     },
     onSubmit() {
       this.$emit('submit')
-      this.$emit('close', false)
+      if (this.closeOnSubmit) {
+        this.$emit('close', false)
+      }
+
     }
   }
 }

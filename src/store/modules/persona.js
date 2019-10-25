@@ -31,7 +31,7 @@ export const mutations = {
     state.personas
       .filter(el => el.id === payload.personaId)
       .map(e => {
-        ;(e.name = payload.name), (e.companyId = payload.companyId)
+        (e.name = payload.name), (e.companyId = payload.companyId)
       })
   },
   GET_PERSONA_OBJECT(state, payload) {
@@ -61,7 +61,18 @@ export const mutations = {
   },
   ADD_CUSTOM_FIELD_TO_ARRAY(state,payload){
     [...state.customFields,payload]
-    console.log("mutator")
+  },
+  UPDATE_CUSTOM_FIELD(state, payload){
+    console.log("mutator update cf",payload)
+    const newArray= state.customFields.map(el=>el.id===payload.id?el=payload:el)
+    state.customFields=newArray
+
+  },
+  DELETE_CUSTOM_FIELD(state, payload) {
+    console.log(`mutator delete custom field ${payload}`)
+    const newArray = state.customFields.filter(el => el.id !== payload)
+    state.customFields = newArray
+    console.log(`mutator delete ${newArray}`,newArray)
   },
   //CATEGORY
   CREATE_CATEGORY_ARRAY(state){
@@ -91,13 +102,7 @@ export const mutations = {
   GET_MASKS(state,payload){
     state.masks=payload
   },
-  //CUSTOM FIELDS
-  DELETE_CUSTOM_FIELD(state, payload) {
-    console.log(`mutator delete custom field ${payload}`)
-    const newArray = state.customFields.filter(el => el.id !== payload)
-    state.customFields = newArray
-    console.log(`mutator delete ${newArray}`,newArray)
-  },
+
   
 }
 export const actions = {
@@ -229,10 +234,6 @@ export const actions = {
     console.log(persona)
     commit('SELECTED_PERSONAS_STATUS', persona)
   },
-  //CUSTOM FIELDS
-  setSelectedCustomField({ commit }, selectedCustomField) {
-    commit('SET_SELECTED_CUSTOM_FIELD', selectedCustomField)
-  },
   addPersonaDataSourceItem({ commit }, item) {
     console.log(`action dodavanja persona data sourca ${item}`)
     commit('ADD_PERSONA_DATASOURCE_ITEM', item)
@@ -280,6 +281,9 @@ export const actions = {
         // dispatch('notification/reloadPage', {}, { root: true })
       })
   },
+    setSelectedCustomField({ commit }, selectedCustomField) {
+    commit('SET_SELECTED_CUSTOM_FIELD', selectedCustomField)
+  },
   //CATEGORIES
   getAllCategoriesForSelectedPersona({commit}){
     console.log("pravi niz")
@@ -317,6 +321,9 @@ export const actions = {
       )
  
   },
+  setSelectedCustomField({ commit }, selectedCustomField) {
+    commit('SET_SELECTED_CUSTOM_FIELD', selectedCustomField)
+  },
   getCustomFieldsByPersonaID({ commit, dispatch }, personaId) {
     console.log(`action CustomFields ${personaId}`)
     return personaService
@@ -333,7 +340,7 @@ export const actions = {
   },
   updateCustomField({ commit, dispatch }, cField) {
     console.log(`update action ${cField}`, cField)
-
+    commit('UPDATE_CUSTOM_FIELD',cField)
     return personaService.updateCustomField(cField)
       .then(() => {
         const notification = {
@@ -341,7 +348,6 @@ export const actions = {
           message: `Custom field successfully updated for selected persona!`
         }
         dispatch('notification/add', notification, { root: true })
-
       })
       .catch(error => {
         const notification = {
@@ -350,8 +356,10 @@ export const actions = {
         }
         console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
-        dispatch('notification/reloadPage', {}, { root: true })
       })
+      .then(
+        ()=>commit('UPDATE_CUSTOM_FIELD',cField)
+      )
   },
   deleteSelectedCustomField({commit,dispatch},params){
     console.log(`action za delete`,params)
