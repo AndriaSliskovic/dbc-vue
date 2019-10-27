@@ -12,14 +12,9 @@
               :companies="companies.allCompanies"
               @on-change-select="onChangeSelectHandler(companyId)"
             />
-            <!-- TOOLTIP -->
+            <!-- TOOLTIP COMPANY-->
             <template v-if="!companyId">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-icon color="primary" dark v-on="on">info</v-icon>
-                </template>
-                <span>{{tooltips.companySelect}}</span>
-              </v-tooltip>
+            <BaseTooltip>{{tooltips.companySelect}}</BaseTooltip>
             </template>
           </v-row>
         </template>
@@ -54,7 +49,7 @@
               <!-- / Select personas status -->
               <!-- CREATE PERSONA -->
               <v-col cols="4">
-                <v-dialog v-model="dialogAddNewPersona" persistent max-width="600px">
+                <v-dialog v-model="dialog.addNewPersona" persistent max-width="800px">
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" v-on="on">Create new persona</v-btn>
                   </template>
@@ -65,7 +60,7 @@
             <!-- / CREATE PERSONA -->
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
-            <!-- STATUS -->
+            <!-- STATUS CHIP-->
             <template v-slot:item.status="{ item }">
               <v-chip
                 pill
@@ -79,26 +74,18 @@
                 {{item.status}}
               </v-chip>
             </template>
-            <!-- TOOLTIP -->
-
-            <!-- // TOOLTIP -->
             <!-- / STATUS -->
             <!-- EDIT PERSONA -->
             <template v-slot:item.edit="{item}">
               <v-icon large color="blue darken-2" @click="onEditPersona(item.id)">mdi-table-edit</v-icon>
               <!-- TOOLTIP -->
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-icon color="primary" dark v-on="on">info</v-icon>
-                </template>
-                <span>{{tooltips.editPersona}}</span>
-              </v-tooltip>
+              <BaseTooltip>{{tooltips.editPersona}}</BaseTooltip>
             </template>
 
             <!-- DELETE PERSONA -->
             <template v-slot:item.delete="{item}">
               <!-- DIALOG FOR DELETE -->
-              <v-dialog v-model="dialogDeletePersona" persistent max-width="400px">
+              <v-dialog v-model="dialog.deletePersona" persistent max-width="400px">
                 <template v-slot:activator="{ on }">
                   <v-icon
                     large
@@ -106,9 +93,10 @@
                     v-on="on"
                     @click="setSelectedPersona(item.id)"
                   >mdi-delete</v-icon>
+                <BaseTooltip>{{tooltips.deletePersona}}</BaseTooltip>
                 </template>
                 <BaseDialogConfirmation
-                  @close="()=>dialogDeletePersona=false"
+                  @close="()=>dialog.deletePersona=false"
                   @submit="onDeletePersonadHandler(item.id)"
                 >
                   <template v-slot:header>Delete persona : {{selectedPersona.name}}</template>
@@ -161,12 +149,15 @@ export default {
       selectedStatus: null,
       selectedPersonaStatusId: null,
       selectedPersona: null,
-      dialogAddNewPersona: false,
-      dialogDeletePersona: false,
+      dialog:{
+        addNewPersona:false,
+        deletePersona:false
+      },
       tooltips: {
         companySelect: 'You must select company first !',
         setStatus: 'Place where you change status of persona.',
-        editPersona: 'Click on the icon and change data for selected persona.'
+        editPersona: 'Click on the icon and change data for selected persona.',
+        deletePersona:'Delete selected persona.'
       }
     }
   },
@@ -241,7 +232,7 @@ export default {
       console.log('Dodavanje persone')
     },
     onCloseDialog(value) {
-      this.dialogAddNewPersona = value
+      this.dialog.addNewPersona = value
     },
     mapPersonas() {
       return this.persona.personas.map(p => {

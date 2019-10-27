@@ -44,8 +44,10 @@ export const mutations = {
 
   //STATUS PERSONA
   SET_PERSONAS_STATUS(state, payload) {
-    console.log(payload.active)
+    console.log("mutator set persona status",payload)
     state.personaObject = payload
+    state.personas.map(el=>el.id===payload.id?el.active=payload.active:el)
+
   },
   SELECTED_PERSONAS_STATUS(state, payload) {
     console.log(payload)
@@ -177,7 +179,7 @@ export const actions = {
   },
   //PERSONA STATUS
   setPersonasStatusOnServer({ commit, dispatch }, element) {
-    console.log(element.stringId, element.active)
+    console.log(element.stringId, element.active,element)
     const status = element.active
     const personaUrlString = element.stringId
     //Aktivacija statusa
@@ -192,7 +194,7 @@ export const actions = {
           }
           //Dobijanje poruke
           dispatch('notification/add', notification, { root: true })
-          //Setovanje statea
+          //Setting status
           dispatch('setPersonasStatus', element)
         })
         .catch(error => {
@@ -213,7 +215,7 @@ export const actions = {
             message: `Data successfully changed !`
           }
           dispatch('notification/add', notification, { root: true })
-          //Setuje status
+          //Setting status
           dispatch('setPersonasStatus', element)
         })
         .catch(error => {
@@ -222,6 +224,7 @@ export const actions = {
             message: `Can't deactivate Persona. It is in use by CustomFields or PersonaInstances !`
           }
           dispatch('notification/add', notification, { root: true })
+          dispatch('getPersonasByCompanyGuid',element.companyIdString)
           throw error
         })
     }

@@ -69,7 +69,7 @@
                 <v-list dense>
                   <v-list-item-group v-model="itemsData" color="primary">
                     <v-row no-gutters justify="space-around">
-                      <v-subheader>Icon</v-subheader>
+                      <v-subheader >Icon</v-subheader>
                       <v-subheader>Category</v-subheader>
                       <v-subheader>Sort order</v-subheader>
                     </v-row>
@@ -101,7 +101,7 @@
           </v-col>
         </v-row>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="grey darken-2 mx-0 title-page">
         <v-row justify="center">
           <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler" />
         </v-row>

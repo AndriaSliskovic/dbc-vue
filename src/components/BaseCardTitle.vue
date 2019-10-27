@@ -9,7 +9,7 @@
       <v-col cols="6">
         <BaseNotificationContainer />
       </v-col>
-      <v-col>
+      <v-col cols="1">
         <BaseIconClose @close="onCloseDialogHandler"/>
       </v-col>
     </v-row>

@@ -110,28 +110,45 @@
               <!-- // CATEGORY DIALOG -->
               <v-col>
                 <!-- <v-text-field v-model="cField.type" label="Custom field type" required></v-text-field> -->
-                <v-select
-                  v-model="cField.type"
-                  :items="fieldtype"
-                  menu-props="auto"
-                  label="Select type"
-                  hide-details
-                  single-line
-                ></v-select>
+                <v-row>
+                  <BaseTooltip>{{tooltips.selectType}}</BaseTooltip>
+                  <v-select
+                    v-model="cField.type"
+                    :items="fieldtype"
+                    menu-props="auto"
+                    label="Select type"
+                    hide-details
+                    single-line
+                  ></v-select>
+                </v-row>
               </v-col>
               <v-col>
                 <v-row>
                   <v-col>
-                    <p>{{ 'REQUIRED :' || 'null' }}</p>
+                    <v-row class="mb-n8">
+                      <v-col cols="1">
+                        <BaseTooltip>{{tooltips.reqiured}}</BaseTooltip>
+                      </v-col>
+                      <v-col>
+                        <p>{{ 'REQUIRED :' || 'null' }}</p>
+                      </v-col>
+                    </v-row>
                     <v-radio-group v-model="cField.required" :mandatory="false">
                       <v-radio label="Yes" :value="true"></v-radio>
-                      <v-radio label="No" :value="false"></v-radio>
+                      <v-radio label="No" :value="false" class="mb-n8"></v-radio>
                     </v-radio-group>
                   </v-col>
                   <v-col>
-                    <p>STATUS :</p>
+                    <v-row class="mb-n8">
+                      <v-col cols="1">
+                        <BaseTooltip>{{tooltips.status}}</BaseTooltip>
+                      </v-col>
+                      <v-col>
+                        <p>STATUS :</p>
+                      </v-col>
+                    </v-row>
                     <v-checkbox v-model="cField.visible" class="mb-n2" label="Visible"></v-checkbox>
-                    <v-checkbox v-model="cField.editable" class="mt-n4" label="Editable"></v-checkbox>
+                    <v-checkbox v-model="cField.editable" class="mt-n4 mb-n8" label="Editable"></v-checkbox>
                   </v-col>
                 </v-row>
               </v-col>
@@ -152,12 +169,22 @@
         <v-card-actions class="grey darken-2 mx-0 title-page">
           <v-row justify="center">
             <template v-if="dialogType==='create'">
-              <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler" :closeOnSubmit="closeOnSubmit" :disabledSubmit="!valid">
+              <BaseSubmitGroup
+                @close="onCloseDialogHandler"
+                @submit="onSubmitHandler"
+                :closeOnSubmit="closeOnSubmit"
+                :disabledSubmit="!valid"
+              >
                 <template v-slot:submit>Submit</template>
               </BaseSubmitGroup>
             </template>
             <template v-if="dialogType==='edit'">
-              <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onUpdateHandler" :closeOnSubmit="closeOnSubmit" :disabledSubmit="!valid">
+              <BaseSubmitGroup
+                @close="onCloseDialogHandler"
+                @submit="onUpdateHandler"
+                :closeOnSubmit="closeOnSubmit"
+                :disabledSubmit="!valid"
+              >
                 <template v-slot:submit>Update</template>
               </BaseSubmitGroup>
             </template>
@@ -196,31 +223,30 @@ export default {
       fieldtype: ['DROPDOWNLIST', 'IMAGEBANK', 'TEXTAREA', 'TEXTBOX'],
       selectedType: null,
       submitStatus: null,
-      closeOnSubmit:false
+      closeOnSubmit: false,
+      tooltips: {
+        selectType: 'Select type of custom field',
+        reqiured: 'Is custom field required ?',
+        status: 'check status for custom field.'
+      }
     }
   },
   props: ['cField', 'dialogType'],
 
-  created() {
-
-  },
+  created() {},
   beforeMount() {},
   mounted() {
-    console.log("mounted")
+    console.log('mounted')
   },
-  beforeUpdate() {
-
-  },
-  updated(){
-
-  },
+  beforeUpdate() {},
+  updated() {},
   beforeDestroy() {
-    console.log("before destroy")
+    console.log('before destroy')
     this.$v.$reset()
   },
-  destroyed(){
-    console.log("destroyed")
-    this.valid=false
+  destroyed() {
+    console.log('destroyed')
+    this.valid = false
   },
   methods: {
     onCloseDialogHandler: function() {
@@ -239,8 +265,8 @@ export default {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
         }
-        console.log("not valid")
-        return  store.dispatch('notification/add', notification, { root: true })
+        console.log('not valid')
+        return store.dispatch('notification/add', notification, { root: true })
       }
       console.log('poslati podaci', this.cField)
       //Setting tag field
@@ -250,7 +276,6 @@ export default {
       //Slanje podataka posle validacije
       store.dispatch('persona/createNewCustomField', this.cField)
       this.$emit('close', false)
-
     },
     onUpdateHandler() {
       console.log(this.cField)
@@ -261,9 +286,8 @@ export default {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
         }
-        console.log("invalid data")
-        return  store.dispatch('notification/add', notification, { root: true })
-
+        console.log('invalid data')
+        return store.dispatch('notification/add', notification, { root: true })
       }
       //Setovanje tag fielda
       if (this.cField.name) {
@@ -271,7 +295,7 @@ export default {
       }
       store.dispatch('persona/updateCustomField', this.cField)
       this.$emit('close', false)
-          this.valid=false
+      this.valid = false
     },
     onSubmitCategory() {
       console.log('submitovana je kategorija')

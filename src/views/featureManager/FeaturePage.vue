@@ -1,53 +1,59 @@
 <template>
   <v-app id="inspire">
     <v-card>
-      <v-card-title>
-        <v-col cols="6">
-          <v-card-title class="pl-4 pt-4 blue--text text--darken-4 headline">Feature manager</v-card-title>
-        </v-col>
-        <v-col cols="6">
-          <v-row justify="center">
-            <NotificationContainer />
-          </v-row>
-        </v-col>
-      </v-card-title>
+      <BasePageTitle>Feature manager</BasePageTitle>
       <v-card-text>
         <v-row>
           <v-col cols="6">
             <v-col>
-              <!-- COMPANY -->
-              <v-select
-                :items="feature.companies"
-                name="company"
-                item-text="CompanyName"
-                filled
-                return-object
-                label="Company"
-                hint="Select company"
-                persistent-hint
-                v-model="selectedCompany"
-                @change="setSelectedCompany"
-              ></v-select>
+              <v-row>
+                <!-- TOOLTIP -->
+                <template>
+                  <BaseTooltip>{{tooltips.company}}</BaseTooltip>
+                </template>
+                <!-- COMPANY -->
+                <v-select
+                  :items="feature.companies"
+                  name="company"
+                  item-text="CompanyName"
+                  filled
+                  return-object
+                  label="Company"
+                  hint="Select company"
+                  persistent-hint
+                  v-model="selectedCompany"
+                  @change="setSelectedCompany"
+                ></v-select>
+              </v-row>
             </v-col>
+
             <!-- SETTINGS -->
             <v-col>
-              <!-- Select options -->
-              <v-select
-                :items="selectOptions"
-                name="group"
-                item-text="name"
-                item-value="key"
-                filled
-                label="Settings"
-                hint="Select portal or user group"
-                persistent-hint
-                v-model="settingsType"
-                @change="onSettingsTypeChange"
-                :disabled="isSettingsDisabled"
-              ></v-select>
+              <v-row>
+                <template v-if="selectedCompany">
+                  <BaseTooltip>{{tooltips.settings}}</BaseTooltip>
+                </template>
+                <!-- Select options -->
+                <v-select
+                  :items="selectOptions"
+                  name="group"
+                  item-text="name"
+                  item-value="key"
+                  filled
+                  label="Settings"
+                  hint="Select portal or user group"
+                  persistent-hint
+                  v-model="settingsType"
+                  @change="onSettingsTypeChange"
+                  :disabled="isSettingsDisabled"
+                ></v-select>
+              </v-row>
             </v-col>
             <v-col v-if="settingsType==='group'">
-              <!-- Select usr group -->
+              <v-row>
+                 <template>
+                  <BaseTooltip>{{tooltips.userGroup}}</BaseTooltip>
+                </template>               
               <v-select
                 :items="feature.groups"
                 name="group"
@@ -60,6 +66,7 @@
                 v-model="selectedGroupGuid"
                 @change="onSelectedGroupChange"
               ></v-select>
+              </v-row>
             </v-col>
           </v-col>
           <!-- IF PORTAL IS SELECTED -->
@@ -79,9 +86,8 @@
           </v-col>
         </v-row>
       </v-card-text>
-
       <!-- SUBMIT BUTTON -->
-      <v-card-actions v-if="submitEnabled">
+      <v-card-actions class="grey darken-2 mx-0 title-page" v-if="submitEnabled">
         <v-row justify="center">
           <BaseSubmitGroup @submit="submitted" :cancelVisible="false">
             <template v-slot:submit>Confirm changes</template>
@@ -121,7 +127,12 @@ export default {
           key: 'group',
           name: 'User Group'
         }
-      ]
+      ],
+      tooltips: {
+        company: 'Select company first to manage features',
+        settings: 'Choose Portal or User group',
+        userGroup:'Select user group for selected company'
+      },
     }
   },
   components: {
@@ -176,7 +187,7 @@ export default {
       }
     },
     onSelectedGroupChange() {
-                this.currentFeatures=[]
+      this.currentFeatures = []
       store
         .dispatch('feature/getSelectedModules', this.selectedGroupGuid)
         .then(() => {
@@ -205,7 +216,7 @@ export default {
     onSettingsTypeChange() {
       switch (this.settingsType) {
         case 'portal':
-          this.currentFeatures=[]
+          this.currentFeatures = []
           this.onPortalSelect()
           this.submitEnabled = true
           break

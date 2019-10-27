@@ -18,7 +18,12 @@
           <v-col cols="3">
             <v-row>
               <v-col cols="4">
-                <v-text-field v-model="persona.personaObject.activeLimit" label="Active limit" type="number" dense></v-text-field>
+                <v-text-field
+                  v-model="persona.personaObject.activeLimit"
+                  label="Active limit"
+                  type="number"
+                  dense
+                ></v-text-field>
               </v-col>
               <v-col cols="8">
                 <v-checkbox v-model="persona.personaObject.allowShare" label="Allow share" dense></v-checkbox>
@@ -26,9 +31,26 @@
             </v-row>
           </v-col>
           <v-col cols="2" md="3">
-            <v-btn color="primary" @click="onEditPersonaHandler()">Edit curent persona</v-btn>
+            <template >
+              <v-dialog v-model="dialog.confirmation.editPersona" persistent max-width="400px">
+                <template v-slot:activator={on}>
+                  <v-btn color="primary" v-on="on" >Edit curent persona</v-btn>
+                </template>
+                 <BaseDialogConfirmation
+                  @close="(val)=>dialog.confirmation.editPersona=val"
+                  @submit="onEditPersonaHandler"
+                >
+                  <template v-slot:header>Edit Persona</template>
+                  <template v-slot:body>Are you sure you want to edit data for selected persona ?</template>
+                </BaseDialogConfirmation>
+              </v-dialog>
+            </template>
+            <!-- <v-btn color="primary" @click="onEditPersonaHandler()">Edit curent persona</v-btn> -->
+            <!-- TOOLTIP EDIT PERSONA -->
+            <BaseTooltip :large="true">{{tooltips.editCurentPersona}}</BaseTooltip>
           </v-col>
         </v-row>
+        <!-- // EDIT CURENT PERSONA -->
         <v-divider />
         <!-- TABLE -->
         <v-card-title>
@@ -45,7 +67,7 @@
             <div class="flex-grow-1"></div>
             <!-- CREATE Custom Fields -->
             <v-col class="pr-6">
-              <v-dialog v-model="dialogCreate" persistent max-width="1200px">
+              <v-dialog v-model="dialog.create" persistent max-width="1200px">
                 <!-- Aktivator -->
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -73,7 +95,7 @@
         >
           <template v-slot:item.edit="{item}">
             <!-- DIALOG EDIT -->
-            <v-dialog v-model="dialogEdit" persistent max-width="1200px">
+            <v-dialog v-model="dialog.edit" persistent max-width="1200px">
               <template v-slot:activator="{ on }">
                 <v-icon
                   large
@@ -81,6 +103,7 @@
                   @click="onEditCustomFieldHandler(item.id)"
                   v-on="on"
                 >mdi-table-edit</v-icon>
+              <BaseTooltip>{{tooltips.editCustomField}}</BaseTooltip>
               </template>
               <CustomFieldSelected
                 @close="val=>onCloseDialog(val)"
@@ -91,7 +114,7 @@
           </template>
           <!-- DIALOG DELETE -->
           <template v-slot:item.delete="{item}">
-            <v-dialog v-model="dialogConf" persistent max-width="400px">
+            <v-dialog v-model="dialog.confirmation.deleteCustomfield" persistent max-width="400px">
               <template v-slot:activator="{ on }">
                 <v-icon
                   large
@@ -99,9 +122,10 @@
                   v-on="on"
                   @click="setSelectedCustomField(item.id)"
                 >mdi-delete</v-icon>
+                <BaseTooltip>{{tooltips.deleteCustomField}}</BaseTooltip>
               </template>
               <BaseDialogConfirmation
-                @close="()=>dialogConf=false"
+                @close="(val)=>dialog.confirmation.deleteCustomfield=val"
                 @submit="onDeleteCustomFieldHandler"
               >
                 <template v-slot:header>Delete custom field : {{selectedCustomField.name}}</template>
@@ -110,12 +134,9 @@
             </v-dialog>
           </template>
         </v-data-table>
-        <!-- <v-card-actions class="grey darken-2 mx-0 title-page">
-          <v-row justify="center" >
-            <v-btn small @click="()=>this.$router.go(-1) " dark>Go back</v-btn>
-          </v-row>
-        </v-card-actions> -->
-        <BasePageFooter><v-btn small @click="()=>this.$router.go(-1) " dark>Go back</v-btn></BasePageFooter>
+        <BasePageFooter>
+          <v-btn small @click="()=>this.$router.go(-1) " dark>Go back</v-btn>
+        </BasePageFooter>
       </v-card>
       <!-- /Tabela -->
     </v-container>
@@ -130,15 +151,13 @@ import CustomFieldSelected from './CustomFieldSelected'
 
 export default {
   components: {
-    CustomFieldSelected,
-
+    CustomFieldSelected
   },
   data() {
     return {
       personaId: this.$route.params.personaId,
       companyId: this.$route.params.companyId,
       selectedCompany: null,
-
       editedCompany: null,
       search: '',
       headers: [
@@ -146,15 +165,24 @@ export default {
         { text: 'Rank', value: 'rank' },
         { text: 'Name', value: 'name' },
         { text: 'Category', value: 'category' },
-        {text:'Sort order', value:'sortOrder'},
+        { text: 'Sort order', value: 'sortOrder' },
         { text: 'Type', value: 'type' },
         { text: 'Delete', value: 'delete' }
       ],
+      tooltips: {
+        editCurentPersona: 'Edit curent persona',
+        deleteCustomField: 'Delete selected custom field',
+        editCustomField: 'Click on the icon and change data for selected custom field.'
+      },
       dialogType: null,
-
-      dialogCreate: false,
-      dialogEdit: false,
-      dialogConf: false,
+      dialog:{
+        confirmation:{
+          deleteCustomfield:false,
+          editPersona:false
+        },
+        create:false,
+        edit:false
+      },
 
       selectedCustomField: null,
       dataObject: null
@@ -166,7 +194,7 @@ export default {
     })
   },
   created() {
-    this.editedCompany=this.companyId
+    this.editedCompany = this.companyId
     //Dobijanje persona objekta
     store.dispatch('persona/getSelectedPersonaByPersonaId', this.personaId)
     //Dobijanje CustomFieldsa
@@ -179,18 +207,18 @@ export default {
       return this.$router.go(-1)
     },
     editedPersona: function() {
-        console.log('edit persona object')
-        return {
-          personaId: this.personaId,
-          name: this.personaName,
-          companyId: this.companies.selectedCompanyGUID,
-          activeLimit: this.persona.personaObject.activeLimit,
-          allowShare: this.persona.personaObject.allowShare
-        }
+      console.log('edit persona object')
+      return {
+        personaId: this.personaId,
+        name: this.personaName,
+        companyId: this.companies.selectedCompanyGUID,
+        activeLimit: this.persona.personaObject.activeLimit,
+        allowShare: this.persona.personaObject.allowShare
+      }
     },
     onEditPersonaHandler: function() {
       const editedPersona = this.editedPersona()
-      console.log(`imam edit `,editedPersona)
+      console.log(`imam edit `, editedPersona)
       store.dispatch('persona/editPersonaData', editedPersona)
     },
     onCreateCustomFieldObject() {
@@ -224,7 +252,7 @@ export default {
       }
     },
     setSelectedCustomField(key) {
-      console.log("setovanje cf-a",key)
+      console.log('setovanje cf-a', key)
       const cField = this.customFields.find(function(el) {
         return el.id === key
       })
@@ -257,13 +285,12 @@ export default {
         personaId: this.personaId,
         cFieldId: this.selectedCustomField.id
       }
-      console.log(`delete custom field`,params)
+      console.log(`delete custom field`, params)
       store.dispatch('persona/deleteSelectedCustomField', params)
-
     },
     onCloseDialog(value) {
-      this.dialogCreate = value
-      this.dialogEdit = value
+      this.dialog.create = value
+      this.dialog.edit = value
       //Kreiranje praznog objekta zbog resetovanja centralnog stora
       this.dataObject = this.createDataObject()
       store.dispatch('persona/setSelectedCustomField', this.dataObject)
@@ -294,7 +321,7 @@ export default {
             rank: cf.rank,
             name: cf.name,
             category: cf.category.name,
-            sortOrder:cf.category.sortOrder,
+            sortOrder: cf.category.sortOrder,
             type: cf.type
           }
         })

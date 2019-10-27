@@ -1,13 +1,13 @@
 <template>
-  <v-card>
-    <v-card-title class="title">Available features :</v-card-title>
+  <v-card dark>
+    <v-card-title class="grey darken-2 mx-0 title-page">
+    <BaseTooltip :large="true" class="mr-2">Select or deselect available features</BaseTooltip>
+    Available features :
+    </v-card-title>
     <v-card-text>
       <v-row>
         <v-col v-for="item in currentFeatures" cols="4">
-          <FeatureCard
-            :feature="item"
-            @onChangeSelect="updateModules"
-          />
+          <FeatureCard :feature="item" @onChangeSelect="updateModules" />
         </v-col>
       </v-row>
     </v-card-text>

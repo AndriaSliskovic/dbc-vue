@@ -12,7 +12,7 @@
           </v-col>
         </v-row>
         <!-- DATASOURCE LIST - CARD -->
-        <v-row v-if="itemsData">
+        <v-row v-if="itemsData.length>0">
           <v-col>
             <v-card class="mx-auto" max-width="400" tile>
               <v-list dense>
