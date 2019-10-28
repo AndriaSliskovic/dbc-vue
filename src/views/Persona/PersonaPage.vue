@@ -49,7 +49,7 @@
               <!-- / Select personas status -->
               <!-- CREATE PERSONA -->
               <v-col cols="4">
-                <v-dialog v-model="dialog.addNewPersona" persistent max-width="800px">
+                <v-dialog v-model="dialog.addNewPersona" persistent max-width="800px" :retain-focus='false'>
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" v-on="on">Create new persona</v-btn>
                   </template>
@@ -85,7 +85,7 @@
             <!-- DELETE PERSONA -->
             <template v-slot:item.delete="{item}">
               <!-- DIALOG FOR DELETE -->
-              <v-dialog v-model="dialog.deletePersona" persistent max-width="400px">
+              <v-dialog v-model="dialog.deletePersona" persistent max-width="400px" :retain-focus='false'>
                 <template v-slot:activator="{ on }">
                   <v-icon
                     large

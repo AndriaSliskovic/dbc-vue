@@ -72,7 +72,7 @@
                     </v-card-text>
                     <v-card-actions>
                       <template>
-                        <v-dialog v-model="dialogCategory" persistent max-width="1200px">
+                        <v-dialog v-model="dialogCategory" persistent max-width="1200px" :retain-focus='false'>
                           <template v-slot:activator="{ on }">
                             <v-row justify="center">
                               <v-btn small depressed color="primary" v-on="on">Edit curent category</v-btn>
@@ -91,7 +91,7 @@
                 </template>
                 <!-- CREATE CATEGORY -->
                 <template v-if="dialogType==='create'">
-                  <v-dialog v-model="dialogCategory" persistent max-width="1200px">
+                  <v-dialog v-model="dialogCategory" persistent max-width="1200px" :retain-focus='false'>
                     <template v-slot:activator="{ on }">
                       <v-row justify="center">
                         <v-btn color="primary" v-on="on">Create category</v-btn>
@@ -236,16 +236,16 @@ export default {
   created() {},
   beforeMount() {},
   mounted() {
-    console.log('mounted')
+
   },
   beforeUpdate() {},
   updated() {},
   beforeDestroy() {
-    console.log('before destroy')
+
     this.$v.$reset()
   },
   destroyed() {
-    console.log('destroyed')
+
     this.valid = false
   },
   methods: {

@@ -83,6 +83,12 @@ export const mutations = {
     state.categories=filteredCategories
   },
 
+  ADD_NEW_CATEGORY(state,payload){
+    //console.log("mutator",payload)
+    // [...state.categories,payload]
+    state.categories.push(payload)
+  },
+
   //DATA SOURCE ITEMS
   ADD_PERSONA_DATASOURCE_ITEM(state, payload) {
     if (!state.selectedCustomField.dataSource) {
@@ -291,6 +297,10 @@ export const actions = {
   getAllCategoriesForSelectedPersona({commit}){
     console.log("pravi niz")
     commit('CREATE_CATEGORY_ARRAY')
+  },
+  addNewCategory({commit},newCategory){
+    console.log(newCategory)
+    commit('ADD_NEW_CATEGORY',newCategory)
   },
   //CUSTOM FIELDS
   getSelectedCustomField({ commit, dispatch }, cFieldId) {

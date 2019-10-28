@@ -32,7 +32,7 @@
           </v-col>
           <v-col cols="2" md="3">
             <template >
-              <v-dialog v-model="dialog.confirmation.editPersona" persistent max-width="400px">
+              <v-dialog v-model="dialog.confirmation.editPersona" persistent max-width="400px" :retain-focus='false'>
                 <template v-slot:activator={on}>
                   <v-btn color="primary" v-on="on" >Edit curent persona</v-btn>
                 </template>
@@ -67,7 +67,7 @@
             <div class="flex-grow-1"></div>
             <!-- CREATE Custom Fields -->
             <v-col class="pr-6">
-              <v-dialog v-model="dialog.create" persistent max-width="1200px">
+              <v-dialog v-model="dialog.create" persistent max-width="1200px" :retain-focus='false'>
                 <!-- Aktivator -->
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -95,7 +95,7 @@
         >
           <template v-slot:item.edit="{item}">
             <!-- DIALOG EDIT -->
-            <v-dialog v-model="dialog.edit" persistent max-width="1200px">
+            <v-dialog v-model="dialog.edit" persistent max-width="1200px" :retain-focus='false'>
               <template v-slot:activator="{ on }">
                 <v-icon
                   large
@@ -114,7 +114,7 @@
           </template>
           <!-- DIALOG DELETE -->
           <template v-slot:item.delete="{item}">
-            <v-dialog v-model="dialog.confirmation.deleteCustomfield" persistent max-width="400px">
+            <v-dialog v-model="dialog.confirmation.deleteCustomfield" persistent max-width="400px" :retain-focus='false'>
               <template v-slot:activator="{ on }">
                 <v-icon
                   large

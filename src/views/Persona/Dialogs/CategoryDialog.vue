@@ -2,78 +2,115 @@
   <v-container>
     <v-card>
       <template>
-        <BaseCardTitle
-          @close="onCloseDialogHandler"
-        >Category for Custom field</BaseCardTitle>
+        <BaseCardTitle @close="onCloseDialogHandler">Category for Custom field</BaseCardTitle>
       </template>
 
+      <v-col cols="6">
+        <v-card-title>Current category</v-card-title>
+        <!-- category table -->
+        <v-card-text>
+          <v-simple-table dense class="grey lighten-3">
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">Category name</th>
+                  <th class="text-left">Sort order</th>
+                  <th class="text-left">Icon</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{ category.name }}</td>
+                  <td>{{ category.sortOrder }}</td>
+                  <td>
+                    <template>
+                      <v-icon small>{{category.icon}}</v-icon>
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-card-text>
+        <!-- // category table -->
+      </v-col>
+
+      <v-col v-if="tempCategory">
+        <v-col cols="6">
+        <v-card-title>New selected category{{tempCategory.name}}</v-card-title>
+        <!-- category table -->
+        <v-card-text>
+          <v-simple-table dense class="grey lighten-3">
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">Category name</th>
+                  <th class="text-left">Sort order</th>
+                  <th class="text-left">Icon</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{ tempCategory.name }}</td>
+                  <td>{{ tempCategory.sortOrder }}</td>
+                  <td>
+                    <template>
+                      <v-icon small>{{tempCategory.icon}}</v-icon>
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-card-text>
+        <!-- // category table -->
+      </v-col>
+      </v-col>
+
       <v-card-text>
-        <v-col cols="6">
-          <v-card-title class="primary white--text my-0 py-1">Edit curent category :</v-card-title>
-        </v-col>
-
-        <!-- CATEGORY NAME -->
-        <v-col cols="6">
-          <v-text-field
-            v-model="category.name"
-            :error-messages="categoryErrors"
-            label="Category name"
-            required
-            dence
-            @input="$v.category.name.$touch()"
-            @blur="$v.category.name.$touch()"
-          ></v-text-field>
-        </v-col>
-
-        <!-- CENTRAL CONTAINER -->
-        <v-row>
-          <!-- LEFT CONTAINER -->
-          <v-col cols="4">
-            <!-- ICON -->
-            <v-col>
-              <v-text-field v-model="category.icon" label="Icon" dense></v-text-field>
-            </v-col>
-            <v-col>
-              <v-row>
-                <v-col class="title" cols="8">Icon preview :</v-col>
-                <v-col cols="2">
-                  <v-icon large outlined>{{category.icon}}</v-icon>
-                </v-col>
-              </v-row>
-            </v-col>
-
-            <!-- SORT ORDER -->
-            <v-col cols="5">
-              <v-text-field
-                v-model="category.sortOrder"
-                :error-messages="categorySortOrderErrors"
-                label="Sort order"
-                type="number"
-                required
-                @input="$v.category.sortOrder.$touch()"
-                @blur="$v.category.sortOrder.$touch()"
-              ></v-text-field>
-            </v-col>
+        <v-row align="center">
+          <v-col cols="5">
+            <v-dialog
+              v-model="dialog.newCategory"
+              persistent
+              max-width="800px"
+              :retain-focus="false"
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  depressed
+                  color="primary"
+                  v-on="on"
+                  @click="createNewCategoryObject"
+                >Create new category for persona</v-btn>
+              </template>
+              <CreateNewCategoryDialog
+                :category="newCategory"
+                @close="()=>dialog.newCategory=false"
+                @submit="setNewCategoryObject"
+              />
+            </v-dialog>
           </v-col>
+
+          <!-- OR DIVIDER -->
           <v-row align="center" justify="center">
             <v-col cols="2" class="display-1 primary--text">
-              <p>OR</p>
+              <p>AND (OR)</p>
             </v-col>
           </v-row>
 
-          <!-- CATEGORIES LIST -->
-          <v-col cols="6">
+          <v-col cols="5">
+            <!-- CATEGORIES LIST -->
             <v-row align="center">
               <v-card class="mx-auto grey lighten-4" max-width="400" tile>
                 <v-card-title class="primary white--text my-0 py-1">Select existing category :</v-card-title>
                 <v-list dense>
                   <v-list-item-group v-model="itemsData" color="primary">
                     <v-row no-gutters justify="space-around">
-                      <v-subheader >Icon</v-subheader>
+                      <v-subheader>Icon</v-subheader>
                       <v-subheader>Category</v-subheader>
                       <v-subheader>Sort order</v-subheader>
                     </v-row>
-
                     <v-list-item
                       v-for="(item,index) in itemsData"
                       v-bind:key="index"
@@ -114,15 +151,24 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, email } from 'vuelidate/lib/validators'
+import CreateNewCategoryDialog from './CreateNewCategoryDialog'
 
 export default {
   data() {
     return {
-      tempCategory: {
+      tempCategory: null,
+      newCategory: {
         type: Object,
         default: null
+      },
+      catSelected: false,
+      dialog: {
+        newCategory: false
       }
     }
+  },
+  components: {
+    CreateNewCategoryDialog
   },
   props: {
     category: Object,
@@ -137,25 +183,33 @@ export default {
   },
   methods: {
     onCloseDialogHandler() {
+      this.catSelected = false
       this.$emit('close', false)
       //Resetovanje prethodne validacije
       this.$v.$reset()
     },
     onSubmitHandler() {
+      this.catSelected = false
       console.log('on submit')
+      this.category=this.tempCategory
       this.$emit('submit', false)
       this.$emit('close', false)
     },
+    createNewCategoryObject() {
+      this.newCategory.name = null
+      this.newCategory.icon = null
+      this.newCategory.sortOrder = null
+    },
     setSelectedItem(catObject) {
-      console.log(`name is : ${catObject.name}`)
-      const tempCat = this.createSelectedCategoryObject(catObject)
-      console.log('temp category :', tempCat)
+    this.tempCategory = catObject
+    },
+    setNewCategoryObject() {
+      console.log('nova kategorija')
+      store.dispatch('persona/addNewCategory', this.newCategory)
+      this.newCategory = null
     },
     createSelectedCategoryObject(obj) {
-      this.category.name = obj.name
-      this.category.icon = obj.icon
-      this.category.sortOrder = obj.sortOrder
-      return this.category
+      this.tempCategory = obj
     }
   },
 
@@ -172,6 +226,9 @@ export default {
       set: function(newValue) {
         newValue ? this.persona.categories : null
       }
+    },
+    selectedObject(){
+      return this.tempCategory
     },
     categoryErrors() {
       const errors = []

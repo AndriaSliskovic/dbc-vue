@@ -34,7 +34,7 @@ requireComponent.keys().forEach(fileName => {
 
   Vue.component(componentName, componentConfig.default || componentConfig)
 })
-
+store.strict=false
 new Vue({
   router,
   store,
