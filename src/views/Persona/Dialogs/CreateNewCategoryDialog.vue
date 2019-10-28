@@ -8,7 +8,7 @@
         <v-text-field
           v-model="category.name"
           :error-messages="categoryErrors"
-          label="Category list name"
+          label="Category name"
           required
           dence
           @input="$v.category.name.$touch()"
@@ -57,7 +57,16 @@ import { validationMixin } from 'vuelidate'
 import { required, maxLength, email } from 'vuelidate/lib/validators'
 
 export default {
-  props: ['category'],
+  data(){
+    return {category:
+    {
+      name:null,
+      icon:null,
+      sortOrder:null
+    }
+    }
+  },
+
   mixins: [validationMixin],
   validations: {
     category: {
@@ -75,25 +84,14 @@ export default {
     onSubmitHandler() {
       this.catSelected = false
       console.log('on submit')
-      this.$emit('submit', false)
+      this.$emit('submit', this.category)
       this.$emit('close', false)
+      this.$v.$reset()
     }
   },
 
   computed: {
     ...mapState({ persona: 'persona' }),
-    itemsData: {
-      get: function() {
-        if (this.persona.categories) {
-          return this.persona.categories
-        }
-        //Must be array not null
-        return []
-      },
-      set: function(newValue) {
-        newValue ? this.persona.categories : null
-      }
-    },
     categoryErrors() {
       const errors = []
       if (!this.$v.category.name.$dirty) return errors

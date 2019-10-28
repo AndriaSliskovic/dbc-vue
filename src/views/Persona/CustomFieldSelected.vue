@@ -72,7 +72,12 @@
                     </v-card-text>
                     <v-card-actions>
                       <template>
-                        <v-dialog v-model="dialogCategory" persistent max-width="1200px" :retain-focus='false'>
+                        <v-dialog
+                          v-model="dialogCategory"
+                          persistent
+                          max-width="1200px"
+                          :retain-focus="false"
+                        >
                           <template v-slot:activator="{ on }">
                             <v-row justify="center">
                               <v-btn small depressed color="primary" v-on="on">Edit curent category</v-btn>
@@ -89,11 +94,46 @@
                     </v-card-actions>
                   </v-card>
                 </template>
+                <!-- CATEGORY DATA -->
+                <v-row v-if="cField.category.name">
+                  <v-col>
+                    <v-simple-table dense >
+                      <template v-slot:default>
+                        <thead>
+                          <tr>
+                            <th class="text-left">Category name</th>
+                            <th class="text-left">Sort order</th>
+                            <th class="text-left">Icon</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{{ cField.category.name }}</td>
+                            <td>{{ cField.category.sortOrder }}</td>
+                            <td>
+                              <template>
+                                <v-icon small>{{cField.category.icon}}</v-icon>
+                              </template>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-col>
+                </v-row>
                 <!-- CREATE CATEGORY -->
                 <template v-if="dialogType==='create'">
-                  <v-dialog v-model="dialogCategory" persistent max-width="1200px" :retain-focus='false'>
+                  <v-dialog
+                    v-model="dialogCategory"
+                    persistent
+                    max-width="1200px"
+                    :retain-focus="false"
+                  >
                     <template v-slot:activator="{ on }">
-                      <v-row justify="center">
+                      <v-row justify="center" v-if="cField.category.name">
+                        <v-btn color="primary" v-on="on">Edit category</v-btn>
+                      </v-row>
+                      <v-row justify="center" v-else>
                         <v-btn color="primary" v-on="on">Create category</v-btn>
                       </v-row>
                     </template>
@@ -183,7 +223,6 @@
                 @close="onCloseDialogHandler"
                 @submit="onUpdateHandler"
                 :closeOnSubmit="closeOnSubmit"
-                :disabledSubmit="!valid"
               >
                 <template v-slot:submit>Update</template>
               </BaseSubmitGroup>
@@ -235,17 +274,13 @@ export default {
 
   created() {},
   beforeMount() {},
-  mounted() {
-
-  },
+  mounted() {},
   beforeUpdate() {},
   updated() {},
   beforeDestroy() {
-
     this.$v.$reset()
   },
   destroyed() {
-
     this.valid = false
   },
   methods: {
@@ -297,8 +332,9 @@ export default {
       this.$emit('close', false)
       this.valid = false
     },
-    onSubmitCategory() {
-      console.log('submitovana je kategorija')
+    onSubmitCategory(newCategory) {
+      console.log('submitovana je kategorija', newCategory)
+      this.cField.category = newCategory
     },
     resetValidation() {
       console.log(`tag field`, this.cField.tag)

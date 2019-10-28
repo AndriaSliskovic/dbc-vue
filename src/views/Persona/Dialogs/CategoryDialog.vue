@@ -6,10 +6,10 @@
       </template>
 
       <v-col cols="6">
-        <v-card-title>Current category</v-card-title>
+        <v-card-title>Current category :</v-card-title>
         <!-- category table -->
         <v-card-text>
-          <v-simple-table dense class="grey lighten-3">
+          <v-simple-table dense class="red lighten-1">
             <template v-slot:default>
               <thead>
                 <tr>
@@ -35,12 +35,12 @@
         <!-- // category table -->
       </v-col>
 
-      <v-col v-if="tempCategory">
-        <v-col cols="6">
-        <v-card-title>New selected category{{tempCategory.name}}</v-card-title>
+      <v-col v-if="tempCategory" cols="6">
+
+        <v-card-title >New selected category :</v-card-title>
         <!-- category table -->
         <v-card-text>
-          <v-simple-table dense class="grey lighten-3">
+          <v-simple-table dense class="blue lighten-1">
             <template v-slot:default>
               <thead>
                 <tr>
@@ -64,7 +64,7 @@
           </v-simple-table>
         </v-card-text>
         <!-- // category table -->
-      </v-col>
+ 
       </v-col>
 
       <v-card-text>
@@ -81,11 +81,9 @@
                   depressed
                   color="primary"
                   v-on="on"
-                  @click="createNewCategoryObject"
                 >Create new category for persona</v-btn>
               </template>
               <CreateNewCategoryDialog
-                :category="newCategory"
                 @close="()=>dialog.newCategory=false"
                 @submit="setNewCategoryObject"
               />
@@ -149,19 +147,15 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
-import { validationMixin } from 'vuelidate'
-import { required, maxLength, email } from 'vuelidate/lib/validators'
 import CreateNewCategoryDialog from './CreateNewCategoryDialog'
 
 export default {
   data() {
     return {
-      tempCategory: null,
-      newCategory: {
-        type: Object,
-        default: null
+      tempCategory: {
+        type:Object,
+        default:null
       },
-      catSelected: false,
       dialog: {
         newCategory: false
       }
@@ -172,44 +166,28 @@ export default {
   },
   props: {
     category: Object,
-    name: String
-  },
-  mixins: [validationMixin],
-  validations: {
-    category: {
-      name: { required },
-      sortOrder: { required }
-    }
+
   },
   methods: {
     onCloseDialogHandler() {
-      this.catSelected = false
       this.$emit('close', false)
-      //Resetovanje prethodne validacije
-      this.$v.$reset()
+      this.tempCategory=null
     },
     onSubmitHandler() {
-      this.catSelected = false
       console.log('on submit')
-      this.category=this.tempCategory
-      this.$emit('submit', false)
+      this.$emit('submit', this.tempCategory)
       this.$emit('close', false)
-    },
-    createNewCategoryObject() {
-      this.newCategory.name = null
-      this.newCategory.icon = null
-      this.newCategory.sortOrder = null
+      this.tempCategory=null
     },
     setSelectedItem(catObject) {
     this.tempCategory = catObject
     },
-    setNewCategoryObject() {
-      console.log('nova kategorija')
-      store.dispatch('persona/addNewCategory', this.newCategory)
-      this.newCategory = null
+    setNewCategoryObject(newCategory) {
+      console.log('nova kategorija',newCategory)
+      store.dispatch('persona/addNewCategory', newCategory)
     },
     createSelectedCategoryObject(obj) {
-      this.tempCategory = obj
+      this.tempCategory.name = obj.name
     }
   },
 
@@ -230,26 +208,7 @@ export default {
     selectedObject(){
       return this.tempCategory
     },
-    categoryErrors() {
-      const errors = []
-      if (!this.$v.category.name.$dirty) return errors
-      !this.$v.category.name.required && errors.push('Category is required.')
-      return errors
-    },
-    // categoryIconErrors() {
-    //   const errors = []
-    //   if (!this.$v.category.icon.$dirty) return errors
-    //   !this.$v.category.icon.required &&
-    //     errors.push('Icon for category is required.')
-    //   return errors
-    // },
-    categorySortOrderErrors() {
-      const errors = []
-      if (!this.$v.category.sortOrder.$dirty) return errors
-      !this.$v.category.sortOrder.required &&
-        errors.push('Sort order number for category is required.')
-      return errors
-    }
+
   }
 }
 </script>

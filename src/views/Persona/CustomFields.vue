@@ -3,7 +3,7 @@
     <v-container fluid>
       <!-- Zaglavlje stranice -->
       <v-card>
-        <BasePageTitle>Custom fields for : {{personaName}} persona</BasePageTitle>
+        <BasePageTitle>Custom fields for selected persona</BasePageTitle>
         <v-divider />
         <!-- /Zaglavlje stranice -->
 

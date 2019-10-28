@@ -77,7 +77,7 @@ export default {
         return store.dispatch('notification/add', notification, { root: true })
       }
       store.dispatch('persona/createNewPersona', this.dataObject)
-
+      this.$v.$reset()
       this.$emit('close', false)
       //Reset field name
       this.name = ''
