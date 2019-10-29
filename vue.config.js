@@ -13,10 +13,19 @@ module.exports = {
       entry: 'src/main.js',
       filename: 'index.html'
     },
-    featureManager: {
-      entry: 'src/views/featureManager/bundle.js',
-      filename: 'featureManager.html'
-    }
-  }
+    // featureManager: {
+    //   entry: 'src/views/featureManager/bundle.js',
+    //   filename: 'featureManager.html'
+    // },
+    persona:{
+      entry:'src/views/Persona/bundle.js',
+      filename:'persona.html'
+    },
+    // customfields:{
+    //   entry:'src/views/Persona/bundle1.js',
+    //   filename:'customFields.html'
+    // }
+  },
+  
 }
 

@@ -6,7 +6,10 @@
       </template>
 
       <v-col cols="6">
-        <v-card-title>Current category :</v-card-title>
+        <v-card-title>
+        <BaseTooltip>{{tooltips.currentCategory}}</BaseTooltip>
+          Current category:
+        </v-card-title>
         <!-- category table -->
         <v-card-text>
           <v-simple-table dense class="red lighten-1">
@@ -36,9 +39,11 @@
       </v-col>
 
       <v-col v-if="tempCategory" cols="6">
-
-        <v-card-title >New selected category :</v-card-title>
-        <!-- category table -->
+        <v-card-title>
+        <BaseTooltip>{{tooltips.newSelectedCategory}}</BaseTooltip>        
+        New selected category :
+        </v-card-title>
+        <!-- new category table -->
         <v-card-text>
           <v-simple-table dense class="blue lighten-1">
             <template v-slot:default>
@@ -64,7 +69,6 @@
           </v-simple-table>
         </v-card-text>
         <!-- // category table -->
- 
       </v-col>
 
       <v-card-text>
@@ -77,11 +81,8 @@
               :retain-focus="false"
             >
               <template v-slot:activator="{ on }">
-                <v-btn
-                  depressed
-                  color="primary"
-                  v-on="on"
-                >Create new category for persona</v-btn>
+                <BaseTooltip  >{{tooltips.createNewCategory}}</BaseTooltip>
+                <v-btn depressed color="primary" v-on="on">Create new category for persona</v-btn>
               </template>
               <CreateNewCategoryDialog
                 @close="()=>dialog.newCategory=false"
@@ -101,7 +102,10 @@
             <!-- CATEGORIES LIST -->
             <v-row align="center">
               <v-card class="mx-auto grey lighten-4" max-width="400" tile>
-                <v-card-title class="primary white--text my-0 py-1">Select existing category :</v-card-title>
+                <v-card-title class="primary white--text my-0 py-1">
+                <BaseTooltip color="normal">{{tooltips.listOfCategories}}</BaseTooltip>
+                Select existing category :
+                </v-card-title>
                 <v-list dense>
                   <v-list-item-group v-model="itemsData" color="primary">
                     <v-row no-gutters justify="space-around">
@@ -136,11 +140,10 @@
           </v-col>
         </v-row>
       </v-card-text>
-      <v-card-actions class="grey darken-2 mx-0 title-page">
-        <v-row justify="center">
-          <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler" />
-        </v-row>
-      </v-card-actions>
+      <!-- SUBMIT GROUP -->
+      <BasePageFooter>
+        <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler" />
+      </BasePageFooter>
     </v-card>
   </v-container>
 </template>
@@ -152,12 +155,15 @@ import CreateNewCategoryDialog from './CreateNewCategoryDialog'
 export default {
   data() {
     return {
-      tempCategory: {
-        type:Object,
-        default:null
-      },
+      tempCategory: null,
       dialog: {
         newCategory: false
+      },
+      tooltips: {
+        currentCategory: 'Click on cancel to save previus current category',
+        newSelectedCategory:'Choose submit to save selected category',
+        createNewCategory:'Click on button to create new category for selected custom field',
+        listOfCategories:'Select category from list and hit confirm to save changes'
       }
     }
   },
@@ -165,25 +171,24 @@ export default {
     CreateNewCategoryDialog
   },
   props: {
-    category: Object,
-
+    category: Object
   },
   methods: {
     onCloseDialogHandler() {
       this.$emit('close', false)
-      this.tempCategory=null
+      this.tempCategory = null
     },
     onSubmitHandler() {
       console.log('on submit')
       this.$emit('submit', this.tempCategory)
       this.$emit('close', false)
-      this.tempCategory=null
+      this.tempCategory = null
     },
     setSelectedItem(catObject) {
-    this.tempCategory = catObject
+      this.tempCategory = catObject
     },
     setNewCategoryObject(newCategory) {
-      console.log('nova kategorija',newCategory)
+      console.log('nova kategorija', newCategory)
       store.dispatch('persona/addNewCategory', newCategory)
     },
     createSelectedCategoryObject(obj) {
@@ -205,10 +210,9 @@ export default {
         newValue ? this.persona.categories : null
       }
     },
-    selectedObject(){
+    selectedObject() {
       return this.tempCategory
-    },
-
+    }
   }
 }
 </script>

@@ -45,7 +45,7 @@
                     <v-card-title>
                       <v-row justify="center">Curent category</v-row>
                     </v-card-title>
-                    <!-- category table -->
+                    <!-- CATEGORY TABLE -->
                     <v-card-text>
                       <v-simple-table dense class="grey lighten-3">
                         <template v-slot:default>
@@ -70,13 +70,15 @@
                         </template>
                       </v-simple-table>
                     </v-card-text>
+
                     <v-card-actions>
                       <template>
                         <v-dialog
-                          v-model="dialogCategory"
+                          v-model="dialog.category"
                           persistent
                           max-width="1200px"
                           :retain-focus="false"
+                          @keydown.esc="dialog.category = false"
                         >
                           <template v-slot:activator="{ on }">
                             <v-row justify="center">
@@ -86,7 +88,7 @@
                           <CategoryDialog
                             :category="cField.category"
                             :name="cField.name"
-                            @close="()=>dialogCategory=false"
+                            @close="()=>dialog.category=false"
                             @submit="onSubmitCategory"
                           ></CategoryDialog>
                         </v-dialog>
@@ -94,40 +96,15 @@
                     </v-card-actions>
                   </v-card>
                 </template>
-                <!-- CATEGORY DATA -->
-                <v-row v-if="cField.category.name">
-                  <v-col>
-                    <v-simple-table dense >
-                      <template v-slot:default>
-                        <thead>
-                          <tr>
-                            <th class="text-left">Category name</th>
-                            <th class="text-left">Sort order</th>
-                            <th class="text-left">Icon</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>{{ cField.category.name }}</td>
-                            <td>{{ cField.category.sortOrder }}</td>
-                            <td>
-                              <template>
-                                <v-icon small>{{cField.category.icon}}</v-icon>
-                              </template>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </template>
-                    </v-simple-table>
-                  </v-col>
-                </v-row>
+                <!-- //CATEGORY TABLE -->
                 <!-- CREATE CATEGORY -->
                 <template v-if="dialogType==='create'">
                   <v-dialog
-                    v-model="dialogCategory"
+                    v-model="dialog.category"
                     persistent
                     max-width="1200px"
                     :retain-focus="false"
+                    @keydown.esc="dialog.category = false"
                   >
                     <template v-slot:activator="{ on }">
                       <v-row justify="center" v-if="cField.category.name">
@@ -140,7 +117,7 @@
                     <CategoryDialog
                       :category="cField.category"
                       :name="cField.name"
-                      @close="()=>dialogCategory=false"
+                      @close="()=>dialog.category=false"
                       @submit="onSubmitCategory"
                     ></CategoryDialog>
                   </v-dialog>
@@ -149,7 +126,6 @@
 
               <!-- // CATEGORY DIALOG -->
               <v-col>
-                <!-- <v-text-field v-model="cField.type" label="Custom field type" required></v-text-field> -->
                 <v-row>
                   <BaseTooltip>{{tooltips.selectType}}</BaseTooltip>
                   <v-select
@@ -206,30 +182,27 @@
         </v-card-text>
 
         <!-- SUBMIT GROUP -->
-        <v-card-actions class="grey darken-2 mx-0 title-page">
-          <v-row justify="center">
-            <template v-if="dialogType==='create'">
-              <BaseSubmitGroup
-                @close="onCloseDialogHandler"
-                @submit="onSubmitHandler"
-                :closeOnSubmit="closeOnSubmit"
-                :disabledSubmit="!valid"
-              >
-                <template v-slot:submit>Submit</template>
-              </BaseSubmitGroup>
-            </template>
-            <template v-if="dialogType==='edit'">
-              <BaseSubmitGroup
-                @close="onCloseDialogHandler"
-                @submit="onUpdateHandler"
-                :closeOnSubmit="closeOnSubmit"
-              >
-                <template v-slot:submit>Update</template>
-              </BaseSubmitGroup>
-            </template>
-          </v-row>
-        </v-card-actions>
-        <!-- / SUBMIT GROUP -->
+        <BasePageFooter>
+          <template v-if="dialogType==='create'">
+            <BaseSubmitGroup
+              @close="onCloseDialogHandler"
+              @submit="onSubmitHandler"
+              :closeOnSubmit="closeOnSubmit"
+              :disabledSubmit="!valid"
+            >
+              <template v-slot:submit>Submit</template>
+            </BaseSubmitGroup>
+          </template>
+          <template v-if="dialogType==='edit'">
+            <BaseSubmitGroup
+              @close="onCloseDialogHandler"
+              @submit="onUpdateHandler"
+              :closeOnSubmit="closeOnSubmit"
+            >
+              <template v-slot:submit>Update</template>
+            </BaseSubmitGroup>
+          </template>
+        </BasePageFooter>
       </v-form>
     </v-card>
   </v-container>
@@ -257,7 +230,6 @@ export default {
   },
   data() {
     return {
-      dialogCategory: null,
       valid: false,
       fieldtype: ['DROPDOWNLIST', 'IMAGEBANK', 'TEXTAREA', 'TEXTBOX'],
       selectedType: null,
@@ -267,6 +239,9 @@ export default {
         selectType: 'Select type of custom field',
         reqiured: 'Is custom field required ?',
         status: 'check status for custom field.'
+      },
+      dialog: {
+        category: false
       }
     }
   },

@@ -14,7 +14,7 @@
             />
             <!-- TOOLTIP COMPANY-->
             <template v-if="!companyId">
-            <BaseTooltip>{{tooltips.companySelect}}</BaseTooltip>
+              <BaseTooltip>{{tooltips.companySelect}}</BaseTooltip>
             </template>
           </v-row>
         </template>
@@ -49,7 +49,12 @@
               <!-- / Select personas status -->
               <!-- CREATE PERSONA -->
               <v-col cols="4">
-                <v-dialog v-model="dialog.addNewPersona" persistent max-width="800px" :retain-focus='false'>
+                <v-dialog
+                  v-model="dialog.addNewPersona"
+                  persistent
+                  max-width="800px"
+                  :retain-focus="false"
+                >
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" v-on="on">Create new persona</v-btn>
                   </template>
@@ -60,6 +65,15 @@
             <!-- / CREATE PERSONA -->
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
+            <!-- TOOLTIPS FOR HEADER -->
+            <template v-slot:header.edit="{ header }">
+              <BaseTooltip>{{tooltips.editPersona}}</BaseTooltip>
+              {{header.text}}
+            </template>
+            <template v-slot:header.delete="{ header }">
+              <BaseTooltip>{{tooltips.deletePersona}}</BaseTooltip>
+              {{header.text}}
+            </template>
             <!-- STATUS CHIP-->
             <template v-slot:item.status="{ item }">
               <v-chip
@@ -78,14 +92,17 @@
             <!-- EDIT PERSONA -->
             <template v-slot:item.edit="{item}">
               <v-icon large color="blue darken-2" @click="onEditPersona(item.id)">mdi-table-edit</v-icon>
-              <!-- TOOLTIP -->
-              <BaseTooltip>{{tooltips.editPersona}}</BaseTooltip>
             </template>
 
             <!-- DELETE PERSONA -->
             <template v-slot:item.delete="{item}">
               <!-- DIALOG FOR DELETE -->
-              <v-dialog v-model="dialog.deletePersona" persistent max-width="400px" :retain-focus='false'>
+              <v-dialog
+                v-model="dialog.deletePersona"
+                persistent
+                max-width="400px"
+                :retain-focus="false"
+              >
                 <template v-slot:activator="{ on }">
                   <v-icon
                     large
@@ -93,7 +110,6 @@
                     v-on="on"
                     @click="setSelectedPersona(item.id)"
                   >mdi-delete</v-icon>
-                <BaseTooltip>{{tooltips.deletePersona}}</BaseTooltip>
                 </template>
                 <BaseDialogConfirmation
                   @close="()=>dialog.deletePersona=false"
@@ -149,15 +165,15 @@ export default {
       selectedStatus: null,
       selectedPersonaStatusId: null,
       selectedPersona: null,
-      dialog:{
-        addNewPersona:false,
-        deletePersona:false
+      dialog: {
+        addNewPersona: false,
+        deletePersona: false
       },
       tooltips: {
         companySelect: 'You must select company first !',
         setStatus: 'Place where you change status of persona.',
         editPersona: 'Click on the icon and change data for selected persona.',
-        deletePersona:'Delete selected persona.'
+        deletePersona: 'Delete selected persona.'
       }
     }
   },

@@ -5,8 +5,8 @@
       label="Default value"
       auto-grow
       required
-      
-    ></v-textarea>
+      outlined
+     ></v-textarea>
   </v-container>
 </template>
 <script>

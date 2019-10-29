@@ -5,5 +5,10 @@
     </v-row>
   </v-card-actions>
 </template>
+<script>
+export default {
+  
+}
+</script>
 <style scoped>
 </style>

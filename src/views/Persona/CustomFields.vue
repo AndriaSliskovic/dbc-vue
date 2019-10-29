@@ -31,12 +31,17 @@
             </v-row>
           </v-col>
           <v-col cols="2" md="3">
-            <template >
-              <v-dialog v-model="dialog.confirmation.editPersona" persistent max-width="400px" :retain-focus='false'>
-                <template v-slot:activator={on}>
-                  <v-btn color="primary" v-on="on" >Edit curent persona</v-btn>
+            <template>
+              <v-dialog
+                v-model="dialog.confirmation.editPersona"
+                persistent
+                max-width="400px"
+                :retain-focus="false"
+              >
+                <template v-slot:activator="{on}">
+                  <v-btn color="primary" v-on="on">Edit curent persona</v-btn>
                 </template>
-                 <BaseDialogConfirmation
+                <BaseDialogConfirmation
                   @close="(val)=>dialog.confirmation.editPersona=val"
                   @submit="onEditPersonaHandler"
                 >
@@ -67,8 +72,13 @@
             <div class="flex-grow-1"></div>
             <!-- CREATE Custom Fields -->
             <v-col class="pr-6">
-              <v-dialog v-model="dialog.create" persistent max-width="1200px" :retain-focus='false'>
-                <!-- Aktivator -->
+              <v-dialog
+                v-model="dialog.create"
+                persistent
+                max-width="1200px"
+                :retain-focus="false"
+                @keydown.esc="dialog.create = false"
+              >
                 <template v-slot:activator="{ on }">
                   <v-btn
                     v-on="on"
@@ -93,9 +103,24 @@
           :item-key="items.id"
           sort-by="rank"
         >
+          <!-- TOOLTIPS FOR HEADER -->
+          <template v-slot:header.edit="{ header }">
+            <BaseTooltip>{{tooltips.editCustomField}}</BaseTooltip>
+            {{header.text}}
+          </template>
+          <template v-slot:header.delete="{ header }">
+            <BaseTooltip>{{tooltips.deleteCustomField}}</BaseTooltip>
+            {{header.text}}
+          </template>
           <template v-slot:item.edit="{item}">
             <!-- DIALOG EDIT -->
-            <v-dialog v-model="dialog.edit" persistent max-width="1200px" :retain-focus='false'>
+            <v-dialog
+              v-model="dialog.edit"
+              persistent
+              max-width="1200px"
+              :retain-focus="false"
+              @keydown.esc="dialog.edit = false"
+            >
               <template v-slot:activator="{ on }">
                 <v-icon
                   large
@@ -103,7 +128,7 @@
                   @click="onEditCustomFieldHandler(item.id)"
                   v-on="on"
                 >mdi-table-edit</v-icon>
-              <BaseTooltip>{{tooltips.editCustomField}}</BaseTooltip>
+                <!-- <BaseTooltip>{{tooltips.editCustomField}}</BaseTooltip> -->
               </template>
               <CustomFieldSelected
                 @close="val=>onCloseDialog(val)"
@@ -114,7 +139,12 @@
           </template>
           <!-- DIALOG DELETE -->
           <template v-slot:item.delete="{item}">
-            <v-dialog v-model="dialog.confirmation.deleteCustomfield" persistent max-width="400px" :retain-focus='false'>
+            <v-dialog
+              v-model="dialog.confirmation.deleteCustomfield"
+              persistent
+              max-width="400px"
+              :retain-focus="false"
+            >
               <template v-slot:activator="{ on }">
                 <v-icon
                   large
@@ -122,7 +152,6 @@
                   v-on="on"
                   @click="setSelectedCustomField(item.id)"
                 >mdi-delete</v-icon>
-                <BaseTooltip>{{tooltips.deleteCustomField}}</BaseTooltip>
               </template>
               <BaseDialogConfirmation
                 @close="(val)=>dialog.confirmation.deleteCustomfield=val"
@@ -172,16 +201,17 @@ export default {
       tooltips: {
         editCurentPersona: 'Edit curent persona',
         deleteCustomField: 'Delete selected custom field',
-        editCustomField: 'Click on the icon and change data for selected custom field.'
+        editCustomField:
+          'Click on the icon and change data for selected custom field.'
       },
       dialogType: null,
-      dialog:{
-        confirmation:{
-          deleteCustomfield:false,
-          editPersona:false
+      dialog: {
+        confirmation: {
+          deleteCustomfield: false,
+          editPersona: false
         },
-        create:false,
-        edit:false
+        create: false,
+        edit: false
       },
 
       selectedCustomField: null,
