@@ -8,7 +8,7 @@
         <!-- /Zaglavlje stranice -->
 
         <!-- EDIT CURENT PERSONA -->
-        <v-row align="baseline" justify="space-between" class="grey lighten-4 mx-0">
+        <v-row align="baseline" justify="space-between" class="grey lighten-4 mx-0" v-if="persona.personaObject">
           <v-col cols="4" md="3" class="pl-6">
             <v-text-field v-model="persona.personaObject.name" label="Persona name"></v-text-field>
           </v-col>
@@ -29,7 +29,9 @@
                 <v-checkbox v-model="persona.personaObject.allowShare" label="Allow share" dense></v-checkbox>
               </v-col>
             </v-row>
+           
           </v-col>
+          <!-- EDIT PERSONA DIALOG -->
           <v-col cols="2" md="3">
             <template>
               <v-dialog
@@ -55,6 +57,8 @@
             <BaseTooltip :large="true">{{tooltips.editCurentPersona}}</BaseTooltip>
           </v-col>
         </v-row>
+
+
         <!-- // EDIT CURENT PERSONA -->
         <v-divider />
         <!-- TABLE -->
@@ -219,11 +223,15 @@ export default {
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    store.dispatch('companies/loadAllCompanies').then(response => {
-      next()
+    console.log("before route enter")
+    store.dispatch('companies/loadAllCompanies').then(
+      () => {
+      next( )
     })
   },
   created() {
+    console.log("created customField")
+      // store.dispatch('companies/loadAllCompanies')
     this.editedCompany = this.companyId
     //Dobijanje persona objekta
     store.dispatch('persona/getSelectedPersonaByPersonaId', this.personaId)

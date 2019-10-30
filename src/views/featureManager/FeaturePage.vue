@@ -144,8 +144,9 @@ export default {
     store
       .dispatch('feature/loadPortals')
       .then(store.dispatch('feature/LoadAllModules'))
-      .then(response => {
-        next()
+      .then(
+        () => {
+        next(console.log("next feature"))
       })
   },
   computed: {

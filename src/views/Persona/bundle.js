@@ -1,18 +1,17 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
-import router from '../../router'
+import router from './router'
 import store from '../../store/store'
 import vuetify from '@/plugins/vuetify'
 import 'nprogress/nprogress.css'
 import Vuelidate from 'vuelidate'
-import PersonaPage from './PersonaPage.vue';
+import RouterPersona from './RouterPersona.vue';
 
 
 Vue.config.productionTip = false
 
-Vue.use(VueRouter)
+
 Vue.use(Vuelidate)
 
 const requireComponent = require.context(
@@ -35,5 +34,5 @@ new Vue({
   router,
   store,
   vuetify,
-  render: h => h(PersonaPage)
+  render: h => h(RouterPersona)
 }).$mount('#app')

@@ -21,10 +21,6 @@ module.exports = {
       entry:'src/views/Persona/bundle.js',
       filename:'persona.html'
     },
-    // customfields:{
-    //   entry:'src/views/Persona/bundle1.js',
-    //   filename:'customFields.html'
-    // }
   },
   
 }

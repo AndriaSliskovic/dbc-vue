@@ -138,6 +138,7 @@ import store from '@/store/store'
 import CompaniesHardCode from '../../../GetSiteCustomers.json'
 import router from 'vue-router'
 import PersonaCreateNew from './PersonaCreateNew'
+import { log } from 'util'
 
 const defaultStatus = function() {
   return { active: null, text: 'All', color: 'blue', letter: '' }
@@ -178,15 +179,18 @@ export default {
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    store.dispatch('companies/loadAllCompanies').then(response => {
+    console.log("persona page before")
+    store.dispatch('companies/loadAllCompanies')
+    .then(
+      () => {
       next(
-        //Dobijanje companyId pri povratku sa PersonaDetail
         function(vm) {
+        //Dobijanje companyId pri povratku sa PersonaDetail
           if (!vm.companyId) {
             vm.companyId = vm.$store.state.companies.selectedCompanyGUID
           }
         }
-      )
+       )
     })
   },
 
