@@ -29,10 +29,9 @@ export default {
   },
   methods:{
     onCloseDialogHandler: function() {
-      console.log(`close icon clicked`)
       this.$emit('close', false)
       //Resetovanje prethodne validacije
-      //this.$v.$reset()
+      this.$v.$reset()
     },
   }
 }

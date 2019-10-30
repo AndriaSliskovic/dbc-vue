@@ -265,20 +265,14 @@ export default {
       this.$v.$reset()
     },
     onSubmitHandler: function() {
-      console.log('on submit')
-      //Submit form logic
-      // console.log(this.cField)
       this.$v.$touch()
       if (this.$v.$invalid) {
-        console.log(`submitovanje forme ${this.nameErrors}`)
         const notification = {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
         }
-        console.log('not valid')
         return store.dispatch('notification/add', notification, { root: true })
       }
-      console.log('poslati podaci', this.cField)
       //Setting tag field
       if (this.cField.name) {
         this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
@@ -288,15 +282,12 @@ export default {
       this.$emit('close', false)
     },
     onUpdateHandler() {
-      console.log(this.cField)
       this.$v.$touch()
       if (this.$v.$invalid) {
-        console.log(`edit form error : ${this.nameErrors}`)
         const notification = {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
         }
-        console.log('invalid data')
         return store.dispatch('notification/add', notification, { root: true })
       }
       //Setovanje tag fielda
@@ -308,13 +299,9 @@ export default {
       this.valid = false
     },
     onSubmitCategory(newCategory) {
-      console.log('submitovana je kategorija', newCategory)
       this.cField.category = newCategory
     },
     resetValidation() {
-      console.log(`tag field`, this.cField.tag)
-
-      console.log(`novi tag field`, this.cField.tag)
       this.$v.$reset()
     }
   },

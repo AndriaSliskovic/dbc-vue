@@ -52,7 +52,6 @@
                 </BaseDialogConfirmation>
               </v-dialog>
             </template>
-            <!-- <v-btn color="primary" @click="onEditPersonaHandler()">Edit curent persona</v-btn> -->
             <!-- TOOLTIP EDIT PERSONA -->
             <BaseTooltip :large="true">{{tooltips.editCurentPersona}}</BaseTooltip>
           </v-col>
@@ -132,7 +131,6 @@
                   @click="onEditCustomFieldHandler(item.id)"
                   v-on="on"
                 >mdi-table-edit</v-icon>
-                <!-- <BaseTooltip>{{tooltips.editCustomField}}</BaseTooltip> -->
               </template>
               <CustomFieldSelected
                 @close="val=>onCloseDialog(val)"
@@ -179,7 +177,6 @@
 import NProgress from 'nprogress'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
-//import NotificationContainer from '../../components/NotificationContainer'
 import CustomFieldSelected from './CustomFieldSelected'
 
 export default {
@@ -223,21 +220,15 @@ export default {
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    console.log("before route enter")
     store.dispatch('companies/loadAllCompanies').then(
       () => {
       next( )
     })
   },
   created() {
-    console.log("created customField")
-      // store.dispatch('companies/loadAllCompanies')
     this.editedCompany = this.companyId
-    //Dobijanje persona objekta
     store.dispatch('persona/getSelectedPersonaByPersonaId', this.personaId)
-    //Dobijanje CustomFieldsa
     store.dispatch('persona/getCustomFieldsByPersonaID', this.personaId)
-    console.log(this.customFields)
   },
 
   methods: {
@@ -245,7 +236,6 @@ export default {
       return this.$router.go(-1)
     },
     editedPersona: function() {
-      console.log('edit persona object')
       return {
         personaId: this.personaId,
         name: this.personaName,
@@ -256,14 +246,11 @@ export default {
     },
     onEditPersonaHandler: function() {
       const editedPersona = this.editedPersona()
-      console.log(`imam edit `, editedPersona)
       store.dispatch('persona/editPersonaData', editedPersona)
     },
     onCreateCustomFieldObject() {
       this.dialogType = 'create'
-      console.log('create Custom field object')
       this.dataObject = this.createDataObject()
-      console.log(this.dataObject)
       store.dispatch('persona/setSelectedCustomField', this.dataObject)
       store.dispatch('persona/getAllCategoriesForSelectedPersona')
     },
@@ -290,7 +277,6 @@ export default {
       }
     },
     setSelectedCustomField(key) {
-      console.log('setovanje cf-a', key)
       const cField = this.customFields.find(function(el) {
         return el.id === key
       })
@@ -312,9 +298,7 @@ export default {
     },
     onEditCustomFieldHandler(key) {
       this.dialogType = 'edit'
-      console.log(`edit Custom Field ${key}`)
       this.setSelectedCustomField(key)
-      console.log(this.selectedCustomField)
       store.dispatch('persona/setSelectedCustomField', this.selectedCustomField)
       store.dispatch('persona/getAllCategoriesForSelectedPersona')
     },
@@ -323,13 +307,11 @@ export default {
         personaId: this.personaId,
         cFieldId: this.selectedCustomField.id
       }
-      console.log(`delete custom field`, params)
       store.dispatch('persona/deleteSelectedCustomField', params)
     },
     onCloseDialog(value) {
       this.dialog.create = value
       this.dialog.edit = value
-      //Kreiranje praznog objekta zbog resetovanja centralnog stora
       this.dataObject = this.createDataObject()
       store.dispatch('persona/setSelectedCustomField', this.dataObject)
     }
@@ -339,7 +321,6 @@ export default {
     personaName: {
       get: function() {
         return this.persona.personaObject ? this.persona.personaObject.name : ''
-        //return this.persona.personaObject.name
       },
       set: function(newValue) {
         newValue ? (this.persona.personaObject.name = newValue) : null
@@ -347,7 +328,6 @@ export default {
     },
     customFields: {
       get: function() {
-        //return this.persona.customFields ? this.persona.customFields : null
         return this.persona.customFields
       }
     },

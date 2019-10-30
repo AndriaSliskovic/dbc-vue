@@ -18,16 +18,13 @@ export const mutations = {
     state.personas = payload
   },
   DELETE_PERSONA(state, payload) {
-    console.log(`mutator delete ${payload}`)
     const newArray = state.personas.filter(el => el.id !== payload.id)
     state.personas = newArray
-    console.log(`mutator delete ${newArray}`,newArray)
   },
   EDIT_PERSONA_DATA(state, payload) {
     state.personaObject.name = payload.name
     state.personaObject.companyId = payload.companyId
     //Editovanje persone u nizu
-    console.log(state.personas.filter(el => el.id === payload.personaId))
     state.personas
       .filter(el => el.id === payload.personaId)
       .map(e => {
@@ -35,7 +32,6 @@ export const mutations = {
       })
   },
   GET_PERSONA_OBJECT(state, payload) {
-    //console.log('mutator persona object',payload)
     state.personaObject = payload
   },
   PERSONA_GUID(state, payload) {
@@ -44,13 +40,11 @@ export const mutations = {
 
   //STATUS PERSONA
   SET_PERSONAS_STATUS(state, payload) {
-    console.log("mutator set persona status",payload)
     state.personaObject = payload
     state.personas.map(el=>el.id===payload.id?el.active=payload.active:el)
 
   },
   SELECTED_PERSONAS_STATUS(state, payload) {
-    console.log(payload)
     state.personas = payload
   },
 
@@ -65,16 +59,13 @@ export const mutations = {
     [...state.customFields,payload]
   },
   UPDATE_CUSTOM_FIELD(state, payload){
-    console.log("mutator update cf",payload)
     const newArray= state.customFields.map(el=>el.id===payload.id?el=payload:el)
     state.customFields=newArray
 
   },
   DELETE_CUSTOM_FIELD(state, payload) {
-    console.log(`mutator delete custom field ${payload}`)
     const newArray = state.customFields.filter(el => el.id !== payload)
     state.customFields = newArray
-    console.log(`mutator delete ${newArray}`,newArray)
   },
   //CATEGORY
   CREATE_CATEGORY_ARRAY(state){
@@ -84,27 +75,20 @@ export const mutations = {
   },
 
   ADD_NEW_CATEGORY(state,payload){
-    //console.log("mutator",payload)
-    // [...state.categories,payload]
     state.categories.push(payload)
   },
 
   //DATA SOURCE ITEMS
   ADD_PERSONA_DATASOURCE_ITEM(state, payload) {
     if (!state.selectedCustomField.dataSource) {
-      console.log(`kreiraj niz`)
       state.selectedCustomField.dataSource = []
     }
     state.selectedCustomField.dataSource.push(payload)
-    console.log(`mutator za dataObject ${payload}`)
-    //state.selectedCustomField.dataSource={...state.selectedCustomField.dataSource,dataSource:{display:payload,id:5}}
   },
   REMOVE_PERSONA_DATASOURCE_ITEM(state, payload) {
-    //console.log(`mutator remove ${payload}`)
     const filteredArray = state.selectedCustomField.dataSource.filter(
       el => el.id != payload
     )
-    //console.log(fileredArray)
     state.selectedCustomField.dataSource = filteredArray
   },
   GET_MASKS(state,payload){
@@ -116,12 +100,9 @@ export const mutations = {
 export const actions = {
   //PERSONAS
   getPersonasByCompanyGuid({ commit, dispatch }, companyGuidString) {
-
-    console.log(`action za kompanijine persone ${companyGuidString}`)
     return personaService
       .getPersonas(companyGuidString)
       .then(response => {
-        console.log(`action persona po companyId stringu ${companyGuidString}`,response)
         commit('GET_PERSONAS_BY_COMPANY', response)
       })
       .catch(error => {
@@ -129,13 +110,11 @@ export const actions = {
           type: 'error',
           message: `Error loading personas by selected company, please contact administrator.`
         }
-        //console.log(notification,error)
         dispatch('notification/add', notification, { root: true })
       })
   },
   
   createNewPersona({ commit, dispatch }, dataObject) {
-    console.log(`action create persona ${dataObject}`,dataObject)
     //Ne setuje u centralni state zato sto nema persona id
     //commit('CREATE_NEW_PERSONA', dataObject)
     personaService.createNewPersona(dataObject)
@@ -154,15 +133,12 @@ export const actions = {
           type: 'error',
           message: `Can not create new persona - server error, please contact administrator.`
         }
-        console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
         dispatch('getPersonasByCompanyGuid',dataObject.companyIdString)
       })
   },
 
   deletePersona({ commit, dispatch }, persona) {
-    console.log(`delete persona stringId : ${persona}`,persona)
-
     personaService
       .deleteSelectedPersona(persona.stringId)
       .then(commit('DELETE_PERSONA', persona))
@@ -185,12 +161,10 @@ export const actions = {
   },
   //PERSONA STATUS
   setPersonasStatusOnServer({ commit, dispatch }, element) {
-    console.log(element.stringId, element.active,element)
     const status = element.active
     const personaUrlString = element.stringId
     //Aktivacija statusa
     if (status) {
-      console.log('aktivira', personaUrlString, status)
       personaService
         .activateStatusById(personaUrlString)
         .then(() => {
@@ -212,7 +186,6 @@ export const actions = {
           throw error
         })
     } else {
-      console.log('deaktivira', personaUrlString)
       personaService
         .deactivateStatusById(personaUrlString)
         .then(() => {
@@ -236,24 +209,19 @@ export const actions = {
     }
   },
   setPersonasStatus({ commit }, element) {
-    console.log('action set status', element)
     commit('SET_PERSONAS_STATUS', element)
   },
   onSelectedPersonasStatus({ commit }, persona) {
-    console.log(persona)
     commit('SELECTED_PERSONAS_STATUS', persona)
   },
   addPersonaDataSourceItem({ commit }, item) {
-    console.log(`action dodavanja persona data sourca ${item}`)
     commit('ADD_PERSONA_DATASOURCE_ITEM', item)
   },
   removePersonaDataSourceItem({ commit }, id) {
-    console.log(`action brisanja persona data sourca ${id}`)
     commit('REMOVE_PERSONA_DATASOURCE_ITEM', id)
   },
 
   getSelectedPersonaByPersonaId({ commit, dispatch }, personaId) {
-    console.log(`action persona objekta ${personaId}`)
     return personaService
       .getSelectedPersonaByPersonaId(personaId)
       .then(response => commit('GET_PERSONA_OBJECT', response.data))
@@ -262,14 +230,11 @@ export const actions = {
           type: 'error',
           message: `Error loading persona object by selected persona, please contact administrator.`
         }
-        console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
       })
   },
  
   editPersonaData({ commit, dispatch }, editedObject) {
-    console.log(`action edit persone ${editedObject}`)
-
     return personaService
       .editPersonaData(editedObject)
       .then(() => {
@@ -285,9 +250,7 @@ export const actions = {
           type: 'error',
           message: `Error editing custom fields by selected persona, please contact administrator.`
         }
-        console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
-        // dispatch('notification/reloadPage', {}, { root: true })
       })
   },
     setSelectedCustomField({ commit }, selectedCustomField) {
@@ -295,19 +258,15 @@ export const actions = {
   },
   //CATEGORIES
   getAllCategoriesForSelectedPersona({commit}){
-    console.log("pravi niz")
     commit('CREATE_CATEGORY_ARRAY')
   },
   addNewCategory({commit},newCategory){
-    console.log(newCategory)
     commit('ADD_NEW_CATEGORY',newCategory)
   },
   //CUSTOM FIELDS
   getSelectedCustomField({ commit, dispatch }, cFieldId) {
-    console.log(`action selected customFielda ${cFieldId}`)
   },
   createNewCustomField({ commit, dispatch }, cField) {
-    console.log(`action new persona ${cField.personaId}`, cField)
     //Ne treba mutator jer se svi podaci nalaze u store.selectedCustomField
     return personaService
       .createNewCustomField(cField)
@@ -324,12 +283,9 @@ export const actions = {
           type: 'error',
           message: `Error creating new custom fields by selected persona, please contact administrator.`
         }
-        console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
-        // dispatch('notification/reloadPage', {}, { root: true })
       })
       .then(()=>
-        //console.log("state pesona id :",state.personaObject.id)
         dispatch('getCustomFieldsByPersonaID', state.personaObject.id) 
       )
  
@@ -338,7 +294,6 @@ export const actions = {
     commit('SET_SELECTED_CUSTOM_FIELD', selectedCustomField)
   },
   getCustomFieldsByPersonaID({ commit, dispatch }, personaId) {
-    console.log(`action CustomFields ${personaId}`)
     return personaService
       .getCustomFieldsByPersonaID(personaId)
       .then(response => commit('GET_CUSTOM_FIELDS', response.data))
@@ -347,12 +302,10 @@ export const actions = {
           type: 'error',
           message: `Error loading custom fields by selected persona, please contact administrator.`
         }
-        console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
       })
   },
   updateCustomField({ commit, dispatch }, cField) {
-    console.log(`update action ${cField}`, cField)
     commit('UPDATE_CUSTOM_FIELD',cField)
     return personaService.updateCustomField(cField)
       .then(() => {
@@ -367,7 +320,6 @@ export const actions = {
           type: 'error',
           message: error
         }
-        console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
       })
       .then(
@@ -375,9 +327,6 @@ export const actions = {
       )
   },
   deleteSelectedCustomField({commit,dispatch},params){
-    console.log(`action za delete`,params)
-    console.log(params.personaId)
-    console.log(params.cFieldId)
     return personaService.deleteSelectedCustomField(params)
       .then(()=>{
         const notification = {
@@ -392,13 +341,8 @@ export const actions = {
           type: 'error',
           message: error
         }
-        console.log(notification, error)
         dispatch('notification/add', notification, { root: true })
       })
-
-      
-
-
   },
   getMasks({commit}){
       return portalService.getMasks()

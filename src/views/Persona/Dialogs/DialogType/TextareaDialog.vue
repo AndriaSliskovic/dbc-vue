@@ -25,7 +25,6 @@ export default {
         return this.cField.defaultValue
       },
       set: function(newValue) {
-        console.log(newValue)
         newValue ? (this.cField.defaultValue = newValue) : null
       }
     },

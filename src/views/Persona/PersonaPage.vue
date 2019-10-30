@@ -179,13 +179,11 @@ export default {
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    console.log("persona page before")
     store.dispatch('companies/loadAllCompanies')
     .then(
       () => {
       next(
         function(vm) {
-        //Dobijanje companyId pri povratku sa PersonaDetail
           if (!vm.companyId) {
             vm.companyId = vm.$store.state.companies.selectedCompanyGUID
           }
@@ -200,7 +198,6 @@ export default {
 
   methods: {
     setSelectedPersona(key) {
-      console.log(`setovanje persone ${key}`)
       this.selectedPersona = this.mapPersonas().find(function(el) {
         return el.id === key
       })
@@ -209,14 +206,11 @@ export default {
       store.dispatch('persona/getPersonasByCompanyGuid', this.companyIdString)
     },
     setPersonaStatus(key) {
-      console.log('imam klik', key)
       this.selectedPersonaStatusId = key
 
       const element = this.items.find(x => x.id === key)
       element.active = !element.active
       element.stringId = this.personaIdString.stringId
-      console.log(element)
-      //Slanje na server i setovanje centralnog statea
       store.dispatch('persona/setPersonasStatusOnServer', element)
       element.active
         ? (element.status = this.personaStatus[0].text)
@@ -239,17 +233,10 @@ export default {
       })
     },
     onDeletePersonadHandler: function(key) {
-      //Persona je setovana na prethodni klik
-      console.log(`selektovana persona ${this.selectedPersona}`)
       store.dispatch('persona/deletePersona', this.selectedPersona)
     },
     onCloseConfirmationDialog(value) {
       this.onDialogConfirmation = value
-      console.log('close dialog')
-    },
-
-    onAddNewPersona() {
-      console.log('Dodavanje persone')
     },
     onCloseDialog(value) {
       this.dialog.addNewPersona = value
@@ -322,7 +309,6 @@ export default {
   watch: {
     companyId: function(newValue, oldValue) {
       if (newValue != oldValue) {
-        console.log('New value: ' + newValue + ', Old value: ' + oldValue)
         return (this.companyChange = true)
       }
     }

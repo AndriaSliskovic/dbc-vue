@@ -20,11 +20,8 @@ export default {
   },
 
   beforeRouteEnter(routeTo, routeFrom, next) {
-    //Nema this u beforeRouteEnter
-    // this.loadAllCompanies()
     store.dispatch('companies/loadAllCompanies').then(response => {
       next(
-        //Dobijanje companyId pri povratku sa PersonaDetail
         function(vm) {
           if (!vm.companyId) {
             vm.companyId = vm.$store.state.companies.selectedCompanyGUID
