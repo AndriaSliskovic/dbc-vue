@@ -15,6 +15,7 @@ export const state = {
 export const mutations = {
   //PERSONA
   GET_PERSONAS_BY_COMPANY(state, payload) {
+    console.log("setovanje persona po comp",payload)
     state.personas = payload
   },
   DELETE_PERSONA(state, payload) {
@@ -24,16 +25,10 @@ export const mutations = {
     console.log(`mutator delete ${newArray}`, newArray)
   },
   EDIT_PERSONA_DATA(state, payload) {
-    state.personaObject.name = payload.name
-    state.personaObject.companyId = payload.companyId
-
+    console.log(payload)
     //Editovanje persone u nizu
-    console.log(state.personas.filter(el => el.id === payload.personaId))
-    state.personas
-      .filter(el => el.id === payload.personaId)
-      .map(e => {
-        (e.name = payload.name), (e.companyId = payload.companyId),(e.activeLimit = payload.activeLimit),(e.allowShare = payload.allowShare)
-      })
+    const editedArray=state.personas.map((e)=>e.id==payload.id?payload:e)
+    state.personas=editedArray
   },
   GET_PERSONA_OBJECT(state, payload) {
     //console.log('mutator persona object',payload)
@@ -204,26 +199,24 @@ export const actions = {
 
   editPersonaData({ commit, dispatch,rootState }, editedObject) {
     console.log(`action edit persone ${editedObject}`,state.personaObject.companyId,rootState.companies.companyIdString)
-    // return personaService
-    //   .editPersonaData(editedObject)
-    //   .then(() => {
-    //     const notification = {
-    //       type: 'success',
-    //       message: `Data successfully changed !`
-    //     }
-    //     dispatch('notification/add', notification, { root: true })
-    //     commit('EDIT_PERSONA_DATA', editedObject)
-    //     //Return Personas for primary Company - accessing by rootState.module
-    //     dispatch('getPersonasByCompanyGuid',rootState.companies.companyIdString)
-    //   })
-    //   .catch(error => {
-    //     const notification = {
-    //       type: 'error',
-    //       message: `Error editing custom fields by selected persona, please contact administrator.`
-    //     }
-    //     console.log(notification, error)
-    //     dispatch('notification/add', notification, { root: true })
-    //   })
+    return personaService
+      .editPersonaData(editedObject)
+      .then(() => {
+        const notification = {
+          type: 'success',
+          message: `Data successfully changed !`
+        }
+        dispatch('notification/add', notification, { root: true })
+        commit('EDIT_PERSONA_DATA',editedObject)
+      })
+      .catch(error => {
+        const notification = {
+          type: 'error',
+          message: `Error editing custom fields by selected persona, please contact administrator.`
+        }
+        console.log(notification, error)
+        dispatch('notification/add', notification, { root: true })
+      })
 
   },
     setSelectedCustomField({ commit }, selectedCustomField) {

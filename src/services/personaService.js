@@ -25,7 +25,7 @@ export default {
     return apiGatewayClient.get(`/${personaId}` )
   },
   editPersonaData(object){
-    console.log(`servis edit persona objekta ${object.personaId}`)
+    console.log(`servis edit persona objekta ${object.id}`)
     const data={
       companyId:object.companyId,
       name:object.name,
@@ -33,7 +33,7 @@ export default {
       activeLimit:object.activeLimit
     }
     console.log("edited object",data)    
-    return apiGatewayClient.put(`/${object.personaId}`,data)
+    return apiGatewayClient.put(`/${object.id}`,data)
   },
   setPersonaStaus(element){
     console.log(`servis edit statusa persona objekta ${element}`)

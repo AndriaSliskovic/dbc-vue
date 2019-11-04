@@ -270,10 +270,10 @@ export default {
       // console.log(this.cField)
       this.$v.$touch()
       if (this.$v.$invalid) {
-        console.log(`submitovanje forme ${this.nameErrors}`)
+        console.log(`submitovanje forme ${this.categoryErrors}`)
         const notification = {
           type: 'error',
-          message: `Error on form : ${this.nameErrors}`
+          message: `Error on form : ${this.categoryErrors}`
         }
         console.log('not valid')
         return store.dispatch('notification/add', notification, { root: true })

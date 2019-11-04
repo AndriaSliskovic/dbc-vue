@@ -190,7 +190,7 @@ export default {
     return {
       personaId: this.$route.params.personaId,
       companyId: this.$route.params.companyId,
-      editedCompanyId: this.$route.params.personaId,
+      editedCompanyId: this.$route.params.companyId,
       search: '',
       headers: [
         { text: 'Edit', value: 'edit' },
@@ -248,7 +248,8 @@ export default {
     editedPersona: function() {
       console.log('edit persona object')
       return {
-        personaId: this.personaId,
+        active:true,
+        id: this.personaId,
         name: this.personaName,
         companyId: this.editedCompanyId,
         companyIdString: `companyId=${this.editedCompanyId}`,
@@ -257,12 +258,17 @@ export default {
       }
     },
     onEditPersonaHandler: function() {
-      const editedPersona = this.editedPersona()
-      console.log(`imam edit `, editedPersona)
-      store.dispatch('persona/editPersonaData', editedPersona)
-      //Return to previus page for the primary company
-      return this.$router.push({ name: 'personas'})
-   
+      //If company is changed
+      if (this.companyId && this.companyId!=this.editedCompanyId) {
+        store.dispatch('persona/editPersonaData', this.editedPersona())
+        .then(
+          ()=>store.dispatch('persona/getPersonasByCompanyGuid', this.companies.companyIdString)
+        )
+        //Return to persona page for previus company without edited persona
+        return this.$router.push({ name: 'personas'})
+      } else{
+        store.dispatch('persona/editPersonaData', this.editedPersona())
+      }  
     },
     onCreateCustomFieldObject() {
       this.dialogType = 'create'

@@ -31,23 +31,29 @@
       </v-row>
 
       <!-- SORT ORDER -->
-      <v-col cols="3">
-        <v-text-field
-          v-model="category.sortOrder"
-          :error-messages="categorySortOrderErrors"
-          label="Sort order"
-          type="number"
-          required
-          @input="$v.category.sortOrder.$touch()"
-          @blur="$v.category.sortOrder.$touch()"
-        ></v-text-field>
-      </v-col>
-    </v-card-text>
-    <v-card-actions class="grey darken-2 mx-0 title-page">
-      <v-row justify="center">
-        <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler" />
+      <v-row>
+        <v-col cols="3">
+          <v-text-field
+            v-model="category.sortOrder"
+            :error-messages="categorySortOrderErrors"
+            label="Sort order"
+            type="number"
+            required
+            @input="$v.category.sortOrder.$touch()"
+            @blur="$v.category.sortOrder.$touch()"
+          ></v-text-field>
+        </v-col>
+        <v-spacer/>
+        <v-col cols="6">
+          <router-link to="https://fontawesome.com/icons?from=io" tag="button">
+            <v-btn class="ma-2" outlined color="indigo">FA-Icons</v-btn>
+          </router-link>
+        </v-col>
       </v-row>
-    </v-card-actions>
+    </v-card-text>
+    <BasePageFooter>
+      <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler" />
+    </BasePageFooter>
   </v-card>
 </template>
 <script>
@@ -57,13 +63,13 @@ import { validationMixin } from 'vuelidate'
 import { required, maxLength, email } from 'vuelidate/lib/validators'
 
 export default {
-  data(){
-    return {category:
-    {
-      name:null,
-      icon:null,
-      sortOrder:null
-    }
+  data() {
+    return {
+      category: {
+        name: null,
+        icon: null,
+        sortOrder: null
+      }
     }
   },
 
@@ -84,6 +90,14 @@ export default {
     onSubmitHandler() {
       this.catSelected = false
       console.log('on submit')
+      this.$v.$touch()
+      if (this.$v.$invalid) {
+        const notification = {
+          type: 'error',
+          message: `Error on form : ${this.nameErrors}`
+        }
+        return store.dispatch('notification/add', notification, { root: true })
+      }
       this.$emit('submit', this.category)
       this.$emit('close', false)
       this.$v.$reset()

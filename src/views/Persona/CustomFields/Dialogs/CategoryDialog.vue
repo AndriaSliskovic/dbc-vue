@@ -7,8 +7,7 @@
 
       <v-col cols="6">
         <v-card-title>
-        <BaseTooltip>{{tooltips.currentCategory}}</BaseTooltip>
-          Current category:
+          <BaseTooltip>{{tooltips.currentCategory}}</BaseTooltip>Current category:
         </v-card-title>
         <!-- category table -->
         <v-card-text>
@@ -40,8 +39,7 @@
 
       <v-col v-if="tempCategory" cols="6">
         <v-card-title>
-        <BaseTooltip>{{tooltips.newSelectedCategory}}</BaseTooltip>        
-        New selected category :
+          <BaseTooltip>{{tooltips.newSelectedCategory}}</BaseTooltip>New selected category :
         </v-card-title>
         <!-- new category table -->
         <v-card-text>
@@ -81,7 +79,7 @@
               :retain-focus="false"
             >
               <template v-slot:activator="{ on }">
-                <BaseTooltip  >{{tooltips.createNewCategory}}</BaseTooltip>
+                <BaseTooltip>{{tooltips.createNewCategory}}</BaseTooltip>
                 <v-btn depressed color="primary" v-on="on">Create new category for persona</v-btn>
               </template>
               <CreateNewCategoryDialog
@@ -89,6 +87,7 @@
                 @submit="setNewCategoryObject"
               />
             </v-dialog>
+
           </v-col>
 
           <!-- OR DIVIDER -->
@@ -103,8 +102,7 @@
             <v-row align="center">
               <v-card class="mx-auto grey lighten-4" max-width="400" tile>
                 <v-card-title class="primary white--text my-0 py-1">
-                <BaseTooltip color="normal">{{tooltips.listOfCategories}}</BaseTooltip>
-                Select existing category :
+                  <BaseTooltip color="normal">{{tooltips.listOfCategories}}</BaseTooltip>Select existing category :
                 </v-card-title>
                 <v-list dense>
                   <v-list-item-group v-model="itemsData" color="primary">
@@ -142,7 +140,16 @@
       </v-card-text>
       <!-- SUBMIT GROUP -->
       <BasePageFooter>
-        <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler" />
+        <template v-if="!selectedObject">
+          <BaseSubmitGroup
+            @close="onCloseDialogHandler"
+            @submit="onSubmitHandler"
+            :disabledSubmit="true"
+          />
+        </template>
+        <template v-else>
+          <BaseSubmitGroup @close="onCloseDialogHandler" @submit="onSubmitHandler" />
+        </template>
       </BasePageFooter>
     </v-card>
   </v-container>
@@ -161,9 +168,11 @@ export default {
       },
       tooltips: {
         currentCategory: 'Click on cancel to save previus current category',
-        newSelectedCategory:'Choose submit to save selected category',
-        createNewCategory:'Click on button to create new category for selected custom field',
-        listOfCategories:'Select category from list and hit confirm to save changes'
+        newSelectedCategory: 'Choose submit to save selected category',
+        createNewCategory:
+          'Click on button to create new category for selected custom field',
+        listOfCategories:
+          'Select category from list and hit confirm to save changes'
       }
     }
   },

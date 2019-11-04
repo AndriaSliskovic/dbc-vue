@@ -22,6 +22,7 @@
         <v-col v-show="companyIsSelected">
           <v-card-title>
             <v-row align="baseline" justify="space-between">
+              <!-- SEARCH -->
               <v-col class="pl-6" cols="4">
                 <v-text-field
                   v-model="search"
@@ -32,7 +33,7 @@
                 ></v-text-field>
               </v-col>
 
-              <!-- Select personas status -->
+              <!-- SELECT PERSONA STATUS -->
               <v-col cols="4">
                 <v-select
                   :items="personaStatus"
@@ -46,7 +47,6 @@
                 ></v-select>
               </v-col>
 
-              <!-- / Select personas status -->
               <!-- CREATE PERSONA -->
               <v-col cols="4">
                 <v-dialog
@@ -63,6 +63,7 @@
               </v-col>
             </v-row>
             <!-- / CREATE PERSONA -->
+            <!-- TABLE -->
           </v-card-title>
           <v-data-table :headers="headers" :items="items" :search="search" :item-key="items.id">
             <!-- TOOLTIPS FOR HEADER -->
@@ -89,8 +90,10 @@
               </v-chip>
             </template>
             <!-- / STATUS -->
+
             <!-- EDIT PERSONA -->
             <template v-slot:item.edit="{item}">
+              <!-- NAVIGATE TO CUSTOM FIELDS PAGE -->
               <v-icon large color="blue darken-2" @click="onEditPersona(item.id)">mdi-table-edit</v-icon>
             </template>
 
@@ -121,8 +124,7 @@
               </v-dialog>
             </template>
           </v-data-table>
-
-          <!-- /Tabela -->
+        <!-- //TABLE -->
         </v-col>
       </v-card>
     </v-container>
