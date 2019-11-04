@@ -39,7 +39,8 @@ export default {
   methods: {
     ...mapActions('companies', ['setCompanyId']),
     setSelectedCompany() {
-      this.setCompanyId(this.companyId)
+      console.log("komponenta kompanije",this.companyId)
+      //this.setCompanyId(this.companyId)
       this.$emit('on-change-select',this.companyId)
     }
   },

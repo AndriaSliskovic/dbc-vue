@@ -179,6 +179,7 @@ export default {
       this.tempCategory = null
     },
     onSubmitHandler() {
+      console.log('on submit')
       this.$emit('submit', this.tempCategory)
       this.$emit('close', false)
       this.tempCategory = null
@@ -187,6 +188,7 @@ export default {
       this.tempCategory = catObject
     },
     setNewCategoryObject(newCategory) {
+      console.log('nova kategorija', newCategory)
       store.dispatch('persona/addNewCategory', newCategory)
     },
     createSelectedCategoryObject(obj) {

@@ -9,10 +9,10 @@
   </v-container>
 </template>
 <script>
-import DropDownDialog from './DialogType/DropDownDialog'
-import ImagebankDialog from './DialogType/ImagebankDialog'
-import TextareaDialog from './DialogType/TextareaDialog'
-import TextBoxDialog from './DialogType/TextBoxDialog'
+import DropDownDialog from './Dialogs/DialogType/DropDownDialog'
+import ImagebankDialog from './Dialogs/DialogType/ImagebankDialog'
+import TextareaDialog from './Dialogs/DialogType/TextareaDialog'
+import TextBoxDialog from './Dialogs/DialogType/TextBoxDialog'
 import { validationMixin } from 'vuelidate'
 
 export default {
@@ -29,9 +29,8 @@ export default {
   },
   methods:{
     onCloseDialogHandler: function() {
+      console.log(`close icon clicked`)
       this.$emit('close', false)
-      //Resetovanje prethodne validacije
-      this.$v.$reset()
     },
   }
 }

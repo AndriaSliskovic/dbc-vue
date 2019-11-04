@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Home from './layer/Home.vue'
 import NProgress from 'nprogress'
 import NotFound from './views/errorPages/NotFound.vue'
 import NetworkIssue from './views/errorPages/NetworkIssue.vue'
 import FeaturePage from "./views/featureManager/FeaturePage.vue"
-import PersonaPage from "./views/Persona/PersonaPage.vue"
+import PersonasPage from "./views/Persona/PersonasPage.vue"
 import CustomFields from "./views/Persona/CustomFields.vue"
 
 Vue.use(Router)
@@ -25,7 +25,7 @@ const router= new Router({
     {
       path: '/personas',
       name: 'personas',
-      component: PersonaPage,
+      component: PersonasPage,
     },
     {
       path:'/persona/:personaId',

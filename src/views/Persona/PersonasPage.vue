@@ -10,7 +10,7 @@
             <!-- SELECT COMPANIES -->
             <BaseSelectCompany
               :companies="companies.allCompanies"
-              @on-change-select="onChangeSelectHandler(companyId)"
+              @on-change-select="onChangeCompanySelectHandler"
             />
             <!-- TOOLTIP COMPANY-->
             <template v-if="!companyId">
@@ -131,14 +131,10 @@
 
 
 <script>
-import NProgress from 'nprogress'
+
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
-//import NotificationContainer from '../../components/NotificationContainer'
-import CompaniesHardCode from '../../../GetSiteCustomers.json'
-import router from 'vue-router'
-import PersonaCreateNew from './PersonaCreateNew'
-import { log } from 'util'
+import PersonaCreateNew from './Persona/PersonaCreateNew'
 
 const defaultStatus = function() {
   return { active: null, text: 'All', color: 'blue', letter: '' }
@@ -179,15 +175,17 @@ export default {
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
+    console.log("persona page before")
     store.dispatch('companies/loadAllCompanies')
     .then(
       () => {
       next(
         function(vm) {
+        //Dobijanje companyId pri povratku sa PersonaDetail
           if (!vm.companyId) {
             vm.companyId = vm.$store.state.companies.selectedCompanyGUID
           }
-        }
+         }
        )
     })
   },
@@ -198,19 +196,25 @@ export default {
 
   methods: {
     setSelectedPersona(key) {
+      console.log(`setovanje persone ${key}`)
       this.selectedPersona = this.mapPersonas().find(function(el) {
         return el.id === key
       })
     },
-    onChangeSelectHandler(onChangeSelectHandler) {
+    onChangeCompanySelectHandler(value) {
+      console.log("odabrana kompanija",value)
+      store.dispatch('companies/setCompanyId',value)
       store.dispatch('persona/getPersonasByCompanyGuid', this.companyIdString)
     },
     setPersonaStatus(key) {
+      console.log('imam klik', key)
       this.selectedPersonaStatusId = key
 
       const element = this.items.find(x => x.id === key)
       element.active = !element.active
       element.stringId = this.personaIdString.stringId
+      console.log(element)
+      //Slanje na server i setovanje centralnog statea
       store.dispatch('persona/setPersonasStatusOnServer', element)
       element.active
         ? (element.status = this.personaStatus[0].text)
@@ -233,10 +237,17 @@ export default {
       })
     },
     onDeletePersonadHandler: function(key) {
+      //Persona je setovana na prethodni klik
+      console.log(`selektovana persona ${this.selectedPersona}`)
       store.dispatch('persona/deletePersona', this.selectedPersona)
     },
     onCloseConfirmationDialog(value) {
       this.onDialogConfirmation = value
+      console.log('close dialog')
+    },
+
+    onAddNewPersona() {
+      console.log('Dodavanje persone')
     },
     onCloseDialog(value) {
       this.dialog.addNewPersona = value
@@ -309,6 +320,7 @@ export default {
   watch: {
     companyId: function(newValue, oldValue) {
       if (newValue != oldValue) {
+        console.log('New value: ' + newValue + ', Old value: ' + oldValue)
         return (this.companyChange = true)
       }
     }

@@ -5,13 +5,10 @@
 
     <v-toolbar-items>
       <!-- <v-btn text>
-        <router-link :to="{ name: 'event-list' }" tag="button">Event list</router-link>
+        <router-link :to="{ name: 'feature' }" tag="button">Feature manager</router-link>
       </v-btn>
       <v-btn text>
-        <router-link :to="{ name: 'proba' }" tag="button">Proba statea</router-link>
-      </v-btn>
-      <v-btn text>
-        <router-link :to="{ name: 'tabela' }" tag="button">Tabela</router-link>
+        <router-link :to="{ name: 'personas' }" tag="button">Personas</router-link>
       </v-btn> -->
     </v-toolbar-items>
   </div>

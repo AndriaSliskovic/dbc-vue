@@ -6,13 +6,13 @@
 </template>
 
 <script>
-import HelloWorld from '../components/HelloWorld'
+import HelloWorld from './HelloWorld'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 export default {
   data() {
     return {
-      prom: 'lala'
+
     }
   },
   components: {
@@ -20,8 +20,11 @@ export default {
   },
 
   beforeRouteEnter(routeTo, routeFrom, next) {
+    //Nema this u beforeRouteEnter
+    // this.loadAllCompanies()
     store.dispatch('companies/loadAllCompanies').then(response => {
       next(
+        //Dobijanje companyId pri povratku sa PersonaDetail
         function(vm) {
           if (!vm.companyId) {
             vm.companyId = vm.$store.state.companies.selectedCompanyGUID

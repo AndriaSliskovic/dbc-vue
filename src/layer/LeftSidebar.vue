@@ -1,4 +1,5 @@
 <template>
+
   <v-card height="400" width="256" class="mx-auto">
     <v-list-item-content>
       <v-list-item-title class="title">

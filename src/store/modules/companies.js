@@ -4,7 +4,8 @@ export const namespaced = true
 
 export const state = {
   allCompanies: [],
-  selectedCompanyGUID: null
+  selectedCompanyGUID: null,
+  companyIdString:null
 }
 export const mutations = {
   LOAD_COMPANIES(state, payload) {
@@ -12,7 +13,10 @@ export const mutations = {
   },
   SET_COMPANY_ID(state, payload) {
     state.selectedCompanyGUID = payload
-  }
+  },
+  SET_COMPANY_ID_STRING(state,payload){
+    state.companyIdString=`companyId=${payload}`
+  },
 }
 export const actions = {
   loadAllCompanies({ commit, dispatch }) {
@@ -32,6 +36,7 @@ export const actions = {
   setCompanyId({ commit }, companyId) {
     console.log(`action companies id : ${companyId}`)
     commit('SET_COMPANY_ID', companyId)
+    commit('SET_COMPANY_ID_STRING',companyId)
   }
 }
 export const getters = {}

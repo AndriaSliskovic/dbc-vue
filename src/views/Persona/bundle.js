@@ -6,7 +6,7 @@ import store from '../../store/store'
 import vuetify from '@/plugins/vuetify'
 import 'nprogress/nprogress.css'
 import Vuelidate from 'vuelidate'
-import RouterPersona from './RouterPersona.vue';
+import HomePersona from './HomePersona.vue';
 
 
 Vue.config.productionTip = false
@@ -34,5 +34,5 @@ new Vue({
   router,
   store,
   vuetify,
-  render: h => h(RouterPersona)
+  render: h => h(HomePersona)
 }).$mount('#app')

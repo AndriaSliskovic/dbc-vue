@@ -1,19 +1,25 @@
 <template>
   <v-app id="inspire">
     <v-container fluid>
-      <!-- Zaglavlje stranice -->
+      <!-- PAGE TITLE -->
       <v-card>
         <BasePageTitle>Custom fields for selected persona</BasePageTitle>
         <v-divider />
-        <!-- /Zaglavlje stranice -->
-
         <!-- EDIT CURENT PERSONA -->
-        <v-row align="baseline" justify="space-between" class="grey lighten-4 mx-0" v-if="persona.personaObject">
+        <v-row
+          align="baseline"
+          justify="space-between"
+          class="grey lighten-4 mx-0"
+          v-if="persona.personaObject"
+        >
           <v-col cols="4" md="3" class="pl-6">
             <v-text-field v-model="persona.personaObject.name" label="Persona name"></v-text-field>
           </v-col>
           <v-col cols="3" md="3">
-            <BaseSelectCompany :companies="companies.allCompanies" />
+            <BaseSelectCompany
+              :companies="companies.allCompanies"
+              @on-change-select="onChangeCompanySelectHandler"
+            />
           </v-col>
           <v-col cols="3">
             <v-row>
@@ -29,7 +35,6 @@
                 <v-checkbox v-model="persona.personaObject.allowShare" label="Allow share" dense></v-checkbox>
               </v-col>
             </v-row>
-           
           </v-col>
           <!-- EDIT PERSONA DIALOG -->
           <v-col cols="2" md="3">
@@ -56,9 +61,6 @@
             <BaseTooltip :large="true">{{tooltips.editCurentPersona}}</BaseTooltip>
           </v-col>
         </v-row>
-
-
-        <!-- // EDIT CURENT PERSONA -->
         <v-divider />
         <!-- TABLE -->
         <v-card-title>
@@ -73,7 +75,7 @@
               hide-details
             ></v-text-field>
             <div class="flex-grow-1"></div>
-            <!-- CREATE Custom Fields -->
+            <!-- CREATE NEW CUSTOM FIELD -->
             <v-col class="pr-6">
               <v-dialog
                 v-model="dialog.create"
@@ -131,6 +133,7 @@
                   @click="onEditCustomFieldHandler(item.id)"
                   v-on="on"
                 >mdi-table-edit</v-icon>
+                <!-- <BaseTooltip>{{tooltips.editCustomField}}</BaseTooltip> -->
               </template>
               <CustomFieldSelected
                 @close="val=>onCloseDialog(val)"
@@ -177,7 +180,7 @@
 import NProgress from 'nprogress'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
-import CustomFieldSelected from './CustomFieldSelected'
+import CustomFieldSelected from './CustomFields/CustomFieldSelected'
 
 export default {
   components: {
@@ -187,8 +190,7 @@ export default {
     return {
       personaId: this.$route.params.personaId,
       companyId: this.$route.params.companyId,
-      selectedCompany: null,
-      editedCompany: null,
+      editedCompanyId: this.$route.params.personaId,
       search: '',
       headers: [
         { text: 'Edit', value: 'edit' },
@@ -214,43 +216,59 @@ export default {
         create: false,
         edit: false
       },
-
       selectedCustomField: null,
       dataObject: null
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    store.dispatch('companies/loadAllCompanies').then(
-      () => {
-      next( )
+    console.log('before route enter')
+    store.dispatch('companies/loadAllCompanies').then(() => {
+      next()
     })
   },
   created() {
+    console.log('created customField')
+    // store.dispatch('companies/loadAllCompanies')
     this.editedCompany = this.companyId
+    //Dobijanje persona objekta
     store.dispatch('persona/getSelectedPersonaByPersonaId', this.personaId)
+    //Dobijanje CustomFieldsa
     store.dispatch('persona/getCustomFieldsByPersonaID', this.personaId)
+    console.log(this.customFields)
   },
 
   methods: {
     goBack: function() {
       return this.$router.go(-1)
     },
+    onChangeCompanySelectHandler(value) {
+      console.log(value)
+      this.editedCompanyId = value
+    },
     editedPersona: function() {
+      console.log('edit persona object')
       return {
         personaId: this.personaId,
         name: this.personaName,
-        companyId: this.companies.selectedCompanyGUID,
+        companyId: this.editedCompanyId,
+        companyIdString: `companyId=${this.editedCompanyId}`,
         activeLimit: this.persona.personaObject.activeLimit,
         allowShare: this.persona.personaObject.allowShare
       }
     },
     onEditPersonaHandler: function() {
       const editedPersona = this.editedPersona()
+      console.log(`imam edit `, editedPersona)
       store.dispatch('persona/editPersonaData', editedPersona)
+      //Return to previus page for the primary company
+      return this.$router.push({ name: 'personas'})
+   
     },
     onCreateCustomFieldObject() {
       this.dialogType = 'create'
+      console.log('create Custom field object')
       this.dataObject = this.createDataObject()
+      console.log(this.dataObject)
       store.dispatch('persona/setSelectedCustomField', this.dataObject)
       store.dispatch('persona/getAllCategoriesForSelectedPersona')
     },
@@ -277,6 +295,7 @@ export default {
       }
     },
     setSelectedCustomField(key) {
+      console.log('setovanje cf-a', key)
       const cField = this.customFields.find(function(el) {
         return el.id === key
       })
@@ -298,7 +317,9 @@ export default {
     },
     onEditCustomFieldHandler(key) {
       this.dialogType = 'edit'
+      console.log(`edit Custom Field ${key}`)
       this.setSelectedCustomField(key)
+      console.log(this.selectedCustomField)
       store.dispatch('persona/setSelectedCustomField', this.selectedCustomField)
       store.dispatch('persona/getAllCategoriesForSelectedPersona')
     },
@@ -307,11 +328,13 @@ export default {
         personaId: this.personaId,
         cFieldId: this.selectedCustomField.id
       }
+      console.log(`delete custom field`, params)
       store.dispatch('persona/deleteSelectedCustomField', params)
     },
     onCloseDialog(value) {
       this.dialog.create = value
       this.dialog.edit = value
+      //Kreiranje praznog objekta zbog resetovanja centralnog stora
       this.dataObject = this.createDataObject()
       store.dispatch('persona/setSelectedCustomField', this.dataObject)
     }
@@ -321,6 +344,7 @@ export default {
     personaName: {
       get: function() {
         return this.persona.personaObject ? this.persona.personaObject.name : ''
+        //return this.persona.personaObject.name
       },
       set: function(newValue) {
         newValue ? (this.persona.personaObject.name = newValue) : null
@@ -328,6 +352,7 @@ export default {
     },
     customFields: {
       get: function() {
+        //return this.persona.customFields ? this.persona.customFields : null
         return this.persona.customFields
       }
     },

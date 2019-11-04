@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import NProgress from 'nprogress'
-import PersonaPage from "./PersonaPage.vue"
+import PersonasPage from "./PersonasPage.vue"
 import CustomFields from "./CustomFields.vue"
 
 Vue.use(Router)
@@ -11,7 +11,7 @@ const router= new Router({
     {
       path: '/personas',
       name: 'personas',
-      component: PersonaPage,
+      component: PersonasPage,
     },
     {
       path:'/persona/:personaId',

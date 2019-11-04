@@ -1,5 +1,5 @@
  <template>
- <v-row>
+ <v-row align="center">
     <v-alert 
     :type="messageType"
     dense

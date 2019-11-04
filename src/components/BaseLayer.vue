@@ -30,8 +30,9 @@
 </template>
 
 <script>
-import LeftSidebar from '../components/LeftSidebar'
-import NavBar from '../components/NavBar'
+import LeftSidebar from '../layer/LeftSidebar'
+import NavBar from '../layer/NavBar'
+import router from 'vue-router'
 export default {
   props: {
     source: String

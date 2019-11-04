@@ -1,11 +1,12 @@
  <template>
-      <div class="notification-container pr-1">
+ <v-row align="center" justify="center">
         <NotificationBar
           v-for="notification in notifications"
           :key="notification.id"
           :notification="notification"
         />
-      </div>
+ </v-row>
+
     </template>
     
     <script>
@@ -19,7 +20,7 @@
     </script>
     
     <style scoped>
-    .notification-container {
+    /* .notification-container {
       height: 50px;      
-    }
+    } */
     </style>

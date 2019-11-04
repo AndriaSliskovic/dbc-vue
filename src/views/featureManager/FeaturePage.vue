@@ -103,7 +103,6 @@ import NProgress from 'nprogress'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import FeatureDetail from './FeatureDetail'
-import NotificationContainer from '../../components/NotificationContainer'
 import FeatureCard from './FeatureCard'
 import FeatureContainer from './FeatureContainer'
 
@@ -137,7 +136,6 @@ export default {
   },
   components: {
     FeatureDetail,
-    NotificationContainer,
     FeatureContainer
   },
   beforeRouteEnter(routeTo, routeFrom, next) {

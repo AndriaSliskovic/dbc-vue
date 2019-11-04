@@ -69,6 +69,7 @@ export default {
       //Submit validation
       this.$v.$touch()
       if (this.$v.$invalid) {
+        console.log(`submitovanje forme ${this.nameErrors}`)
         const notification = {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
@@ -88,6 +89,8 @@ export default {
       return {
         companyId: this.companyId,
         name: this.name,
+        allowShare:this.allowShare,
+        activeLimit:this.activeLimit,
         companyIdString: `?companyId=${this.companyId}`
       }
     },

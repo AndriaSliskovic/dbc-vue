@@ -83,6 +83,7 @@ export default {
     },
     onSubmitHandler() {
       this.catSelected = false
+      console.log('on submit')
       this.$emit('submit', this.category)
       this.$emit('close', false)
       this.$v.$reset()
