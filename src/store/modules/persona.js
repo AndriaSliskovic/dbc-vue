@@ -113,6 +113,7 @@ export const actions = {
   //PERSONAS
   getPersonasByCompanyGuid({ commit, dispatch }, companyGuidString) {
     console.log(`action za kompanijine persone ${companyGuidString}`)
+    
     return personaService
       .getPersonas(companyGuidString)
       .then(response => {
@@ -224,10 +225,13 @@ export const actions = {
     },
 
   //PERSONA STATUS
-  setPersonasStatusOnServer({ commit, dispatch }, element) {
+  setPersonasStatusOnServer({ commit, dispatch,rootState }, element) {
+
     console.log(element.stringId, element.active, element)
     const status = element.active
     const personaUrlString = element.stringId
+    const companyIdStr=rootState.companies.companyIdString
+    console.log(companyIdStr)
     //Aktivacija statusa
     if (status) {
       console.log('aktivira', personaUrlString, status)
@@ -249,6 +253,8 @@ export const actions = {
             message: ` Can't activate this persona - Server error !`
           }
           dispatch('notification/add', notification, { root: true })
+
+          //dispatch('getPersonasByCompanyGuid',companyIdStr)
           throw error
         })
     } else {

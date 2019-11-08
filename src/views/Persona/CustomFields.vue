@@ -190,6 +190,7 @@ export default {
     return {
       personaId: this.$route.params.personaId,
       companyId: this.$route.params.companyId,
+      active:this.$route.params.active,
       editedCompanyId: this.$route.params.companyId,
       search: '',
       headers: [
@@ -248,7 +249,7 @@ export default {
     editedPersona: function() {
       console.log('edit persona object')
       return {
-        active:true,
+        active:this.active,
         id: this.personaId,
         name: this.personaName,
         companyId: this.editedCompanyId,

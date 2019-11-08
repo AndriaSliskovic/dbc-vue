@@ -4,6 +4,7 @@ import * as feature from '@/store/modules/feature.js'
 import * as notification from '@/store/modules/notification.js'
 import * as persona from '@/store/modules/persona.js'
 import * as companies from '@/store/modules/companies.js'
+import * as images from '@/store/modules/images.js';
 
 Vue.use(Vuex)
 
@@ -12,7 +13,8 @@ export default new Vuex.Store({
     feature,
     notification,
     persona,
-    companies
+    companies,
+    images
   },
   state: {
   },

@@ -1,7 +1,8 @@
 <template>
   <BaseLayer>
     <HelloWorld />
-  <BasePageTitle></BasePageTitle>
+  <Status></Status>
+  <status-chip></status-chip>
   </BaseLayer>
 </template>
 
@@ -9,6 +10,9 @@
 import HelloWorld from './HelloWorld'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
+import Status from '../components/status/Status'
+import StatusChip from '../components/status/StatusChip'
+ 
 export default {
   data() {
     return {
@@ -16,23 +20,12 @@ export default {
     }
   },
   components: {
-    HelloWorld
+    HelloWorld,
+    Status,
+    StatusChip
   },
 
-  beforeRouteEnter(routeTo, routeFrom, next) {
-    //Nema this u beforeRouteEnter
-    // this.loadAllCompanies()
-    store.dispatch('companies/loadAllCompanies').then(response => {
-      next(
-        //Dobijanje companyId pri povratku sa PersonaDetail
-        function(vm) {
-          if (!vm.companyId) {
-            vm.companyId = vm.$store.state.companies.selectedCompanyGUID
-          }
-        }
-      )
-    })
-  },
+
   methods: {
     ...mapActions('companies', ['loadAllCompanies'])
   },

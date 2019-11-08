@@ -45,9 +45,7 @@
         </v-col>
         <v-spacer/>
         <v-col cols="6">
-          <router-link to="https://fontawesome.com/icons?from=io" tag="button">
-            <v-btn class="ma-2" outlined color="indigo">FA-Icons</v-btn>
-          </router-link>
+            <v-btn class="ma-2" outlined color="indigo" href="https://fontawesome.com/icons?from=io" target="blank">FA-Icons</v-btn>
         </v-col>
       </v-row>
     </v-card-text>

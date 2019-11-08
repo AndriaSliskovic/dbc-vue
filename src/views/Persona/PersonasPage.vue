@@ -77,7 +77,9 @@
             </template>
             <!-- STATUS CHIP-->
             <template v-slot:item.status="{ item }">
-              <v-chip
+              <!-- <StatusSwitch :status="item.active" @change="setPersonaStatus(item.id)"/> -->
+              <StatusChip :status="item.active" @change="setPersonaStatus(item.id)"/>
+              <!-- <v-chip
                 pill
                 @click="setPersonaStatus(item.id)"
                 :text-color="getStatusColor(item.active)"
@@ -87,7 +89,7 @@
                   <v-icon v-else="item.active">close</v-icon>
                 </v-avatar>
                 {{item.status}}
-              </v-chip>
+              </v-chip> -->
             </template>
             <!-- / STATUS -->
 
@@ -137,22 +139,27 @@
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import PersonaCreateNew from './Persona/PersonaCreateNew'
+import StatusChip from '../../components/status/StatusChip'
+import StatusSwitch from '../../components/status/StatusSwitch'
 
 const defaultStatus = function() {
   return { active: null, text: 'All', color: 'blue', letter: '' }
 }
 export default {
   components: {
-    PersonaCreateNew
+    PersonaCreateNew,
+    StatusChip,
+    StatusSwitch
   },
   data() {
     return {
       companyChange: false,
       search: '',
+      error:null,
       headers: [
         { text: 'Edit', value: 'edit' },
         { text: 'Persona', value: 'name' },
-        { text: 'Status', value: 'status' },
+        { text: 'Status', value: 'status',fixed: true, width: '150px' },
         { text: 'Delete', value: 'delete' }
       ],
       personaStatus: [
@@ -202,6 +209,7 @@ export default {
       this.selectedPersona = this.mapPersonas().find(function(el) {
         return el.id === key
       })
+      console.log("selektovana persona :",this.selectedPersona)
     },
     onChangeCompanySelectHandler(value) {
       console.log("odabrana kompanija",value)
@@ -233,9 +241,19 @@ export default {
     onEditPersona(key) {
       this.personaId = key
       this.setSelectedPersona(key)
+      const status=this.selectedPersona.active
+      //Sprecavane editovanja neaktivne persone
+      if (!status) {
+        console.log("ulazi if")
+          this.error = {
+          type: 'error',
+          message: `You can not edit inactive persona.`
+        }
+        return store.dispatch('notification/add', this.error)
+      }
       this.$router.push({
         name: 'customFields',
-        params: { personaId: this.personaId, companyId: this.companyId }
+        params: { personaId: this.personaId, companyId: this.companyId, active:this.selectedPersona.active }
       })
     },
     onDeletePersonadHandler: function(key) {
@@ -272,10 +290,11 @@ export default {
   },
 
   computed: {
-    ...mapState(['persona', 'companies']),
+    ...mapState(['persona', 'companies','notification']),
     companyIdString: function() {
       return `companyId=${this.companyId}`
     },
+
 
     items: function() {
       if (this.persona.personas.length) {
