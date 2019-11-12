@@ -1,8 +1,7 @@
 <template>
   <BaseLayer>
     <HelloWorld />
-  <Status></Status>
-  <status-chip></status-chip>
+
   </BaseLayer>
 </template>
 
@@ -10,21 +9,18 @@
 import HelloWorld from './HelloWorld'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
-import Status from '../components/status/Status'
-import StatusChip from '../components/status/StatusChip'
- 
+import Playground from '../views/playground/Playground'
+
 export default {
   data() {
     return {
-
+      Playground
     }
   },
   components: {
     HelloWorld,
-    Status,
-    StatusChip
+    Playground
   },
-
 
   methods: {
     ...mapActions('companies', ['loadAllCompanies'])

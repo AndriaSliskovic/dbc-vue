@@ -24,8 +24,7 @@ export default function(url) {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        timeout: 5000})
-        
+        timeout: 5000})       
     setupInterceptors(client)
     
      return client 
