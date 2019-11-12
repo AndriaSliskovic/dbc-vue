@@ -7,6 +7,7 @@ import NetworkIssue from './views/errorPages/NetworkIssue.vue'
 import FeaturePage from "./views/featureManager/FeaturePage.vue"
 import PersonasPage from "./views/Persona/PersonasPage.vue"
 import CustomFields from "./views/Persona/CustomFields.vue"
+import Playground from "./views/playground/Playground.vue"
 
 Vue.use(Router)
 
@@ -16,6 +17,11 @@ const router= new Router({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/playground',
+      name: 'playground',
+      component: Playground
     },
     {
       path: '/feature',

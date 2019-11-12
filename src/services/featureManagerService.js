@@ -1,7 +1,7 @@
 import client from "./service-clients/base-client"
 
 if (typeof window.apiGatewayUrl === 'undefined') {
-    window.apiGatewayUrl = 'http://10.99.0.100:5200'
+    window.apiGatewayUrl = 'http://app.quadro.local:80'
 }
 
 const apiGatewayClient = client(window.apiGatewayUrl)

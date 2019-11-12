@@ -7,14 +7,15 @@ export const state = {
 }
 export const mutations = {
   SET_SELECTED_IMAGE(state,payload){
-    state.uploadImage=payload
+    state.uploadedImage=payload
   }
 }
 export const actions = {
-  uploadImage({dispatch},selectedFile){
-    console.log(selectedFile)
+  uploadImage({commit, dispatch},selectedFile){
+   // console.log(selectedFile)
+    commit('SET_SELECTED_IMAGE', selectedFile)
+    //imageService.uploadImage(selectedFile)
 
-    imageService.uploadImage(selectedFile)
     // .then(() => {
     //   const notification = {
     //     type: 'success',

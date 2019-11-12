@@ -1,9 +1,15 @@
 <template>
   <v-container>
-    <h3>Home page for DBC VUE projects</h3>
+    <h3>{{title}}</h3>
   </v-container>
 </template>
 
 <script>
-
+export default {
+  data(){
+    return{
+      title:true
+    }
+  }
+}
 </script>
