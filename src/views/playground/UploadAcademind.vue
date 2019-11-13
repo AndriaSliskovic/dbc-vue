@@ -1,36 +1,35 @@
 <template>
-  <v-row>
-    <v-col cols="6">
-      <v-card>
-        <v-card-title>Playground</v-card-title>
-        <v-card-text>
-          <v-layout row>
-            <v-flex xs12 sm6 offset-sm3>
-              <v-col>
-                <input style="display:none" type="file" @change="handleFileUpload" ref="file" />
-                <v-btn @click="$refs.file.click()">Pick file</v-btn>
-              </v-col>
-              <v-col>
-                <img v-bind:src="imagePreview" v-show="showPreview" />
-                <v-row align="center" justify="center">
-                  <v-img
-                    :src="imagePreview"
-                    lazy-src="https://picsum.photos/id/11/10/6"
-                    aspect-ratio="1"
-                    class="grey lighten-2"
-                    max-width="500"
-                    max-height="300"
-                  ></v-img>
-                </v-row>
-              </v-col>
+  <form id="form">
+    <v-card-title>Playground</v-card-title>
 
+    <v-card-text>
+      <v-layout row>
+        <v-flex xs12 sm6 offset-sm3>
+          <v-col>
+            <v-row align="center" justify="center">
+              <v-img
+                :src="imagePreview"
+                lazy-src="https://picsum.photos/id/11/10/6"
+                aspect-ratio="1"
+                class="grey lighten-2"
+                max-width="300"
+                max-height="300"
+              ></v-img>
+            </v-row>
+          </v-col>
+          <v-row>
+            <v-col>
+              <input style="display:none" type="file" @change="handleFileUpload" ref="file" />
+              <v-btn color="error" @click="$refs.file.click()">Pick file</v-btn>
+            </v-col>
+            <v-col>
               <v-btn @click="onUpload">Upload!</v-btn>
-            </v-flex>
-          </v-layout>
-        </v-card-text>
-      </v-card>
-    </v-col>
-  </v-row>
+            </v-col>
+          </v-row>
+        </v-flex>
+      </v-layout>
+    </v-card-text>
+  </form>
 </template>
 <script>
 import axios from 'axios'
@@ -97,13 +96,7 @@ export default {
       console.log(this.file)
       formData.append('file', this.file)
 
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1])
-      }
       this.uploadService(formData)
-      //console.log(formData.entries())
-      //store.dispatch('images/uploadImage', formData)
-      //axios.post('my-domain.com/file-upload', formData)
     },
 
     uploadService(formData) {

@@ -1,21 +1,21 @@
 <template>
-  <v-container>
-    <form id="form">
-      <v-row>
-        <v-col cols="6">
-          <v-card>
-            <UploadAcademind></UploadAcademind>
-          </v-card>
-        </v-col>
+  <v-app id="inspire">
+    <v-content>
+      <v-container fluid>
+        <v-row>
+          <v-col cols="6">
+            <v-card>
+              <FileMultiplePreview></FileMultiplePreview>
+            </v-card>
+          </v-col>
 
-        <v-col cols="6">
-          <v-card>
-
-          </v-card>
-        </v-col>
-      </v-row>
-    </form>
-  </v-container>
+          <v-col cols="6">
+            <v-card></v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
@@ -26,18 +26,15 @@ import ImageUpload from './ImageUpload'
 import FileMultiplePreview from './FileMultiplePreview'
 import UploadAcademind from './UploadAcademind'
 
-
 export default {
   components: {
     Result,
     //ImageUpload,
-    //FileMultiplePreview,
-    UploadAcademind
+    FileMultiplePreview,
+    //UploadAcademind
   },
   data() {
-    return {
-      selectedFile: null
-    }
+    return {}
   },
 
   computed: {

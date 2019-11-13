@@ -1,7 +1,7 @@
 <template>
   <BaseLayer>
     <HelloWorld />
-
+  <Playground/>
   </BaseLayer>
 </template>
 
