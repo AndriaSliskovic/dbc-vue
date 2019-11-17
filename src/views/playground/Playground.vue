@@ -1,60 +1,49 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="8">
-        <v-card>
-          <v-card-title>Playground</v-card-title>
-          <v-card-text>
+  <v-app id="inspire">
+    <v-content>
+      <v-container fluid>
+        <v-row>
+          <v-col cols="6">
+            <v-card>
+              <MultipleCards></MultipleCards>
+            </v-card>
+          </v-col>
 
-              <v-layout row>
-                <v-flex xs12 sm6 offset-sm3>
-                  <input type="file" @change="onFileChanged" />
-                  <v-btn @click="onUpload">Upload!</v-btn> 
-                </v-flex>
-              </v-layout>
-
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="4">
-        <v-card>
-          <result></result>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+          <v-col cols="6">
+            <v-card>
+              <SimpleImageUpload></SimpleImageUpload>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
+import axios from 'axios'
 import Result from './Result'
+import ImageUpload from './ImageUpload'
+import FileMultiplePreview from './FileMultiplePreview'
+import UploadAcademind from './UploadAcademind'
+import SimpleImageUpload from './SimpleImageUpload'
+import MultipleCards from './MultipleCards'
+
 
 export default {
   components: {
-    Result
+    Result,
+    //ImageUpload,
+    FileMultiplePreview,
+    Result,
+    SimpleImageUpload,
+    MultipleCards
   },
   data() {
-    return {
-      selectedFile: null
-    }
+    return {}
   },
-  methods: {
-    onFileChanged(event) {
-      console.log(event.target.files[0])
-      this.selectedFile = event.target.files[0]
-      //const file = event.target.files[0]
-    },
-    onUpload() {
-      const formData = new FormData()
-      console.log(this.selectedFile)
-      formData.append('fileName', this.selectedFile, this.selectedFile.name)
-    const res=formData
-    console.log(formData.entries())
-      store.dispatch('images/uploadImage',formData)
-      //axios.post('my-domain.com/file-upload', formData)
-    }
-  },
+
   computed: {
     ...mapState(['images'])
   }

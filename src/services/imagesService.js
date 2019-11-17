@@ -2,7 +2,7 @@ import axios from 'axios'
 import NProgress from 'nprogress'
 
 if (typeof window.apiGatewayUrl === 'undefined') {
-  window.apiGatewayUrl = 'http://10.99.0.100:5200'
+  window.apiGatewayUrl = 'http://app.quadro.local:80'
   //window.apiGatewayUrl ='https://microapi.fact.deluxebrand.com/api/admin/s3/uploadImage'
 }
 

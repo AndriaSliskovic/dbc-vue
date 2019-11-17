@@ -28,7 +28,6 @@ import { leviMenuSettinngs } from '../settings.js'
 export default {
   methods: {
     clickHandler(id) {
-
     }
   },
   data() {

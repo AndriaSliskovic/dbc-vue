@@ -2,17 +2,18 @@ import client from './service-clients/base-client'
 
 
 if (typeof window.apiGatewayUrl === 'undefined') {
-  window.apiGatewayUrl = 'http://10.99.0.100:5200'
+  window.apiGatewayUrl = 'http://app.quadro.local:80'
 }
 
 const apiGatewayClient = client(apiGatewayUrl + "/persona/persona")
 
 export default {
   getPersonas(companyGuidString) {
-    console.log(`servis za string ${companyGuidString}`)
+    console.log(`servis za string ${companyGuidString}`,window.apiGatewayUrl)
     return apiGatewayClient
       .get(`?${companyGuidString}`)
       .then(response => {
+        console.log(response.data)
         return response.data
       })
   },
