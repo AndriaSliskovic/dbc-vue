@@ -1,11 +1,10 @@
 <template>
   <form id="form">
     <v-card-text>
-
       <!-- Image preview -->
       <v-row v-if="files.length > 0">
         <v-col v-for="(file, key) in files" cols="4" :key="key">
-          <ImageCard :file='file' :br='key'></ImageCard>
+          <ImageCard :file="file" :index="file.tempName" @removeElement="onRemoveHandler"></ImageCard>
         </v-col>
       </v-row>
       <!-- // Image preview -->
@@ -13,7 +12,7 @@
 
       <v-row justify="space-around">
         <v-card-actions>
-          <v-col>
+          <v-row justify="center">
             <template>
               <input
                 type="file"
@@ -25,11 +24,8 @@
                 style="display:none"
               />
             </template>
-            <v-btn color="primary" v-on:click="addFiles()">Add Files</v-btn>
-          </v-col>
-          <v-col class="large-12 medium-12 small-12 cell">
-            <v-btn color v-on:click="submitFiles()">Submit</v-btn>
-          </v-col>
+            <v-btn color="primary" v-on:click="addFiles()">Pick image</v-btn>
+          </v-row>
         </v-card-actions>
       </v-row>
     </v-card-text>
@@ -37,7 +33,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import ImageCard from './ImageCard'
@@ -51,10 +46,9 @@ export default {
       selectedFile: null
     }
   },
-  components:{
+  components: {
     ImageCard
   },
-
   /*
       Defines the method used by the component
     */
@@ -63,20 +57,15 @@ export default {
       console.log(key, this.files[key])
       this.selectedFile = this.files[key]
     },
-    uploadImage(key) {
-      this.selectedFile = this.files[key]
-      var form = document.getElementById('form')
-      const formData = new FormData(form)
-      formData.append('file', this.selectedFile)
-      //store.dispatch('images/uploadImage',formData)
-      this.uploadService(formData)
-      this.getImagePreviews()
-    },
-    /*
-        Adds a file
-      */
     addFiles() {
       this.$refs.files.click()
+    },
+    onRemoveHandler(key) {
+      this.files = this.removeImage(this.files, key)
+    },
+    removeImage(array, key) {
+      console.log("element",key)
+      return array.filter(el => el.tempName !== key)
     },
     /*
         Handles the uploading of files
@@ -91,42 +80,37 @@ export default {
           Adds the uploaded file to the files array
         */
       for (var i = 0; i < uploadedFiles.length; i++) {
+        //Setting unique key
+        uploadedFiles[i].tempName=uploadedFiles[i].lastModified+uploadedFiles[i].name.split('.').slice(0, -1).join('.')
         this.files.push(uploadedFiles[i])
-        //store.dispatch('images/addToImagesArray',uploadedFiles[i])
       }
-
-      /*
-          Generate image previews for the uploaded files
-        */
-      //this.getImagePreviews()
+      console.log("image upload",this.files)
     },
-
-    uploadService(formData) {
-      var client = function(url) {
-        var servis = axios.create({
-          baseURL: url,
-          withCredentials: false,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-            // 'type': 'image/png'
-          },
-          timeout: 5000
-        })
-        return servis
+    getImagePreviews() {
+      console.log('ucitava slike', this.files)
+      /*
+          Iterate over all of the files and generate an image preview for each one.
+        */
+      for (let i = 0; i < this.files.length; i++) {
+        /*
+            Ensure the file is an image file
+          */
+        if (/\.(jpe?g|png|gif)$/i.test(this.files[i].name)) {
+          /*
+              Create a new FileReader object
+            */
+          let reader = new FileReader()
+          reader.readAsDataURL(this.files[i])
+        }
       }
-
-      const apiGatewayUrl = 'https://microapi.fact.deluxebrand.com'
-      const apiGatewayClient = client(
-        apiGatewayUrl + '/api/admin/s3/uploadImage'
-      )
-      console.log('servis za upload', formData)
-      apiGatewayClient
-        .post('', formData)
-        .then(res => (this.selectedFile.fileName = res.data.fileName))
-        .then(() => (this.selectedFile.status = true))
-    }
+    },
   },
-  
+  // watch:{
+  //   files:function(val){
+  //     console.log('watch new value',val)
+  //     return val
+  //   }
+  // }
 }
 </script>
 

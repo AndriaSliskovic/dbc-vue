@@ -23,15 +23,13 @@
               </v-img>
               <v-card-actions>
                 <template v-if="disableUpload">
-                      <v-alert type="success" dense class="pl-0 pb-1 mb-0">
-                      Image uploaded
-                      </v-alert>
-                  </template>
+                  <v-alert type="success" dense class="pl-0 pb-1 mb-0">Image uploaded</v-alert>
+                </template>
                 <template v-else>
-                <v-btn block color="blue-grey" dark @click="onUpload" :disabled="disableUpload">
-                  Upload
-                  <v-icon right dark>mdi-cloud-upload</v-icon>
-                </v-btn>
+                  <v-btn block color="blue-grey" dark @click="onUpload" :disabled="disableUpload">
+                    Upload
+                    <v-icon right dark>mdi-cloud-upload</v-icon>
+                  </v-btn>
                 </template>
               </v-card-actions>
             </v-card>
@@ -74,6 +72,7 @@
 </template>
 <script>
 import axios from 'axios'
+import uploadImageService from '../../services/imagesService'
 export default {
   data() {
     return {
@@ -149,26 +148,8 @@ export default {
     },
 
     uploadService(formData) {
-      var client = function(url) {
-        var servis = axios.create({
-          baseURL: url,
-          withCredentials: false,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-            // 'type': 'image/png'
-          },
-          timeout: 5000
-        })
-        return servis
-      }
-
-      const apiGatewayUrl = 'https://microapi.fact.deluxebrand.com'
-      const apiGatewayClient = client(
-        apiGatewayUrl + '/api/admin/s3/uploadImage'
-      )
-      console.log('servis za upload', formData)
-      apiGatewayClient
-        .post('', formData)
+      uploadImageService
+        .uploadImage(formData)
         // .then(res =>{this.fileName=res.data.fileName})
         .then(res => this.itemsData.push(res.data.fileName))
     }
