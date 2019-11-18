@@ -138,7 +138,6 @@ export default {
             }.bind(this),
             false
           )
-
           /*
               Read the data for the file in through the reader. When it has
               been loaded, we listen to the event propagated and set the image
