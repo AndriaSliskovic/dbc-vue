@@ -90,26 +90,9 @@ export default {
       this.itemsData.splice(key, 1)
       this.showPreview = false
     },
-    // onFileChanged(event) {
-    //   console.log(event.target.files[0])
-    //   // this.selectedFile = event.target.files[0]
-    // },
     handleFileUpload() {
-      /*
-      Set the local file variable to what the user has selected.
-    */
-      this.file = this.$refs.file.files[0]
-
-      /*
-      Initialize a File Reader object
-    */
+       this.file = this.$refs.file.files[0]
       let reader = new FileReader()
-
-      /*
-      Add an event listener to the reader that when the file
-      has been loaded, we flag the show preview as true and set the
-      image to be what was read from the reader.
-    */
       reader.addEventListener(
         'load',
         function() {
@@ -118,20 +101,8 @@ export default {
         }.bind(this),
         false
       )
-
-      /*
-      Check to see if the file is not empty.
-    */
       if (this.file) {
-        /*
-        Ensure the file is an image file.
-      */
-        if (/\.(jpe?g|png|gif)$/i.test(this.file.name)) {
-          /*
-          Fire the readAsDataURL method which will read the file in and
-          upon completion fire a 'load' event which we will listen to and
-          display the image in the preview.
-        */
+         if (/\.(jpe?g|png|gif)$/i.test(this.file.name)) {
           reader.readAsDataURL(this.file)
         }
       }
@@ -150,8 +121,7 @@ export default {
     uploadService(formData) {
       uploadImageService
         .uploadImage(formData)
-        // .then(res =>{this.fileName=res.data.fileName})
-        .then(res => this.itemsData.push(res.data.fileName))
+        .then(res => {this.itemsData.push(res.data.fileName)})
     }
   }
 }

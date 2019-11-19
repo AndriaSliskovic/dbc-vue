@@ -28,13 +28,15 @@ const uploadService=(formData)=> {
 }
 
 export const state = {
-  images:[],
+  imagesArray:[
+    
+  ],
   selectedImage:null,
   uploadedImage:null
 }
 export const mutations = {
   ADD_IMAGES_TO_ARRAY(state,payload){
-    state.images.push(payload)
+    state.imagesArray.push(payload)
   },
   SET_UPLOADED_IMAGE(state,payload){
     state.uploadedImage=payload

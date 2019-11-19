@@ -11,7 +11,7 @@
 
           <v-col cols="6">
             <v-card>
-              <SimpleImageUpload></SimpleImageUpload>
+              <MultipleCardsWithStore></MultipleCardsWithStore>
             </v-card>
           </v-col>
         </v-row>
@@ -29,6 +29,7 @@ import FileMultiplePreview from './FileMultiplePreview'
 import UploadAcademind from './UploadAcademind'
 import SimpleImageUpload from './SimpleImageUpload'
 import MultipleCards from './MultipleCards'
+import MultipleCardsWithStore from './MultipleCardsWithStore'
 
 
 export default {
@@ -38,7 +39,8 @@ export default {
     FileMultiplePreview,
     Result,
     SimpleImageUpload,
-    MultipleCards
+    MultipleCards,
+    MultipleCardsWithStore
   },
   data() {
     return {}

@@ -3,8 +3,8 @@
     <v-card-text>
       <!-- Image preview -->
       <v-row v-if="files.length > 0">
-        <v-col v-for="(file, key) in files" cols="4" :key="key">
-          <ImageCard :file="file" :index="file.tempName" @removeElement="onRemoveHandler"></ImageCard>
+        <v-col v-for="file in items" cols="4" :key="file.imageName">
+          <ImageCardStore :file="file" :index="file.imageName" @removeElement="onRemoveHandler"></ImageCardStore>
         </v-col>
       </v-row>
       <!-- // Image preview -->
@@ -35,7 +35,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
-import ImageCard from './ImageCard'
+import ImageCardStore from './ImageCardStore'
 export default {
   /*
       Defines the data used by the component
@@ -47,7 +47,7 @@ export default {
     }
   },
   components: {
-    ImageCard
+    ImageCardStore
   },
   /*
       Defines the method used by the component
@@ -80,6 +80,13 @@ export default {
         //Setting unique key
         uploadedFiles[i].tempName=uploadedFiles[i].lastModified+uploadedFiles[i].name.split('.').slice(0, -1).join('.')
         this.files.push(uploadedFiles[i])
+        const fileObject={
+          file:uploadedFiles[i],
+          uploaded:false,
+          imageName:uploadedFiles[i].tempName
+
+        }
+        store.dispatch('images/addToImagesArray', fileObject)
       }
       console.log("image upload",this.files)
     },
@@ -104,6 +111,9 @@ export default {
   },
   computed:{
         ...mapState(['images']),
+        items:function(){
+          return this.images.imagesArray
+        }
   }
 
 }

@@ -13,9 +13,11 @@ var client = function(url) {
   })
   return servis
 }
-const apiGatewayUrl = 'https://microapi.fact.deluxebrand.com'
+//const apiGatewayUrl = 'https://microapi.fact.deluxebrand.com'
+const apiGatewayUrl = 'http://app.quadro.local:80'
 const apiGatewayClient = client(
-  apiGatewayUrl + '/api/admin/s3/uploadImage'
+  //apiGatewayUrl + '/api/admin/s3/uploadImage'
+  apiGatewayUrl + '/persona/admin/s3/uploadImage'
 )
 
 export default {

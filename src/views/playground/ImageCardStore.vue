@@ -46,13 +46,9 @@ export default {
     console.log('updated', this.file,)
     this.getImagePreview()
   },
-  destroyed(){
-    this.fileName=null
-    this.uploaded=false
-  },
   props: {
     file: {
-      type: File,
+      type: Object,
       default: null
     },
     index: {
