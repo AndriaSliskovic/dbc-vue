@@ -3,8 +3,9 @@
     <v-card-text>
       <!-- Image preview -->
       <v-row v-if="files.length > 0">
-        <v-col v-for="file in items" cols="4" :key="file.imageName">
-          <ImageCardStore :file="file" :index="file.imageName" @removeElement="onRemoveHandler"></ImageCardStore>
+        <v-col v-for="file in files" cols="4" :key="file.key">
+          
+          <ImageCardStore :file="file" @removeElement="onRemoveHandler" @uploadedElement="onUploadedHandler"></ImageCardStore>
         </v-col>
       </v-row>
       <!-- // Image preview -->
@@ -61,8 +62,12 @@ export default {
       this.$refs.files.click()
     },
     onRemoveHandler(key) {
-      this.files = this.files.filter(el => el.tempName !== key)
+      this.files = this.files.filter(el => el.key !== key)
       this.getImagePreviews()
+    },
+    onUploadedHandler(key){
+      console.log("uploaded handler",key)
+      const fajl= this.files.filter(e=>e.key===key).map(el=>el.uploaded=true)
     },
     /*
         Handles the uploading of files
@@ -71,24 +76,28 @@ export default {
       /*
           Get the uploaded files from the input.
         */
-      let uploadedFiles = this.$refs.files.files
+      let imageFiles = this.$refs.files.files
 
       /*
           Adds the uploaded file to the files array
         */
-      for (var i = 0; i < uploadedFiles.length; i++) {
+      for (var i = 0; i < imageFiles.length; i++) {
         //Setting unique key
-        uploadedFiles[i].tempName=uploadedFiles[i].lastModified+uploadedFiles[i].name.split('.').slice(0, -1).join('.')
-        this.files.push(uploadedFiles[i])
-        const fileObject={
-          file:uploadedFiles[i],
-          uploaded:false,
-          imageName:uploadedFiles[i].tempName
-
-        }
-        store.dispatch('images/addToImagesArray', fileObject)
+        const imageObject=this.makeImageObject(imageFiles[i])
+        this.files.push(imageObject)
+        //store.dispatch('images/addToImagesArray', fileObject)
       }
       console.log("image upload",this.files)
+    },
+    makeImageObject(imageFile){
+      const imageObject={
+        file:imageFile,
+        key:imageFile.lastModified+imageFile.name.split('.').slice(0, -1).join('.'),
+        uploaded:false,
+        fileName:null
+      }
+      console.log(imageObject)
+      return imageObject
     },
     getImagePreviews() {
       console.log('ucitava slike', this.files)
@@ -111,9 +120,7 @@ export default {
   },
   computed:{
         ...mapState(['images']),
-        items:function(){
-          return this.images.imagesArray
-        }
+
   }
 
 }

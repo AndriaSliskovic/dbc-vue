@@ -91,7 +91,7 @@ export default {
         name: this.name,
         allowShare:this.allowShare,
         activeLimit:this.activeLimit,
-        companyIdString: `?companyId=${this.companyId}`
+        companyIdString: `companyId=${this.companyId}`
       }
     },
     nameErrors() {

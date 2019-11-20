@@ -79,17 +79,6 @@
             <template v-slot:item.status="{ item }">
               <!-- <StatusSwitch :status="item.active" @change="setPersonaStatus(item.id)"/> -->
               <StatusChip :status="item.active" @change="setPersonaStatus(item.id)"/>
-              <!-- <v-chip
-                pill
-                @click="setPersonaStatus(item.id)"
-                :text-color="getStatusColor(item.active)"
-              >
-                <v-avatar left :color="getStatusColor(item.active)">
-                  <v-icon v-if="item.active">check</v-icon>
-                  <v-icon v-else="item.active">close</v-icon>
-                </v-avatar>
-                {{item.status}}
-              </v-chip> -->
             </template>
             <!-- / STATUS -->
 

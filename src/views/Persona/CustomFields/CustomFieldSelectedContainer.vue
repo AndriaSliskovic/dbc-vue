@@ -10,7 +10,8 @@
 </template>
 <script>
 import DropDownDialog from './Dialogs/DialogType/DropDownDialog'
-import ImagebankDialog from './Dialogs/DialogType/ImagebankDialog'
+//import ImagebankDialog from './Dialogs/DialogType/ImagebankDialog'
+import ImageUpload from '../../../components/imageUpload/MultipleCards'
 import TextareaDialog from './Dialogs/DialogType/TextareaDialog'
 import TextBoxDialog from './Dialogs/DialogType/TextBoxDialog'
 import { validationMixin } from 'vuelidate'
@@ -18,7 +19,8 @@ import { validationMixin } from 'vuelidate'
 export default {
   components: {
     DROPDOWNLIST: DropDownDialog,
-    IMAGEBANK: ImagebankDialog,
+    //IMAGEBANK: ImagebankDialog,
+    IMAGEBANK: ImageUpload,
     TEXTAREA: TextareaDialog,
     TEXTBOX: TextBoxDialog,
   },

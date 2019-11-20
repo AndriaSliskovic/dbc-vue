@@ -1,4 +1,5 @@
 <template>
+<v-container fluid>
   <form id="form">
     <v-card-text>
       <!-- Image preview -->
@@ -29,6 +30,7 @@
       </v-row>
     </v-card-text>
   </form>
+  </v-container>
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
