@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-card>
       <!-- EDIT -->
       <template v-if="dialogType==='edit'">
@@ -182,6 +182,7 @@
         </v-card-text>
 
         <!-- SUBMIT GROUP -->
+        <v-card-actions>
         <BasePageFooter>
           <template v-if="dialogType==='create'">
             <BaseSubmitGroup
@@ -203,6 +204,7 @@
             </BaseSubmitGroup>
           </template>
         </BasePageFooter>
+        </v-card-actions>
       </v-form>
     </v-card>
   </v-container>
@@ -249,13 +251,17 @@ export default {
 
   created() {},
   beforeMount() {},
-  mounted() {},
+  mounted() {
+        console.log("mounted cf create")
+  },
   beforeUpdate() {},
   updated() {},
   beforeDestroy() {
+    console.log("beforedestroy cf create")
     this.$v.$reset()
   },
   destroyed() {
+        console.log("destroy cf create")
     this.valid = false
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-row dense justify="center">
     <v-btn
       color="secondary"
       @click="onClose"
@@ -10,7 +10,7 @@
     <v-btn color="primary" @click="onSubmit" :disabled="disabledSubmit" >
       <slot name="submit">Confirm</slot>
     </v-btn>
-  </div>
+  </v-row>
 </template>
 <script>
 export default {

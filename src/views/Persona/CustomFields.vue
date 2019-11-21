@@ -80,9 +80,11 @@
               <v-dialog
                 v-model="dialog.create"
                 persistent
-                max-width="1200px"
+ 
+                fullscreen
                 :retain-focus="false"
                 @keydown.esc="dialog.create = false"
+
               >
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -122,6 +124,7 @@
             <v-dialog
               v-model="dialog.edit"
               persistent
+              fullscreen
               max-width="1200px"
               :retain-focus="false"
               @keydown.esc="dialog.edit = false"
@@ -298,7 +301,8 @@ export default {
         defaultValue: '',
         maskId: null,
         visible: false,
-        editable: false
+        editable: false,
+        files:[]
       }
     },
     setSelectedCustomField(key) {
@@ -319,7 +323,9 @@ export default {
         dataSource: cField.dataSource,
         maskId: cField.maskId,
         defaultValue: cField.defaultValue,
-        tag: null
+        tag: null,
+        //Dodato ???
+        files:[]
       }
     },
     onEditCustomFieldHandler(key) {

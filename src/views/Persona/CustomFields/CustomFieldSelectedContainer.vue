@@ -1,6 +1,5 @@
 <template>
-  <v-container fluid >
-
+  <v-container fluid style="overflow:auto">
         <v-row align="end" justify="center" class="grey lighten-4" style="height: 550px;">
           <keep-alive >
             <component v-bind:is="selectedType" :cField="cField"></component>
