@@ -250,7 +250,11 @@ export default {
   props: ['cField', 'dialogType'],
 
   created() {},
-  beforeMount() {},
+  beforeMount() {
+    if (this.cField.type="IMAGE") {
+      this.cField.type="IMAGEBANK"
+    }
+  },
   mounted() {
         console.log("mounted cf create")
   },
@@ -290,6 +294,9 @@ export default {
         this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
       }
       //Slanje podataka posle validacije
+      if (this.cField.type="IMAGEBANK") {
+        this.cField.type="IMAGE"
+      }
       store.dispatch('persona/createNewCustomField', this.cField)
       this.$emit('close', false)
     },

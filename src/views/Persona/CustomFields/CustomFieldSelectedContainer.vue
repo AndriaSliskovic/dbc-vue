@@ -10,7 +10,7 @@
 <script>
 import DropDownDialog from './Dialogs/DialogType/DropDownDialog'
 //import ImagebankDialog from './Dialogs/DialogType/ImagebankDialog'
-import ImageUpload from '../../../components/imageUpload/MultipleCards'
+import ImageUpload from './ImageUpload/MultipleCards'
 import TextareaDialog from './Dialogs/DialogType/TextareaDialog'
 import TextBoxDialog from './Dialogs/DialogType/TextBoxDialog'
 import { validationMixin } from 'vuelidate'
