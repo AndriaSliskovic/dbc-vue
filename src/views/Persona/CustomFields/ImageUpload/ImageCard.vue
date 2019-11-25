@@ -5,7 +5,8 @@
     </v-card-title>
     <v-card-text class="justify-center py-1" >
       <v-img
-        :ref="imageName"
+        :src="imageToUpload"
+        lazy-src="https://picsum.photos/id/11/100/60"
         aspect-ratio="1"
         max-height="120"
         contain
@@ -17,10 +18,20 @@
             <!-- Error message -->
       <template v-else class="justify-center">
         <v-row justify="center">
-        <v-alert :type="notification.type" dense class="pb-1 mb-0">{{notification.msg}}</v-alert>
+        <Chip></Chip>
+        <!-- <v-alert :type="notification.type" dense class="pb-1 mb-0">{{notification.msg}}</v-alert> -->
         </v-row>
       </template>
-
+      <!-- Placeholder -->
+<template v-slot:placeholder>
+        <v-row
+          class="fill-height ma-0"
+          align="center"
+          justify="center"
+        >
+          <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+        </v-row>
+      </template>
       </v-img>
     </v-card-text class="px-0 py-0">
     <v-card-actions>
@@ -42,9 +53,11 @@
 </template>
 <script>
 import uploadImageService from '../../../../services/imagesService'
+import Chip from '../../../../components/chips/chipStandard'
 export default {
   data() {
     return {
+      imageToUpload:"",
       selectedCard:null,
       fileName: null,
       uploaded: false,
@@ -60,6 +73,9 @@ export default {
       default: null
     },
 
+  },
+  components:{
+Chip
   },
   mounted() {
     console.log(this.file.key)
@@ -102,7 +118,9 @@ export default {
           'load',
           function() {
             //this.$refs['image'].src = reader.result
-            this.$refs[this.imageName].src = reader.result
+            //this.$refs[this.imageName].src = reader.result
+            this.imageToUpload=reader.result
+
           }.bind(this),
           false
         )
