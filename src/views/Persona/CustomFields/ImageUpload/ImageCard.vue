@@ -5,7 +5,7 @@
     </v-card-title>
     <v-card-text class="justify-center py-1" >
       <v-img
-        :src="imageToUpload"
+        :src="image"
         lazy-src="https://picsum.photos/id/11/100/60"
         aspect-ratio="1"
         max-height="120"
@@ -18,7 +18,9 @@
             <!-- Error message -->
       <template v-else class="justify-center">
         <v-row justify="center">
-        <Chip></Chip>
+        <ChipsNotification :type='notification.type' :close='false'>
+          {{notification.msg}}
+        </ChipsNotification>
         <!-- <v-alert :type="notification.type" dense class="pb-1 mb-0">{{notification.msg}}</v-alert> -->
         </v-row>
       </template>
@@ -53,11 +55,11 @@
 </template>
 <script>
 import uploadImageService from '../../../../services/imagesService'
-import Chip from '../../../../components/chips/chipStandard'
+import ChipsNotification from '../../../../components/chips/ChipsNotification'
 export default {
   data() {
     return {
-      imageToUpload:"",
+      image:"",
       selectedCard:null,
       fileName: null,
       uploaded: false,
@@ -75,7 +77,7 @@ export default {
 
   },
   components:{
-Chip
+    ChipsNotification
   },
   mounted() {
     console.log(this.file.key)
@@ -117,9 +119,7 @@ Chip
         reader.addEventListener(
           'load',
           function() {
-            //this.$refs['image'].src = reader.result
-            //this.$refs[this.imageName].src = reader.result
-            this.imageToUpload=reader.result
+            this.image=reader.result
 
           }.bind(this),
           false

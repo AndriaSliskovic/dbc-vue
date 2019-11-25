@@ -310,6 +310,10 @@ export default {
       const cField = this.customFields.find(function(el) {
         return el.id === key
       })
+      //Handle reserved word 'image' JS
+      if (cField.type==='IMAGE') {
+        cField.type='IMAGEBANK'
+      }
       this.selectedCustomField = {
         personaId: this.personaId,
         id: cField.id,
@@ -328,10 +332,26 @@ export default {
         files:[]
       }
     },
+    getUploadedImages(){
+
+    },
     onEditCustomFieldHandler(key) {
       this.dialogType = 'edit'
       console.log(`edit Custom Field ${key}`)
       this.setSelectedCustomField(key)
+      /*Handle preview images from server*/
+      if (this.selectedCustomField.dataSource.length>0) {
+        console.log('ima niz slika')
+        for (let file of this.selectedCustomField.dataSource) {
+        const imageFile={
+          file:'',
+          fileName:file.value,
+          key:null,
+          uploaded:true
+          }
+          this.selectedCustomField.files.push(imageFile)
+        }
+      }
       console.log(this.selectedCustomField)
       store.dispatch('persona/setSelectedCustomField', this.selectedCustomField)
       store.dispatch('persona/getAllCategoriesForSelectedPersona')

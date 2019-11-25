@@ -7,8 +7,8 @@
     <!-- <v-card-title>{{cField.files}}</v-card-title> -->
     <v-card-text>
       <!-- Image preview -->
-      <v-row v-if="cField.files.length > 0">
-        <v-col v-for="file in cField.files" cols="4" :key="file.key">          
+      <v-row v-if="files.length > 0">
+        <v-col v-for="file in files" cols="4" :key="file.key">          
           <ImageCard :file="file" @removeElement="onRemoveHandler" @uploadedElement="onUploadedHandler"></ImageCard>
         </v-col>
       </v-row>
@@ -42,34 +42,35 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import ImageCard from './ImageCard'
 export default {
-  data() {
-    return {
-      selectedFile: null
-    }
-  },
-  props:['cField'],
-  // mounted(){
-  //   this.files=[]
-  // },
+
+  props:['files','dataSource'],
+
   components: {
     ImageCard
+  },
+  mounted(){
+
+    console.log("mounted",this.files,this.dataSource)
   },
   methods: {
     addFiles() {
       this.$refs.files.click()
     },
+
     onRemoveHandler(key) {
-      this.cField.files = this.cField.files.filter(el => el.key !== key)
+      this.files = this.files.filter(el => el.key !== key)
       this.getImagePreviews()
     },
-    onUploadedHandler(key){
-      console.log("uploaded handler",key)
-      const fajl= this.cField.files.filter(e=>e.key===key).map(el=>el.uploaded=true)
+    onUploadedHandler(file){
+      console.log("uploaded handler",file.key)
+      const fajl= this.files.filter(e=>e.key===file.key).map(el=>el.uploaded=true)
+      this.dataSource.push({display:file.fileName,value:file.fileName})
     },
     /*
         Handles the uploading of files
       */
     handleUploadPreview() {
+
       /*
           Get the uploaded files from the input.
         */
@@ -80,10 +81,10 @@ export default {
         */
       for (var i = 0; i < imageFiles.length; i++) {
         const imageObject=this.makeImageObject(imageFiles[i])
-        this.cField.files.push(imageObject)
+        this.files.push(imageObject)
         //store.dispatch('images/addToImagesArray', fileObject)
       }
-      console.log("image upload",this.cField.files)
+      console.log("image upload",this.files)
     },
     makeImageObject(imageFile){
       console.log(imageFile.name)
@@ -94,24 +95,24 @@ export default {
         uploaded:false,
         fileName:null
       }
-      console.log(imageObject)
+      console.log(imageObject,this)
       return imageObject
     },
     getImagePreviews() {
-      console.log('ucitava slike', this.cField.files)
+      console.log('ucitava slike', this.files)
       /*
           Iterate over all of the files and generate an image preview for each one.
         */
-      for (let i = 0; i < this.cField.files.length; i++) {
+      for (let i = 0; i < this.files.length; i++) {
         /*
             Ensure the file is an image file
           */
-        if (/\.(jpe?g|png|gif)$/i.test(this.cField.files[i].name)) {
+        if (/\.(jpe?g|png|gif)$/i.test(this.files[i].name)) {
           /*
               Create a new FileReader object
             */
           let reader = new FileReader()
-          reader.readAsDataURL(this.cField.files[i])
+          reader.readAsDataURL(this.files[i])
         }
       }
     },

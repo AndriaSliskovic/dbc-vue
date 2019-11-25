@@ -5,13 +5,13 @@
         <v-row>
           <v-col cols="6">
             <v-card>
-              <MultipleCards></MultipleCards>
+              <MultipleCards :test='test' :files='cField.files' :dataSource='cField.dataSource'></MultipleCards>
             </v-card>
           </v-col>
 
           <v-col cols="6">
             <v-card>
-              <MultipleCardsWithStore></MultipleCardsWithStore>
+            <!-- <Result></Result> -->
             </v-card>
           </v-col>
         </v-row>
@@ -24,28 +24,25 @@ import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import axios from 'axios'
 import Result from './Result'
-import ImageUpload from './ImageUpload'
-import FileMultiplePreview from './FileMultiplePreview'
-import UploadAcademind from './UploadAcademind'
-import SimpleImageUpload from './SimpleImageUpload'
 import MultipleCards from './MultipleCards'
-import MultipleCardsWithStore from './MultipleCardsWithStore'
+import ImageCard from './ImageCard'
+
 
 
 export default {
+  data(){
+    return {
+      cField:{
+        dataSource:[],
+        files:[]
+      },
+        test:'test komponente'
+    }
+  },
   components: {
     Result,
-    //ImageUpload,
-    FileMultiplePreview,
-    Result,
-    SimpleImageUpload,
-    MultipleCards,
-    MultipleCardsWithStore
+    MultipleCards
   },
-  data() {
-    return {}
-  },
-
   computed: {
     ...mapState(['images'])
   }

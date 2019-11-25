@@ -1,5 +1,10 @@
 <template>
+  <v-container fluid >
+
+
+  <v-card>
   <form id="form">
+    <!-- <v-card-title>{{cField.files}}</v-card-title> -->
     <v-card-text>
       <!-- Image preview -->
       <v-row v-if="files.length > 0">
@@ -29,43 +34,43 @@
       </v-row>
     </v-card-text>
   </form>
+  </v-card>
+  </v-container>
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import ImageCard from './ImageCard'
 export default {
-  /*
-      Defines the data used by the component
-    */
-  data() {
-    return {
-      files: [],
-      selectedFile: null
-    }
-  },
+
+  props:['files','dataSource'],
+
   components: {
     ImageCard
   },
-  /*
-      Defines the method used by the component
-    */
+  mounted(){
+
+    console.log("mounted",this.files,this.dataSource)
+  },
   methods: {
     addFiles() {
       this.$refs.files.click()
     },
+
     onRemoveHandler(key) {
       this.files = this.files.filter(el => el.key !== key)
       this.getImagePreviews()
     },
-    onUploadedHandler(key){
-      console.log("uploaded handler",key)
-      const fajl= this.files.filter(e=>e.key===key).map(el=>el.uploaded=true)
+    onUploadedHandler(file){
+      console.log("uploaded handler",file.key)
+      const fajl= this.files.filter(e=>e.key===file.key).map(el=>el.uploaded=true)
+      this.dataSource.push({display:file.fileName,value:file.fileName})
     },
     /*
         Handles the uploading of files
       */
     handleUploadPreview() {
+
       /*
           Get the uploaded files from the input.
         */
@@ -75,7 +80,6 @@ export default {
           Adds the uploaded file to the files array
         */
       for (var i = 0; i < imageFiles.length; i++) {
-        //Setting unique key
         const imageObject=this.makeImageObject(imageFiles[i])
         this.files.push(imageObject)
         //store.dispatch('images/addToImagesArray', fileObject)
@@ -83,13 +87,15 @@ export default {
       console.log("image upload",this.files)
     },
     makeImageObject(imageFile){
+      console.log(imageFile.name)
       const imageObject={
         file:imageFile,
-        key:imageFile.lastModified+imageFile.name.split('.').slice(0, -1).join('.'),
+        //Setting unique key
+        key:Date.now()+imageFile.name.split('.').slice(0, -1).join('.'),
         uploaded:false,
         fileName:null
       }
-      console.log(imageObject)
+      console.log(imageObject,this)
       return imageObject
     },
     getImagePreviews() {
@@ -113,7 +119,6 @@ export default {
   },
   computed:{
         ...mapState(['images']),
-
   }
 
 }
