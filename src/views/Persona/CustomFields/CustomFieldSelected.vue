@@ -316,6 +316,10 @@ export default {
       if (this.cField.name) {
         this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
       }
+      //Setovanje IMAGE type 
+      if (this.cField.type="IMAGEBANK") {
+        this.cField.type="IMAGE"
+      }
       store.dispatch('persona/updateCustomField', this.cField)
       this.$emit('close', false)
       this.valid = false

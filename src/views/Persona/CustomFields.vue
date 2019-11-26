@@ -354,6 +354,7 @@ export default {
       }
       console.log(this.selectedCustomField)
       store.dispatch('persona/setSelectedCustomField', this.selectedCustomField)
+      
       store.dispatch('persona/getAllCategoriesForSelectedPersona')
     },
     onDeleteCustomFieldHandler() {

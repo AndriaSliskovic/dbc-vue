@@ -3,15 +3,9 @@
     <v-content>
       <v-container fluid>
         <v-row>
-          <v-col cols="6">
+          <v-col>
             <v-card>
-              <MultipleCards :test='test' :files='cField.files' :dataSource='cField.dataSource'></MultipleCards>
-            </v-card>
-          </v-col>
-
-          <v-col cols="6">
-            <v-card>
-            <!-- <Result></Result> -->
+              <ImageUpload></ImageUpload>
             </v-card>
           </v-col>
         </v-row>
@@ -20,31 +14,12 @@
   </v-app>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
-import store from '@/store/store'
-import axios from 'axios'
-import Result from './Result'
-import MultipleCards from './MultipleCards'
-import ImageCard from './ImageCard'
-
-
+import ImageUpload from './ImageUpload'
 
 export default {
-  data(){
-    return {
-      cField:{
-        dataSource:[],
-        files:[]
-      },
-        test:'test komponente'
-    }
-  },
   components: {
-    Result,
-    MultipleCards
+    ImageUpload,
   },
-  computed: {
-    ...mapState(['images'])
-  }
+
 }
 </script>
