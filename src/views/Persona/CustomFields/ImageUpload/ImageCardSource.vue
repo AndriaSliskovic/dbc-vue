@@ -34,7 +34,7 @@ import ChipsNotification from '@/components/chips/ChipsNotification'
 export default {
   data(){
     return{
-      imageDir:'/img/'
+      imageDir:'/personafiles/globalformupload/'
     }
   },
      props: {

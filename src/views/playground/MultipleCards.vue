@@ -1,11 +1,13 @@
 <template>
-  <v-container fluid>
+  <v-container fluid >
+
     <v-card>
       <form id="form">
-        <!-- <v-card-title>{{cField.files}}</v-card-title> -->
-        <v-card-text>
+        <v-card-title>{{title}}</v-card-title>
+
+        <v-card-text >
           <!-- Image preview -->
-          <v-row v-if="cField.files.length > 0">
+          <v-row v-if="cField.files.length > 0" style="overflow:auto; height: 190px;">
             <v-col v-for="file in cField.files" cols="4" :key="file.key">
               <ImageCardBlob
                 :file="file"
@@ -35,8 +37,10 @@
             </v-card-actions>
           </v-row>
         </v-card-text>
+ 
       </form>
     </v-card>
+
   </v-container>
 </template>
 <script>
@@ -45,6 +49,9 @@ import store from '@/store/store'
 import ImageCardBlob from './ImageCardBlob'
 
 export default {
+  data(){
+    return {title:"Images ready to upload :"}
+  },
   props: ['cField'],
 
   components: {

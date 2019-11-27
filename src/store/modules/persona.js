@@ -325,11 +325,12 @@ export const actions = {
         commit('ADD_CUSTOM_FIELD_TO_ARRAY', cField)
       })
       .catch(error => {
+        console.log(error)
         const notification = {
           type: 'error',
-          message: `Error creating new custom fields by selected persona, please contact administrator.`
+          message: "Unable to create custom field, there is errors on entered data"
         }
-        console.log(notification, error)
+
         dispatch('notification/add', notification, { root: true })
         // dispatch('notification/reloadPage', {}, { root: true })
       })

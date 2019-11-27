@@ -5,7 +5,7 @@
                 {{title}}
             </v-card-title>
             <v-card-text>
-                <v-row style="overflow:auto; height: 188px;">
+                <v-row style="overflow:auto; height: 196px;">
                     <v-col cols="4" v-for="image in dataSource" :key="image.id">
                         <ImageCardSource :image='image' @removeElement="removeElement"></ImageCardSource>
                     </v-col>

@@ -1,22 +1,17 @@
 <template>
-  <v-container fluid >
-
+  <v-container fluid>
     <v-card>
       <form id="form">
-        <v-card-title v-if="cField.files.length > 0">
-          <v-row justify="space-around">
-          {{title}}
-          </v-row>
-        </v-card-title>
-        <v-card-text >
+        <!-- <v-card-title>{{cField.files}}</v-card-title> -->
+        <v-card-text>
           <!-- Image preview -->
-          <v-row v-if="cField.files.length > 0" style="overflow:auto; height: 190px;">
+          <v-row v-if="cField.files.length > 0">
             <v-col v-for="file in cField.files" cols="4" :key="file.key">
-              <ImageCardBlob
+              <ImageCard
                 :file="file"
                 @removeElement="onRemoveHandler"
                 @uploadedElement="onUploadedHandler"
-              ></ImageCardBlob>
+              ></ImageCard>
             </v-col>
           </v-row>
           <!-- // Image preview -->
@@ -40,25 +35,21 @@
             </v-card-actions>
           </v-row>
         </v-card-text>
- 
       </form>
     </v-card>
-
   </v-container>
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
-import ImageCardBlob from './ImageCardBlob'
+import ImageCard from './ImageCard'
 
 export default {
-  data(){
-    return {title:"Images ready to upload :"}
-  },
+  // props:['files','dataSource'],
   props: ['cField'],
 
   components: {
-    ImageCardBlob,
+    ImageCard,
    },
   mounted() {
     this.getImagePreviews()
@@ -80,8 +71,7 @@ export default {
         .map(el => (el.uploaded = true))
       this.cField.dataSource.push({
         display: file.fileName,
-        value: file.fileName,
-        id:file.fileName.split('.').slice(0, -1).join('.')
+        value: file.fileName
       })
     },
     /*

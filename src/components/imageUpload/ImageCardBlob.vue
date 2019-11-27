@@ -44,29 +44,23 @@
           <v-icon right dark>mdi-cloud-upload</v-icon>
         </v-btn>
       </template>
-      <!-- Server remove -->
-      <template v-else>
-        <v-btn block color="normal" dark @click="removeFromServer">
-          Remove image
-        </v-btn>
-      </template>
     </v-card-actions>
   </v-card>
 </template>
 <script>
-import uploadImageService from '../../services/imagesService'
-import ChipsNotification from '../../components/chips/ChipsNotification'
+import uploadImageService from '@/services/imagesService'
+import ChipsNotification from '@/components/chips/ChipsNotification'
 export default {
   data() {
     return {
       image:"",
-      selectedCard:null,
       fileName: null,
       uploaded: false,
       notification:{
         type:null,
         msg:null
-      }
+      },
+      timeout: null,
     }
   },
     props: {
@@ -82,7 +76,6 @@ export default {
   mounted() {
     console.log(this.file.key)
     this.getImagePreview()
-
   },
   updated(newValue,oldValue) {
     console.log('updated', this.file,)
@@ -102,6 +95,9 @@ export default {
       formData.append('file', this.file.file)
       this.uploadService(formData)
     },
+    timeoutRemoveCard(){
+    this.timeout = setTimeout(() => this.onDeleteImage(this.file.key), 3000)
+    },
     removeFromServer(){
       console.log("remove from server")
     },
@@ -111,7 +107,8 @@ export default {
         .catch(()=>this.notification=this.getNotification("error"))
         .then(res => (this.file.fileName = res.data.fileName))
         .then(()=>this.notification=this.getNotification("success"))
-        .then(() =>this.$emit('uploadedElement', this.file) )
+        .then(() =>this.$emit('uploadedElement', this.file))
+        .then(()=>this.timeoutRemoveCard())
     },
     getImagePreview() {
       if (/\.(jpe?g|png|gif)$/i.test(this.file.file.name)) {

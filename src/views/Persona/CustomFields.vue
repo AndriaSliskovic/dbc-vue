@@ -80,11 +80,9 @@
               <v-dialog
                 v-model="dialog.create"
                 persistent
- 
                 fullscreen
                 :retain-focus="false"
                 @keydown.esc="dialog.create = false"
-
               >
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -193,7 +191,7 @@ export default {
     return {
       personaId: this.$route.params.personaId,
       companyId: this.$route.params.companyId,
-      active:this.$route.params.active,
+      active: this.$route.params.active,
       editedCompanyId: this.$route.params.companyId,
       search: '',
       headers: [
@@ -252,7 +250,7 @@ export default {
     editedPersona: function() {
       console.log('edit persona object')
       return {
-        active:this.active,
+        active: this.active,
         id: this.personaId,
         name: this.personaName,
         companyId: this.editedCompanyId,
@@ -263,16 +261,20 @@ export default {
     },
     onEditPersonaHandler: function() {
       //If company is changed
-      if (this.companyId && this.companyId!=this.editedCompanyId) {
-        store.dispatch('persona/editPersonaData', this.editedPersona())
-        .then(
-          ()=>store.dispatch('persona/getPersonasByCompanyGuid', this.companies.companyIdString)
-        )
+      if (this.companyId && this.companyId != this.editedCompanyId) {
+        store
+          .dispatch('persona/editPersonaData', this.editedPersona())
+          .then(() =>
+            store.dispatch(
+              'persona/getPersonasByCompanyGuid',
+              this.companies.companyIdString
+            )
+          )
         //Return to persona page for previus company without edited persona
-        return this.$router.push({ name: 'personas'})
-      } else{
+        return this.$router.push({ name: 'personas' })
+      } else {
         store.dispatch('persona/editPersonaData', this.editedPersona())
-      }  
+      }
     },
     onCreateCustomFieldObject() {
       this.dialogType = 'create'
@@ -302,7 +304,7 @@ export default {
         maskId: null,
         visible: false,
         editable: false,
-        files:[]
+        files: []
       }
     },
     setSelectedCustomField(key) {
@@ -310,10 +312,7 @@ export default {
       const cField = this.customFields.find(function(el) {
         return el.id === key
       })
-      //Handle reserved word 'image' JS
-      if (cField.type==='IMAGE') {
-        cField.type='IMAGEBANK'
-      }
+
       this.selectedCustomField = {
         personaId: this.personaId,
         id: cField.id,
@@ -329,32 +328,33 @@ export default {
         defaultValue: cField.defaultValue,
         tag: null,
         //Dodato ???
-        files:[]
+        files: []
       }
-    },
-    getUploadedImages(){
-
+      //Handle reserved word 'image' JS
+      if (cField.type === 'IMAGE') {
+        cField.type = 'IMAGEBANK'
+      }
     },
     onEditCustomFieldHandler(key) {
       this.dialogType = 'edit'
-      console.log(`edit Custom Field ${key}`)
+
       this.setSelectedCustomField(key)
+            console.log("customField selected",this.selectedCustomField)
       /*Handle preview images from server*/
-      if (this.selectedCustomField.dataSource.length>0) {
+      if (this.selectedCustomField.dataSource.length > 0) {
         console.log('ima niz slika')
         for (let file of this.selectedCustomField.dataSource) {
-        const imageFile={
-          file:'',
-          fileName:file.value,
-          key:null,
-          uploaded:true
+          const imageFile = {
+            file: '',
+            fileName: file.value,
+            key: null,
+            uploaded: true
           }
-          this.selectedCustomField.files.push(imageFile)
         }
       }
       console.log(this.selectedCustomField)
       store.dispatch('persona/setSelectedCustomField', this.selectedCustomField)
-      
+
       store.dispatch('persona/getAllCategoriesForSelectedPersona')
     },
     onDeleteCustomFieldHandler() {

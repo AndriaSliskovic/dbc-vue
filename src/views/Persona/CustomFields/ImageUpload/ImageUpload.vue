@@ -17,16 +17,11 @@ import UploadedImages from './UploadedImages'
 export default {
   data(){
     return {
-      cField:{
-        dataSource:[
-          {display:"businessman-310819_1280.png" ,value:"businessman-310819_1280-1.png",id:null},
-          {display:"businessman-310819_1280.png" ,value:"businessman-310819_1280-2.png",id:null},
-          {display:"panda.jpg" ,value:"panda.jpg",id:null},
-          ],
         files:[],
-      },
     }
   },
+  props:
+    ["cField"],
   components: {
     MultipleCards,
     UploadedImages

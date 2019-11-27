@@ -294,7 +294,8 @@ export default {
         this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
       }
       //Slanje podataka posle validacije
-      if (this.cField.type="IMAGEBANK") {
+      if (this.cField.type==="IMAGEBANK") {
+        console.log("image on submit",this.cField.type)
         this.cField.type="IMAGE"
       }
       store.dispatch('persona/createNewCustomField', this.cField)
@@ -317,23 +318,24 @@ export default {
         this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
       }
       //Setovanje IMAGE type 
-      if (this.cField.type="IMAGEBANK") {
+      if (this.cField.type==="IMAGEBANK") {
+        console.log("image on update",this.cField.type)
         this.cField.type="IMAGE"
       }
       store.dispatch('persona/updateCustomField', this.cField)
       this.$emit('close', false)
       this.valid = false
     },
-    onSubmitCategory(newCategory) {
-      console.log('submitovana je kategorija', newCategory)
-      this.cField.category = newCategory
-    },
-    resetValidation() {
-      console.log(`tag field`, this.cField.tag)
+  onSubmitCategory(newCategory) {
+    console.log('submitovana je kategorija', newCategory)
+    this.cField.category = newCategory
+  },
+  resetValidation() {
+    console.log(`tag field`, this.cField.tag)
 
-      console.log(`novi tag field`, this.cField.tag)
-      this.$v.$reset()
-    }
+    console.log(`novi tag field`, this.cField.tag)
+    this.$v.$reset()
+  }
   },
   computed: {
     ...mapState({ persona: 'persona' }),

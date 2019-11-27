@@ -1,6 +1,6 @@
 <template>
   <v-container fluid style="overflow:auto">
-        <v-row align="end" justify="center" class="grey lighten-4" style="height: 550px;">
+        <v-row align="end" justify="center" class="grey lighten-4" style="height: 650px;">
           <keep-alive >
             <component v-bind:is="selectedType" :cField="cField"></component>
           </keep-alive>
@@ -10,7 +10,7 @@
 <script>
 import DropDownDialog from './Dialogs/DialogType/DropDownDialog'
 //import ImagebankDialog from './Dialogs/DialogType/ImagebankDialog'
-import ImageUpload from './ImageUpload/MultipleCards'
+import ImageUpload from './ImageUpload/ImageUpload'
 import TextareaDialog from './Dialogs/DialogType/TextareaDialog'
 import TextBoxDialog from './Dialogs/DialogType/TextBoxDialog'
 import { validationMixin } from 'vuelidate'
@@ -18,7 +18,6 @@ import { validationMixin } from 'vuelidate'
 export default {
   components: {
     DROPDOWNLIST: DropDownDialog,
-    //IMAGEBANK: ImagebankDialog,
     IMAGEBANK: ImageUpload,
     TEXTAREA: TextareaDialog,
     TEXTBOX: TextBoxDialog,
