@@ -1,26 +1,25 @@
 <template>
   <v-container fluid>
     <v-card class="grey lighten-4">
-    <v-select
-      v-model="maskId"
-      :items="this.persona.masks"
-      item-text="Value"
-      item-value="Id"
-      label="Pick mask"
-      persistent-hint
-      outlined
-      dense
-    ></v-select>
-    <v-text-field
-      v-model="cField.defaultValue"
-      label="Default value"
-      required
-      :error-messages="defaultValueErrors"
-      @input="$v.defaultValue.$touch()"
-      @blur="$v.defaultValue.$touch()"
-    ></v-text-field>
+      <v-select
+        v-model="maskId"
+        :items="this.persona.masks"
+        item-text="Value"
+        item-value="Id"
+        label="Pick mask"
+        persistent-hint
+        outlined
+        dense
+      ></v-select>
+      <v-text-field
+        v-model="cField.defaultValue"
+        label="Default value"
+        required
+        :error-messages="defaultValueErrors"
+        @input="$v.defaultValue.$touch()"
+        @blur="$v.defaultValue.$touch()"
+      ></v-text-field>
     </v-card>
-
   </v-container>
 </template>
 <script>
@@ -32,8 +31,8 @@ export default {
   data() {
     return {}
   },
-    props: {
-    cField:Object,
+  props: {
+    cField: Object
   },
   validations: {
     defaultValue: { required }
@@ -45,10 +44,7 @@ export default {
         return this.cField.defaultValue
       },
       set: function(newValue) {
-        console.log(newValue)
-        newValue
-          ? (this.cField.defaultValue = newValue)
-          : null
+        newValue ? (this.cField.defaultValue = newValue) : null
       }
     },
     maskId: {

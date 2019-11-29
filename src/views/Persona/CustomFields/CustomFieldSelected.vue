@@ -70,7 +70,6 @@
                         </template>
                       </v-simple-table>
                     </v-card-text>
-
                     <v-card-actions>
                       <template>
                         <v-dialog
@@ -123,7 +122,6 @@
                   </v-dialog>
                 </template>
               </v-col>
-
               <!-- // CATEGORY DIALOG -->
               <v-col>
                 <v-row>
@@ -180,30 +178,29 @@
             <!-- / RIGHT DIALOG -->
           </v-row>
         </v-card-text>
-
         <!-- SUBMIT GROUP -->
         <v-card-actions>
-        <BasePageFooter>
-          <template v-if="dialogType==='create'">
-            <BaseSubmitGroup
-              @close="onCloseDialogHandler"
-              @submit="onSubmitHandler"
-              :closeOnSubmit="closeOnSubmit"
-              :disabledSubmit="!valid"
-            >
-              <template v-slot:submit>Submit</template>
-            </BaseSubmitGroup>
-          </template>
-          <template v-if="dialogType==='edit'">
-            <BaseSubmitGroup
-              @close="onCloseDialogHandler"
-              @submit="onUpdateHandler"
-              :closeOnSubmit="closeOnSubmit"
-            >
-              <template v-slot:submit>Update</template>
-            </BaseSubmitGroup>
-          </template>
-        </BasePageFooter>
+          <BasePageFooter>
+            <template v-if="dialogType==='create'">
+              <BaseSubmitGroup
+                @close="onCloseDialogHandler"
+                @submit="onSubmitHandler"
+                :closeOnSubmit="closeOnSubmit"
+                :disabledSubmit="!valid"
+              >
+                <template v-slot:submit>Submit</template>
+              </BaseSubmitGroup>
+            </template>
+            <template v-if="dialogType==='edit'">
+              <BaseSubmitGroup
+                @close="onCloseDialogHandler"
+                @submit="onUpdateHandler"
+                :closeOnSubmit="closeOnSubmit"
+              >
+                <template v-slot:submit>Update</template>
+              </BaseSubmitGroup>
+            </template>
+          </BasePageFooter>
         </v-card-actions>
       </v-form>
     </v-card>
@@ -251,91 +248,69 @@ export default {
 
   created() {},
   beforeMount() {
-    if (this.cField.type="IMAGE") {
-      this.cField.type="IMAGEBANK"
+    if ((this.cField.type = 'IMAGE')) {
+      this.cField.type = 'IMAGEBANK'
     }
   },
-  mounted() {
-        console.log("mounted cf create")
-  },
-  beforeUpdate() {},
-  updated() {},
   beforeDestroy() {
-    console.log("beforedestroy cf create")
     this.$v.$reset()
   },
   destroyed() {
-        console.log("destroy cf create")
     this.valid = false
   },
   methods: {
     onCloseDialogHandler: function() {
       this.$emit('close', false)
-      //Resetovanje prethodne validacije
+      //Reseting validation
       this.$v.$reset()
     },
     onSubmitHandler: function() {
-      console.log('on submit')
-      //Submit form logic
-      // console.log(this.cField)
       this.$v.$touch()
       if (this.$v.$invalid) {
-        console.log(`submitovanje forme ${this.categoryErrors}`)
         const notification = {
           type: 'error',
           message: `Error on form : ${this.categoryErrors}`
         }
-        console.log('not valid')
         return store.dispatch('notification/add', notification, { root: true })
       }
-      console.log('poslati podaci', this.cField)
       //Setting tag field
       if (this.cField.name) {
         this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
       }
-      //Slanje podataka posle validacije
-      if (this.cField.type==="IMAGEBANK") {
-        console.log("image on submit",this.cField.type)
-        this.cField.type="IMAGE"
+      //Sending data after validation
+      if (this.cField.type === 'IMAGEBANK') {
+        this.cField.type = 'IMAGE'
       }
       store.dispatch('persona/createNewCustomField', this.cField)
       this.$emit('close', false)
     },
     onUpdateHandler() {
-      console.log(this.cField)
       this.$v.$touch()
       if (this.$v.$invalid) {
-        console.log(`edit form error : ${this.nameErrors}`)
         const notification = {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
         }
-        console.log('invalid data')
         return store.dispatch('notification/add', notification, { root: true })
       }
-      //Setovanje tag fielda
+      //Setting type fielda
       if (this.cField.name) {
         this.cField.tag = this.cField.name.trim().replace(/\s/g, '_')
       }
-      //Setovanje IMAGE type 
-      if (this.cField.type==="IMAGEBANK") {
-        console.log("image on update",this.cField.type)
-        this.cField.type="IMAGE"
+      //Setting IMAGE type
+      if (this.cField.type === 'IMAGEBANK') {
+        this.cField.type = 'IMAGE'
       }
       store.dispatch('persona/updateCustomField', this.cField)
       this.$emit('close', false)
       this.valid = false
     },
-  onSubmitCategory(newCategory) {
-    console.log('submitovana je kategorija', newCategory)
-    this.cField.category = newCategory
-  },
-  resetValidation() {
-    console.log(`tag field`, this.cField.tag)
-
-    console.log(`novi tag field`, this.cField.tag)
-    this.$v.$reset()
-  }
+    onSubmitCategory(newCategory) {
+      this.cField.category = newCategory
+    },
+    resetValidation() {
+      this.$v.$reset()
+    }
   },
   computed: {
     ...mapState({ persona: 'persona' }),

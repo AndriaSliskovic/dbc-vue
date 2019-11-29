@@ -1,12 +1,6 @@
 <template>
   <v-container fluid>
-    <v-textarea
-      v-model="cField.defaultValue"
-      label="Default value"
-      auto-grow
-      required
-      outlined
-     ></v-textarea>
+    <v-textarea v-model="cField.defaultValue" label="Default value" auto-grow required outlined></v-textarea>
   </v-container>
 </template>
 <script>
@@ -17,7 +11,6 @@ export default {
   props: {
     cField: Object
   },
- 
   computed: {
     ...mapState({ persona: 'persona' }),
     defaultValue: {
@@ -25,11 +18,9 @@ export default {
         return this.cField.defaultValue
       },
       set: function(newValue) {
-        console.log(newValue)
         newValue ? (this.cField.defaultValue = newValue) : null
       }
-    },
-
+    }
   }
 }
 </script>

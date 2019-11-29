@@ -26,7 +26,6 @@
               </v-list>
             </v-card>
           </v-col>
-
           <v-col cols="4" align-self="center">
             <v-row justify="center" dense>
               <v-btn
@@ -37,7 +36,7 @@
                 @click="upDataItem"
                 :disabled="disabledAddButton"
               >
-              <v-icon >keyboard_arrow_up</v-icon>
+                <v-icon>keyboard_arrow_up</v-icon>
               </v-btn>
               <v-btn
                 small
@@ -54,13 +53,13 @@
                 @click="downDataItem"
                 :disabled="disabledDownButton"
               >
-              <v-icon>keyboard_arrow_down</v-icon>
+                <v-icon>keyboard_arrow_down</v-icon>
               </v-btn>
             </v-row>
           </v-col>
         </v-row>
         <v-row>
-        <v-col>
+          <v-col>
             <v-select
               v-model="cField.defaultValue"
               :items="this.persona.selectedCustomField.dataSource"
@@ -70,9 +69,8 @@
               outlined
               dense
             ></v-select>
-        </v-col>
+          </v-col>
         </v-row>
-
       </v-form>
     </v-row>
   </v-container>
@@ -90,12 +88,12 @@ export default {
       disabledAddButton: true,
       disabledDownButton: true,
       disabledRemoveButton: true,
-      defaultItemDataValue:null
+      defaultItemDataValue: null
     }
   },
-  props:{
-    cField:{
-      type:Object
+  props: {
+    cField: {
+      type: Object
     }
   },
   beforeCreate() {},
@@ -103,49 +101,42 @@ export default {
   methods: {
     addItem: function() {
       if (this.itemsData) {
-        console.log('usao if')
         const arrLength = this.itemsData.length + 1
         const dataSourceObject = {
           display: this.name,
           id: arrLength,
-          value:this.name
+          value: this.name
         }
-        console.log(dataSourceObject)
         store.dispatch('persona/addPersonaDataSourceItem', dataSourceObject)
       } else {
-        console.log('usao else')
         const dataSourceObject = {
           display: this.name,
           id: 0,
-          value:this.name
+          value: this.name
         }
         store.dispatch('persona/addPersonaDataSourceItem', dataSourceObject)
       }
     },
     setSelectedItem: function(id) {
-      //this.selectedItemId = id
       const item = this.itemsData.find(function(el) {
         return el.id === id
       })
       this.selectedItem = item
       this.itemIndex = this.findIndexOfSelectedItem(item.id)
-      console.log(this.selectedItem)
       this.disabledButtons(this.itemIndex)
     },
     removeItem: function() {
-      console.log(`removeItem ${this.selectedItem.id}`)
       store.dispatch(
         'persona/removePersonaDataSourceItem',
         this.selectedItem.id
       )
-      if (this.itemsData.length===0) {
+      if (this.itemsData.length === 0) {
         this.disabledAddButton = true
         this.disabledDownButton = true
         this.disabledRemoveButton = true
       }
     },
     upDataItem: function() {
-      console.log(`up item ${this.selectedItem}`)
       const curentIndex = this.findIndexOfSelectedItem(this.selectedItem.id)
       const newIndex = curentIndex - 1
       const newItemsDataArray = this.newItemsDataArray(
@@ -153,11 +144,8 @@ export default {
         curentIndex,
         newIndex
       )
-      console.log(this.findIndexOfSelectedItem(this.selectedItem.id))
-      console.log(newItemsDataArray)
     },
     downDataItem: function() {
-      console.log(`Down data item ${this.selectedItem}`)
       const curentIndex = this.findIndexOfSelectedItem(this.selectedItem.id)
       const newIndex = curentIndex + 1
       const newItemsDataArray = this.newItemsDataArray(
@@ -177,55 +165,27 @@ export default {
     },
     disabledButtons: function(index) {
       const lastIndex = this.itemsData.length - 1
-      console.log(index, lastIndex)
       if (index === 0 && lastIndex === index) {
-        console.log('jedini')
         this.disabledAddButton = true
         this.disabledDownButton = true
         this.disabledRemoveButton = false
       } else if (index != 0 && lastIndex != index) {
-        console.log('nije ni prvi ni zadnji')
         this.disabledAddButton = false
         this.disabledDownButton = false
         this.disabledRemoveButton = false
       } else if (lastIndex === index) {
-        console.log('zadnji')
         this.disabledAddButton = false
         this.disabledDownButton = true
         this.disabledRemoveButton = false
       } else if (index === 0) {
-        console.log('prvi')
         this.disabledAddButton = true
         this.disabledDownButton = false
         this.disabledRemoveButton = false
       } else if (!this.itemsData.length) {
-        console.log('nema polja')
         this.disabledAddButton = true
         this.disabledDownButton = true
         this.disabledRemoveButton = true
       }
-      // switch (index) {
-      //   case 1:
-      //     console.log("case jedini element")
-      //     this.disabledAddButton=true
-      //     this.disabledDownButton=true
-      //     break;
-      //   case 2:
-      //     console.log("case poslednji")
-      //     this.disabledAddButton=false
-      //     this.disabledDownButton=true
-      //     break;
-      //   case 3:
-      //     console.log(`case remove`)
-      //     this.disabledRemoveButton=true
-      //     break;
-      //   default:
-      //     this.disabledAddButton=false
-      //     this.disabledDownButton=false
-      //     this.disabledRemoveButton=false
-      //     console.log("all buttons are enabled")
-      //     break;
-      // }
     }
   },
   computed: {

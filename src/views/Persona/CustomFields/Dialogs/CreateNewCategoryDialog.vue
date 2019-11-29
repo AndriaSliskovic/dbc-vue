@@ -29,7 +29,6 @@
           </v-row>
         </v-col>
       </v-row>
-
       <!-- SORT ORDER -->
       <v-row>
         <v-col cols="3">
@@ -70,7 +69,6 @@ export default {
       }
     }
   },
-
   mixins: [validationMixin],
   validations: {
     category: {
@@ -82,12 +80,10 @@ export default {
     onCloseDialogHandler() {
       this.catSelected = false
       this.$emit('close', false)
-      //Resetovanje prethodne validacije
       this.$v.$reset()
     },
     onSubmitHandler() {
       this.catSelected = false
-      console.log('on submit')
       this.$v.$touch()
       if (this.$v.$invalid) {
         const notification = {
@@ -101,7 +97,6 @@ export default {
       this.$v.$reset()
     }
   },
-
   computed: {
     ...mapState({ persona: 'persona' }),
     categoryErrors() {

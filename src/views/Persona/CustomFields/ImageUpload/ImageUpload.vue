@@ -1,11 +1,11 @@
 <template>
   <v-container fluid style="overflow:auto">
-      <v-col>
-        <UploadedImages :dataSource='cField.dataSource' @removeElement="removeElementFromDataSource"></UploadedImages>
-      </v-col>
-      <v-col>
-        <MultipleCards :cField='cField'></MultipleCards>
-      </v-col>
+    <v-col>
+      <UploadedImages :dataSource="cField.dataSource" @removeElement="removeElementFromDataSource"></UploadedImages>
+    </v-col>
+    <v-col>
+      <MultipleCards :cField="cField"></MultipleCards>
+    </v-col>
   </v-container>
 </template>
 <script>
@@ -15,20 +15,21 @@ import axios from 'axios'
 import MultipleCards from './MultipleCards'
 import UploadedImages from './UploadedImages'
 export default {
-  data(){
+  data() {
     return {
-        files:[],
+      files: []
     }
   },
-  props:
-    ["cField"],
+  props: ['cField'],
   components: {
     MultipleCards,
     UploadedImages
   },
-  methods:{
-    removeElementFromDataSource(key){
-      this.cField.dataSource=this.cField.dataSource.filter(el=>el.id!==key)
+  methods: {
+    removeElementFromDataSource(key) {
+      this.cField.dataSource = this.cField.dataSource.filter(
+        el => el.id !== key
+      )
     }
   },
   computed: {

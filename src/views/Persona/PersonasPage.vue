@@ -32,7 +32,6 @@
                   hide-details
                 ></v-text-field>
               </v-col>
-
               <!-- SELECT PERSONA STATUS -->
               <v-col cols="4">
                 <v-select
@@ -46,7 +45,6 @@
                   v-model="selectedStatus"
                 ></v-select>
               </v-col>
-
               <!-- CREATE PERSONA -->
               <v-col cols="4">
                 <v-dialog
@@ -77,8 +75,7 @@
             </template>
             <!-- STATUS CHIP-->
             <template v-slot:item.status="{ item }">
-              <!-- <StatusSwitch :status="item.active" @change="setPersonaStatus(item.id)"/> -->
-              <StatusChip :status="item.active" @change="setPersonaStatus(item.id)"/>
+              <StatusChip :status="item.active" @change="setPersonaStatus(item.id)" />
             </template>
             <!-- / STATUS -->
 
@@ -115,16 +112,13 @@
               </v-dialog>
             </template>
           </v-data-table>
-        <!-- //TABLE -->
+          <!-- //TABLE -->
         </v-col>
       </v-card>
     </v-container>
   </v-app>
 </template>
-
-
 <script>
-
 import { mapState, mapActions } from 'vuex'
 import store from '@/store/store'
 import PersonaCreateNew from './Persona/PersonaCreateNew'
@@ -144,11 +138,11 @@ export default {
     return {
       companyChange: false,
       search: '',
-      error:null,
+      error: null,
       headers: [
         { text: 'Edit', value: 'edit' },
         { text: 'Persona', value: 'name' },
-        { text: 'Status', value: 'status',fixed: true, width: '150px' },
+        { text: 'Status', value: 'status', fixed: true, width: '150px' },
         { text: 'Delete', value: 'delete' }
       ],
       personaStatus: [
@@ -173,18 +167,12 @@ export default {
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    console.log("persona page before")
-    store.dispatch('companies/loadAllCompanies')
-    .then(
-      () => {
-      next(
-        function(vm) {
-        //Dobijanje companyId pri povratku sa PersonaDetail
-          if (!vm.companyId) {
-            vm.companyId = vm.$store.state.companies.selectedCompanyGUID
-          }
-         }
-       )
+    store.dispatch('companies/loadAllCompanies').then(() => {
+      next(function(vm) {
+        if (!vm.companyId) {
+          vm.companyId = vm.$store.state.companies.selectedCompanyGUID
+        }
+      })
     })
   },
 
@@ -194,26 +182,20 @@ export default {
 
   methods: {
     setSelectedPersona(key) {
-      console.log(`setovanje persone ${key}`)
       this.selectedPersona = this.mapPersonas().find(function(el) {
         return el.id === key
       })
-      console.log("selektovana persona :",this.selectedPersona)
     },
     onChangeCompanySelectHandler(value) {
-      console.log("odabrana kompanija",value)
-      store.dispatch('companies/setCompanyId',value)
+      store.dispatch('companies/setCompanyId', value)
       store.dispatch('persona/getPersonasByCompanyGuid', this.companyIdString)
     },
     setPersonaStatus(key) {
-      console.log('imam klik', key)
       this.selectedPersonaStatusId = key
 
       const element = this.items.find(x => x.id === key)
       element.active = !element.active
       element.stringId = this.personaIdString.stringId
-      console.log(element)
-      //Slanje na server i setovanje centralnog statea
       store.dispatch('persona/setPersonasStatusOnServer', element)
       element.active
         ? (element.status = this.personaStatus[0].text)
@@ -230,11 +212,9 @@ export default {
     onEditPersona(key) {
       this.personaId = key
       this.setSelectedPersona(key)
-      const status=this.selectedPersona.active
-      //Sprecavane editovanja neaktivne persone
+      const status = this.selectedPersona.active
       if (!status) {
-        console.log("ulazi if")
-          this.error = {
+        this.error = {
           type: 'error',
           message: `You can not edit inactive persona.`
         }
@@ -242,22 +222,21 @@ export default {
       }
       this.$router.push({
         name: 'customFields',
-        params: { personaId: this.personaId, companyId: this.companyId, active:this.selectedPersona.active }
+        params: {
+          personaId: this.personaId,
+          companyId: this.companyId,
+          active: this.selectedPersona.active
+        }
       })
     },
     onDeletePersonadHandler: function(key) {
-      //Persona je setovana na prethodni klik
-      console.log(`selektovana persona ${this.selectedPersona}`)
       store.dispatch('persona/deletePersona', this.selectedPersona)
     },
     onCloseConfirmationDialog(value) {
       this.onDialogConfirmation = value
-      console.log('close dialog')
     },
 
-    onAddNewPersona() {
-      console.log('Dodavanje persone')
-    },
+    onAddNewPersona() {},
     onCloseDialog(value) {
       this.dialog.addNewPersona = value
     },
@@ -279,11 +258,10 @@ export default {
   },
 
   computed: {
-    ...mapState(['persona', 'companies','notification']),
+    ...mapState(['persona', 'companies', 'notification']),
     companyIdString: function() {
       return `companyId=${this.companyId}`
     },
-
 
     items: function() {
       if (this.persona.personas.length) {
@@ -330,7 +308,6 @@ export default {
   watch: {
     companyId: function(newValue, oldValue) {
       if (newValue != oldValue) {
-        console.log('New value: ' + newValue + ', Old value: ' + oldValue)
         return (this.companyChange = true)
       }
     }

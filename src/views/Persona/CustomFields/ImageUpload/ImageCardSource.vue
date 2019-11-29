@@ -18,13 +18,12 @@
           <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
         </v-row>
       </template>
-
       </v-img>
     </v-card-text class="px-0 py-0">
     <v-card-actions>
-        <v-btn block color="normal" dark @click="removeFromServer">
-          Remove image
-        </v-btn>
+      <v-btn block color="normal" dark @click="removeFromServer">
+        Remove image
+      </v-btn>
     </v-card-actions>
 </v-card>
 </template>
@@ -37,12 +36,11 @@ export default {
       imageDir:'/personafiles/globalformupload/'
     }
   },
-     props: {
-      image:{
-        type:Object,
-        default:''
-      },
-
+  props: {
+  image:{
+    type:Object,
+    default:''
+  },
   },
   components:{
     ChipsNotification
@@ -58,7 +56,5 @@ export default {
       return this.imageDir+this.image.display 
     }
   }
-
-
 }
 </script>

@@ -4,7 +4,6 @@
       <template>
         <BaseCardTitle @close="onCloseDialogHandler">Category for Custom field</BaseCardTitle>
       </template>
-
       <v-col cols="6">
         <v-card-title>
           <BaseTooltip>{{tooltips.currentCategory}}</BaseTooltip>Current category:
@@ -36,7 +35,6 @@
         </v-card-text>
         <!-- // category table -->
       </v-col>
-
       <v-col v-if="tempCategory" cols="6">
         <v-card-title>
           <BaseTooltip>{{tooltips.newSelectedCategory}}</BaseTooltip>New selected category :
@@ -68,7 +66,6 @@
         </v-card-text>
         <!-- // category table -->
       </v-col>
-
       <v-card-text>
         <v-row align="center">
           <v-col cols="5">
@@ -87,16 +84,13 @@
                 @submit="setNewCategoryObject"
               />
             </v-dialog>
-
           </v-col>
-
           <!-- OR DIVIDER -->
           <v-row align="center" justify="center">
             <v-col cols="2" class="display-1 primary--text">
               <p>AND (OR)</p>
             </v-col>
           </v-row>
-
           <v-col cols="5">
             <!-- CATEGORIES LIST -->
             <v-row align="center">
@@ -188,7 +182,6 @@ export default {
       this.tempCategory = null
     },
     onSubmitHandler() {
-      console.log('on submit')
       this.$emit('submit', this.tempCategory)
       this.$emit('close', false)
       this.tempCategory = null
@@ -197,7 +190,6 @@ export default {
       this.tempCategory = catObject
     },
     setNewCategoryObject(newCategory) {
-      console.log('nova kategorija', newCategory)
       store.dispatch('persona/addNewCategory', newCategory)
     },
     createSelectedCategoryObject(obj) {

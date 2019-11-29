@@ -134,7 +134,6 @@
                   @click="onEditCustomFieldHandler(item.id)"
                   v-on="on"
                 >mdi-table-edit</v-icon>
-                <!-- <BaseTooltip>{{tooltips.editCustomField}}</BaseTooltip> -->
               </template>
               <CustomFieldSelected
                 @close="val=>onCloseDialog(val)"
@@ -223,20 +222,14 @@ export default {
     }
   },
   beforeRouteEnter(routeTo, routeFrom, next) {
-    console.log('before route enter')
     store.dispatch('companies/loadAllCompanies').then(() => {
       next()
     })
   },
   created() {
-    console.log('created customField')
-    // store.dispatch('companies/loadAllCompanies')
     this.editedCompany = this.companyId
-    //Dobijanje persona objekta
     store.dispatch('persona/getSelectedPersonaByPersonaId', this.personaId)
-    //Dobijanje CustomFieldsa
     store.dispatch('persona/getCustomFieldsByPersonaID', this.personaId)
-    console.log(this.customFields)
   },
 
   methods: {
@@ -244,11 +237,9 @@ export default {
       return this.$router.go(-1)
     },
     onChangeCompanySelectHandler(value) {
-      console.log(value)
       this.editedCompanyId = value
     },
     editedPersona: function() {
-      console.log('edit persona object')
       return {
         active: this.active,
         id: this.personaId,
@@ -278,9 +269,7 @@ export default {
     },
     onCreateCustomFieldObject() {
       this.dialogType = 'create'
-      console.log('create Custom field object')
       this.dataObject = this.createDataObject()
-      console.log(this.dataObject)
       store.dispatch('persona/setSelectedCustomField', this.dataObject)
       store.dispatch('persona/getAllCategoriesForSelectedPersona')
     },
@@ -308,7 +297,6 @@ export default {
       }
     },
     setSelectedCustomField(key) {
-      console.log('setovanje cf-a', key)
       const cField = this.customFields.find(function(el) {
         return el.id === key
       })
@@ -327,7 +315,7 @@ export default {
         maskId: cField.maskId,
         defaultValue: cField.defaultValue,
         tag: null,
-        //Dodato ???
+        //Addded
         files: []
       }
       //Handle reserved word 'image' JS
@@ -339,10 +327,8 @@ export default {
       this.dialogType = 'edit'
 
       this.setSelectedCustomField(key)
-            console.log("customField selected",this.selectedCustomField)
       /*Handle preview images from server*/
       if (this.selectedCustomField.dataSource.length > 0) {
-        console.log('ima niz slika')
         for (let file of this.selectedCustomField.dataSource) {
           const imageFile = {
             file: '',
@@ -352,7 +338,6 @@ export default {
           }
         }
       }
-      console.log(this.selectedCustomField)
       store.dispatch('persona/setSelectedCustomField', this.selectedCustomField)
 
       store.dispatch('persona/getAllCategoriesForSelectedPersona')
@@ -362,13 +347,11 @@ export default {
         personaId: this.personaId,
         cFieldId: this.selectedCustomField.id
       }
-      console.log(`delete custom field`, params)
       store.dispatch('persona/deleteSelectedCustomField', params)
     },
     onCloseDialog(value) {
       this.dialog.create = value
       this.dialog.edit = value
-      //Kreiranje praznog objekta zbog resetovanja centralnog stora
       this.dataObject = this.createDataObject()
       store.dispatch('persona/setSelectedCustomField', this.dataObject)
     }
@@ -378,7 +361,6 @@ export default {
     personaName: {
       get: function() {
         return this.persona.personaObject ? this.persona.personaObject.name : ''
-        //return this.persona.personaObject.name
       },
       set: function(newValue) {
         newValue ? (this.persona.personaObject.name = newValue) : null
@@ -386,7 +368,6 @@ export default {
     },
     customFields: {
       get: function() {
-        //return this.persona.customFields ? this.persona.customFields : null
         return this.persona.customFields
       }
     },

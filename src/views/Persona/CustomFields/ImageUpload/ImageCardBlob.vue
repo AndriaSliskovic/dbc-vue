@@ -9,7 +9,6 @@
         contain
       >
       <template v-if="!notification.type">
-      <!-- <template v-if="!file.uploaded"> -->
         <BaseIconClose @close="onDeleteImage" :small="false" :x_small="true" class=""/>
       </template>
             <!-- Error message -->
@@ -18,7 +17,6 @@
         <ChipsNotification :type='notification.type' :close='false'>
           {{notification.msg}}
         </ChipsNotification>
-        <!-- <v-alert :type="notification.type" dense class="pb-1 mb-0">{{notification.msg}}</v-alert> -->
         </v-row>
       </template>
       <!-- Placeholder -->
@@ -34,7 +32,6 @@
       </v-img>
     </v-card-text class="px-0 py-0">
     <v-card-actions>
-      <!-- <template v-if="!notification.type">      -->
       <template v-if="!file.uploaded">
         <v-btn block color="blue-grey" dark @click="uploadImage" :disabled="file.uploaded">
           Upload
@@ -60,12 +57,11 @@ export default {
       timeout: null,
     }
   },
-    props: {
-    file: {
-      type: Object,
-      default: null
-    },
-
+  props: {
+  file: {
+    type: Object,
+    default: null
+  },
   },
   components:{
     ChipsNotification
@@ -80,7 +76,6 @@ export default {
   },
 
   methods: {
-    
     onDeleteImage(key) {
       console.log('image key je :', this.file.key)
       this.$emit('removeElement', this.file.key)

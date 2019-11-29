@@ -26,14 +26,13 @@
           </v-row>
         </v-form>
       </v-card-text>
-
       <v-card-actions class="grey darken-2 mx-0 title-page">
         <v-row justify="center">
           <BaseSubmitGroup
             @close="onCloseCreatePersonaHandler"
             @submit="onSubmitCreatePersonaHandler"
           >
-          <template v-slot:submit>Submit</template>
+            <template v-slot:submit>Submit</template>
           </BaseSubmitGroup>
         </v-row>
       </v-card-actions>
@@ -69,7 +68,6 @@ export default {
       //Submit validation
       this.$v.$touch()
       if (this.$v.$invalid) {
-        console.log(`submitovanje forme ${this.nameErrors}`)
         const notification = {
           type: 'error',
           message: `Error on form : ${this.nameErrors}`
@@ -89,8 +87,8 @@ export default {
       return {
         companyId: this.companyId,
         name: this.name,
-        allowShare:this.allowShare,
-        activeLimit:this.activeLimit,
+        allowShare: this.allowShare,
+        activeLimit: this.activeLimit,
         companyIdString: `companyId=${this.companyId}`
       }
     },
