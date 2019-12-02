@@ -9,11 +9,9 @@ const apiGatewayClient = client(apiGatewayUrl + "/persona/persona")
 
 export default {
   getPersonas(companyGuidString) {
-    console.log(`servis za string ${companyGuidString}`,window.apiGatewayUrl)
     return apiGatewayClient
       .get(`?${companyGuidString}`)
       .then(response => {
-        console.log(response.data)
         return response.data
       })
   },
@@ -22,22 +20,18 @@ export default {
   },
 
   getSelectedPersonaByPersonaId(personaId){
-    console.log(`servis persona objekta ${personaId}`)
     return apiGatewayClient.get(`/${personaId}` )
   },
   editPersonaData(object){
-    console.log(`servis edit persona objekta ${object.id}`)
     const data={
       companyId:object.companyId,
       name:object.name,
       allowShare:object.allowShare,
       activeLimit:object.activeLimit
     }
-    console.log("edited object",data)    
     return apiGatewayClient.put(`/${object.id}`,data)
   },
   setPersonaStaus(element){
-    console.log(`servis edit statusa persona objekta ${element}`)
     const data={
       companyId:element.companyId,
       name:element.name
@@ -55,27 +49,21 @@ export default {
     return apiGatewayClient.post('/',dataObject)
   },
   deleteSelectedPersona(personaIdString){
-    console.log(`servis delete ${personaIdString}`)
     return apiGatewayClient.patch(`/delete?${personaIdString}`)
   },
   //Custom fields
   getCustomFieldsByPersonaID(personaId){
-    console.log(`servis CustomFields objekta ${personaId}`)
     return apiGatewayClient.get(`/${personaId}/fields`)
   },
   createNewCustomField(cField){
-    console.log(`servis za new custom field ${cField.personaId}`)
 
     return apiGatewayClient.post(`/${cField.personaId}/fields`,cField)
   },
   updateCustomField(cField){
-    console.log(`servis za edit peronu ${cField.personaId}`,cField.id)
     return apiGatewayClient.put(`/${cField.personaId}/fields/${cField.id}`,cField)
   },
   deleteSelectedCustomField(params){
     const cFieldIdString=`fieldIds=${params.cFieldId}`
-    console.log(`servis za delete custom field`,params,cFieldIdString)
-    console.log(apiGatewayClient.patch(`/${params.personaId}/fields/delete?${cFieldIdString}`))
     return apiGatewayClient.patch(`/${params.personaId}/fields/delete?${cFieldIdString}`)
   }
 }

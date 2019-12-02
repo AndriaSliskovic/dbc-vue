@@ -47,7 +47,6 @@ export default {
   },
   methods:{
     removeFromServer(){
-      console.log("remove from element",this.image.id)
       this.$emit('removeElement',this.image.id)
     }
   },

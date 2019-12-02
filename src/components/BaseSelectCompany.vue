@@ -32,15 +32,12 @@ export default {
   },
   beforeMount(){
     if (this.company.selectedCompanyGUID) {
-      console.log(`before mount compID : ${this.company.selectedCompanyGUID}`)
       this.companyId=this.company.selectedCompanyGUID
     }
   },
   methods: {
     ...mapActions('companies', ['setCompanyId']),
     setSelectedCompany() {
-      console.log("komponenta kompanije",this.companyId)
-      //this.setCompanyId(this.companyId)
       this.$emit('on-change-select',this.companyId)
     }
   },

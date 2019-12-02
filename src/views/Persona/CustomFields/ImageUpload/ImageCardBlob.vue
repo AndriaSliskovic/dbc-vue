@@ -67,21 +67,17 @@ export default {
     ChipsNotification
   },
   mounted() {
-    console.log(this.file.key)
     this.getImagePreview()
   },
   updated(newValue,oldValue) {
-    console.log('updated', this.file,)
     this.getImagePreview()
   },
 
   methods: {
     onDeleteImage(key) {
-      console.log('image key je :', this.file.key)
       this.$emit('removeElement', this.file.key)
     },
     uploadImage() {
-      console.log('upload image')
       var form = document.getElementById('form')
       const formData = new FormData(form)
       formData.append('file', this.file.file)
@@ -91,7 +87,6 @@ export default {
     this.timeout = setTimeout(() => this.onDeleteImage(this.file.key), 3000)
     },
     removeFromServer(){
-      console.log("remove from server")
     },
     uploadService(formData) {
       uploadImageService

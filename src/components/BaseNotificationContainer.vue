@@ -20,7 +20,4 @@
     </script>
     
     <style scoped>
-    /* .notification-container {
-      height: 50px;      
-    } */
     </style>

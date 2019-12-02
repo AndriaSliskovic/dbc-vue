@@ -27,7 +27,6 @@ export default {
     clearTimeout(this.timeout)
     //Hendlovanje redirekcije samo na error type
     if (this.notif.reload) {
-      console.log(`reload ${this.notification.reload}`)
       this.$router.go()
     }
   },

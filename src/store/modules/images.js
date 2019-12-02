@@ -20,11 +20,9 @@ const uploadService=(formData)=> {
   const apiGatewayClient = client(
     apiGatewayUrl + '/api/admin/s3/uploadImage'
   )
-  console.log('servis za upload', formData)
   apiGatewayClient
     .post('', formData)
     .then(res => (this.selectedFile.fileName = res.data.fileName))
-    .then(() => console.log(this.selectedFile))
 }
 
 export const state = {

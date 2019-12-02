@@ -35,7 +35,6 @@ export default {
       return this.currentFeatures.filter(e => e.selected).map(e => e.id)
     },
     updateModules: function() {
-      console.log(`checkedModules`,this.checkedModules())
       store.dispatch('feature/selectedModules', this.checkedModules())
       this.$emit('updateModules', this.checkedModules())
     }

@@ -144,7 +144,7 @@ export default {
       .then(store.dispatch('feature/LoadAllModules'))
       .then(
         () => {
-        next(console.log("next feature"))
+        next()
       })
   },
   computed: {

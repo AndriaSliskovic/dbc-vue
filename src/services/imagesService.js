@@ -1,7 +1,5 @@
 import axios from 'axios'
 
-
-
 var client = function(url) {
   var servis = axios.create({
     baseURL: url,
@@ -22,7 +20,6 @@ const apiGatewayClient = client(
 
 export default {
     uploadImage(formData) {
-      console.log("image service",formData)
       return apiGatewayClient.post('',formData)
     }
 }

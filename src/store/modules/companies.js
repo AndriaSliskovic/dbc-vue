@@ -34,7 +34,6 @@ export const actions = {
       })
   },
   setCompanyId({ commit }, companyId) {
-    console.log(`action companies id : ${companyId}`)
     commit('SET_COMPANY_ID', companyId)
     commit('SET_COMPANY_ID_STRING',companyId)
   }

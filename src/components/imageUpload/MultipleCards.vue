@@ -59,7 +59,6 @@ export default {
    },
   mounted() {
     this.getImagePreviews()
-    console.log('mounted', this.cField.files, this.cField.dataSource)
   },
   methods: {
     addFiles() {
@@ -71,7 +70,6 @@ export default {
       this.getImagePreviews()
     },
     onUploadedHandler(file) {
-      console.log('uploaded handler', file.key)
       const fajl = this.cField.files
         .filter(e => e.key === file.key)
         .map(el => (el.uploaded = true))
@@ -94,10 +92,8 @@ export default {
         this.cField.files.push(imageObject)
         //store.dispatch('images/addToImagesArray', fileObject)
       }
-      console.log('image upload', this.cField.files)
     },
     makeImageObject(imageFile) {
-      console.log(imageFile.name)
       const imageObject = {
         file: imageFile,
         //Setting unique key
@@ -110,21 +106,9 @@ export default {
         uploaded: false,
         fileName: null
       }
-      console.log(imageObject, this)
       return imageObject
     },
     getImagePreviews() {
-      /* Get images from server*/
-      // if (this.cField.dataSource.length > 0) {
-      //   // const path='/personafiles/globalformupload/'
-      //   const path = 'img/'
-      //   for (let img of this.cField.dataSource) {
-      //     const src = path + img.value
-      //     let reader = new FileReader()
-      //     reader.readAsDataURL(src)
-      //   }
-      // }
-      console.log('ucitava slike', this.cField.files)
       /*
           Iterate over all of the files and generate an image preview for each one.
         */

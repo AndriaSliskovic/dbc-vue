@@ -41,21 +41,6 @@ export default {
       this.$emit('change', this.active)
     }
   },
-//   beforeUpdate() {
-//     console.log('beforeUpdated')
-//     this.active = this.status
-//     console.log('beforeUpdated', this.active)
-//   },
-//   updated() {
-//           console.log('updated')
-//       if(this.status!=this.active){
-//           console.log("menja se")
-//     this.active = this.status
- 
-//       }
-//    console.log('Updated', this.active)
-
-//   },
   computed: {
     statusProp: function() {
       if (this.active) {
@@ -76,7 +61,6 @@ export default {
   watch:{
       status:function(newValue,oldValue){
         if (newValue != oldValue) {
-        console.log('New value: ' + newValue + ', Old value: ' + oldValue)
         return (this.active=newValue)
       }
       }

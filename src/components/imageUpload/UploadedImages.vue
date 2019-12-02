@@ -38,7 +38,6 @@ methods:{
         }
     },
     removeElement(key){
-        console.log("parent removeElement",key)
         this.$emit('removeElement',key)
     }
 },
