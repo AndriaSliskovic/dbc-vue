@@ -13,7 +13,7 @@
     "vue": "^2.6.10",
     "vue-router": "^3.0.7",
     "vuejs-datepicker": "^1.6.2",
-    "vuetify": "^2.0.4",
+    "vuetify": "^2.6.10",
     "vuex": "^3.1.1"
   },
   "devDependencies": {
